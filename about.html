@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | Hamptons Robotaxi</title>
+    <meta name="description" content="Our mission: no one should die for lack of a ride.">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Ambient Effects -->
+    <div class="stars" id="stars"></div>
+    <div class="glow-orb glow-1"></div>
+    <div class="glow-orb glow-2"></div>
+
+    <!-- Navigation -->
+    <nav class="nav" id="nav">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo">Hamptons<span>RT</span></a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="about.html" class="active">About</a></li>
+                <li><a href="investors.html">Investors</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle">&#9776;</button>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Hero -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <p class="section-label" style="animation: fadeUp 1s ease 0.2s forwards; opacity: 0;">Our Mission</p>
+                    <h1 style="font-size: clamp(36px, 6vw, 72px);">No one should die<br>for lack of a <span class="gold">ride</span></h1>
+                    <p class="hero-sub">We're building autonomous transportation that's always there when you need it.</p>
+                </div>
+            </div>
+            <div class="scroll-hint">
+                <span>Scroll</span>
+                <div class="scroll-line"></div>
+            </div>
+        </section>
+
+        <!-- Crisis Stats -->
+        <section class="stats">
+            <div class="container">
+                <div style="text-align: center; margin-bottom: 60px;" class="reveal">
+                    <p class="section-label">Summer 2024</p>
+                    <h2>The crisis is real</h2>
+                </div>
+                <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr);">
+                    <div class="stat">
+                        <div class="stat-value danger">127</div>
+                        <div class="stat-label">DUI Arrests</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value danger">23</div>
+                        <div class="stat-label">Alcohol Crashes</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value danger">4</div>
+                        <div class="stat-label">Fatalities</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- The Choice -->
+        <section>
+            <div class="container">
+                <div class="reveal" style="text-align: center; max-width: 600px; margin: 0 auto;">
+                    <h2>The impossible choice</h2>
+                    <p style="font-size: 18px; margin-top: 24px;">
+                        Drive after drinking. Pay $150 for a $25 ride. Wait hours. Sleep in your car.
+                    </p>
+                    <div class="divider"></div>
+                    <p style="font-size: 20px; color: var(--gold);">
+                        We eliminate the choice entirely.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How We Help -->
+        <section>
+            <div class="container">
+                <div style="text-align: center; margin-bottom: 60px;" class="reveal">
+                    <p class="section-label">The Solution</p>
+                    <h2>How robotaxis save lives</h2>
+                </div>
+                <div class="grid-4">
+                    <div class="card" style="text-align: center;">
+                        <span class="card-icon">&#9790;</span>
+                        <h3>Always Available</h3>
+                        <p>24/7 operation. A safe ride is always minutes away.</p>
+                    </div>
+                    <div class="card" style="text-align: center;">
+                        <span class="card-icon">&#9878;</span>
+                        <h3>No Surge</h3>
+                        <p>Consistent rates remove the financial barrier.</p>
+                    </div>
+                    <div class="card" style="text-align: center;">
+                        <span class="card-icon">&#128302;</span>
+                        <h3>No Judgment</h3>
+                        <p>Autonomous means zero social friction.</p>
+                    </div>
+                    <div class="card" style="text-align: center;">
+                        <span class="card-icon">&#128737;</span>
+                        <h3>Partnerships</h3>
+                        <p>Venues can request rides for guests directly.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Safety -->
+        <section>
+            <div class="container">
+                <div class="grid-2" style="align-items: center; gap: 80px;">
+                    <div class="reveal">
+                        <p class="section-label">Safety First</p>
+                        <h2>Built on trust</h2>
+                        <p style="font-size: 17px; margin-top: 24px; line-height: 1.8;">
+                            Proven technology. Geo-fenced operations. 24/7 remote monitoring.
+                            Local emergency coordination. 200% insurance coverage.
+                            Transparent public reporting.
+                        </p>
+                    </div>
+                    <div class="reveal" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="metric-box">
+                            <div class="metric-value">24/7</div>
+                            <div class="metric-label">Monitoring</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-value">200%</div>
+                            <div class="metric-label">Insurance</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-value">L4</div>
+                            <div class="metric-label">Autonomy</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-value">100%</div>
+                            <div class="metric-label">Transparency</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Local -->
+        <section class="cta-section">
+            <div class="container">
+                <div class="reveal">
+                    <p class="section-label">Local Roots</p>
+                    <h2>Built for the East End</h2>
+                    <p style="max-width: 500px; margin: 0 auto 40px;">
+                        We know the seasonal rhythms, the back roads, the community.
+                        This isn't a tech company parachuting in. This is home.
+                    </p>
+                    <a href="contact.html" class="btn btn-primary">
+                        Get in Touch
+                        <span class="btn-arrow">&rarr;</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="border-top: none; padding-top: 0;">
+                <p>&copy; 2026 Hamptons Robotaxi, LLC</p>
+                <div class="footer-legal">
+                    <a href="index.html">Home</a>
+                    <a href="investors.html">Investors</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Generate stars
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.setProperty('--duration', (3 + Math.random() * 4) + 's');
+            star.style.setProperty('--delay', Math.random() * 5 + 's');
+            star.style.setProperty('--opacity', 0.3 + Math.random() * 0.7);
+            starsContainer.appendChild(star);
+        }
+
+        // Nav scroll effect
+        const nav = document.getElementById('nav');
+        window.addEventListener('scroll', () => {
+            nav.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // Mobile nav toggle
+        document.getElementById('navToggle').addEventListener('click', () => {
+            document.getElementById('navLinks').classList.toggle('active');
+        });
+
+        // Reveal on scroll
+        const reveals = document.querySelectorAll('.reveal, .card, .stat');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 100);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        reveals.forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>

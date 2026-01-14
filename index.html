@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hamptons Robotaxi</title>
+    <meta name="description" content="The future of Hamptons transportation. Coming Summer 2026.">
+    <meta property="og:title" content="Hamptons Robotaxi">
+    <meta property="og:description" content="The future of Hamptons transportation.">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Ambient Effects -->
+    <div class="stars" id="stars"></div>
+    <div class="glow-orb glow-1"></div>
+    <div class="glow-orb glow-2"></div>
+
+    <!-- Navigation -->
+    <nav class="nav" id="nav">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo">Hamptons<span>RT</span></a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="about.html">About</a></li>
+                <li><a href="investors.html">Investors</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle">&#9776;</button>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Hero -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <span class="hero-badge">Summer 2026</span>
+                    <h1>The future of<br><span class="gold">Hamptons</span></h1>
+                    <p class="hero-sub">Autonomous. Always available. No compromises.</p>
+                    <div class="hero-ctas">
+                        <a href="investors.html" class="btn btn-primary">
+                            Invest
+                            <span class="btn-arrow">&rarr;</span>
+                        </a>
+                        <a href="about.html" class="btn btn-ghost">Our Mission</a>
+                    </div>
+                </div>
+            </div>
+            <div class="scroll-hint">
+                <span>Scroll</span>
+                <div class="scroll-line"></div>
+            </div>
+        </section>
+
+        <!-- Stats -->
+        <section class="stats">
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat">
+                        <div class="stat-value danger">127</div>
+                        <div class="stat-label">DUI Arrests</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value danger">$150+</div>
+                        <div class="stat-label">Surge Pricing</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value danger">0</div>
+                        <div class="stat-label">Late-Night Options</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value gold">24/7</div>
+                        <div class="stat-label">Our Availability</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Problem -->
+        <section>
+            <div class="container">
+                <div class="reveal" style="text-align: center; max-width: 700px; margin: 0 auto;">
+                    <p class="section-label">The Problem</p>
+                    <h2 class="section-title">Every summer, an impossible choice</h2>
+                    <p class="section-desc" style="margin: 0 auto;">
+                        Drivers disappear. Prices surge. People make dangerous decisions.
+                        We're changing that.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quote -->
+        <section style="padding: 80px 0;">
+            <div class="container">
+                <div class="quote reveal">
+                    No one should have to choose between a dangerous drive home and being stranded.
+                </div>
+            </div>
+        </section>
+
+        <!-- Cards -->
+        <section>
+            <div class="container">
+                <div class="grid-3">
+                    <div class="card">
+                        <span class="card-icon">&#9790;</span>
+                        <h3>Always On</h3>
+                        <p>24/7 autonomous service. No breaks. No off-hours. No excuses.</p>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">&#9878;</span>
+                        <h3>Fair Pricing</h3>
+                        <p>Same rate at 2pm and 2am. No surge. No surprises.</p>
+                    </div>
+                    <div class="card">
+                        <span class="card-icon">&#10024;</span>
+                        <h3>Zero Emissions</h3>
+                        <p>All-electric fleet. Protecting the Hamptons we love.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="cta-section">
+            <div class="container">
+                <div class="reveal">
+                    <p class="section-label">Partner With Us</p>
+                    <h2>Join the movement</h2>
+                    <p style="max-width: 500px; margin: 0 auto 40px;">
+                        Hotels. Restaurants. Investors. We're building something different.
+                    </p>
+                    <div style="display: flex; gap: 20px; justify-content: center;">
+                        <a href="investors.html" class="btn btn-primary">
+                            Investors
+                            <span class="btn-arrow">&rarr;</span>
+                        </a>
+                        <a href="contact.html" class="btn btn-ghost">Contact</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="border-top: none; padding-top: 0;">
+                <p>&copy; 2026 Hamptons Robotaxi, LLC</p>
+                <div class="footer-legal">
+                    <a href="about.html">About</a>
+                    <a href="investors.html">Investors</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Generate stars
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.setProperty('--duration', (3 + Math.random() * 4) + 's');
+            star.style.setProperty('--delay', Math.random() * 5 + 's');
+            star.style.setProperty('--opacity', 0.3 + Math.random() * 0.7);
+            starsContainer.appendChild(star);
+        }
+
+        // Nav scroll effect
+        const nav = document.getElementById('nav');
+        window.addEventListener('scroll', () => {
+            nav.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // Mobile nav toggle
+        document.getElementById('navToggle').addEventListener('click', () => {
+            document.getElementById('navLinks').classList.toggle('active');
+        });
+
+        // Reveal on scroll
+        const reveals = document.querySelectorAll('.reveal, .card, .stat');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 100);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        reveals.forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
