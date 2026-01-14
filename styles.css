@@ -397,6 +397,31 @@ section {
     color: #ef4444;
 }
 
+.stat-value.strike {
+    text-decoration: line-through;
+    color: var(--white-muted);
+    font-size: 36px;
+}
+
+.stat-value.vs {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.stat-value .old {
+    text-decoration: line-through;
+    color: #ef4444;
+    font-size: 28px;
+    opacity: 0.7;
+}
+
+.stat-value .new {
+    color: var(--gold);
+    font-size: 48px;
+}
+
 .stat-label {
     font-size: 12px;
     letter-spacing: 0.15em;
