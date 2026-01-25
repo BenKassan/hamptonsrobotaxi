@@ -4,135 +4,138 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact | Hamptons Robotaxi</title>
-    <meta name="description" content="Get in touch. Partnerships, investment inquiries, and general questions.">
+    <meta name="description" content="Get in touch with Hamptons Robotaxi. Partnerships, investment, and media inquiries.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Ambient Effects -->
-    <div class="stars" id="stars"></div>
-    <div class="glow-orb glow-1"></div>
-    <div class="glow-orb glow-2"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
 
-    <!-- Navigation -->
     <nav class="nav" id="nav">
         <div class="nav-inner">
-            <a href="index.html" class="nav-logo">Hamptons<span>RT</span></a>
+            <a href="index.html" class="nav-logo">Hamptons <span>Robotaxi</span></a>
             <ul class="nav-links" id="navLinks">
                 <li><a href="about.html">About</a></li>
                 <li><a href="team.html">Team</a></li>
                 <li><a href="investors.html">Investors</a></li>
                 <li><a href="contact.html" class="active">Contact</a></li>
             </ul>
-            <button class="nav-toggle" id="navToggle">&#9776;</button>
+            <div class="nav-actions">
+                <a href="investors.html" class="btn btn-ghost">Get the Deck</a>
+                <button class="nav-toggle" id="navToggle">Menu</button>
+            </div>
         </div>
     </nav>
 
     <main>
-        <!-- Hero -->
-        <section class="hero" style="min-height: auto; padding: 200px 0 100px;">
+        <section class="hero" style="min-height: 70vh;">
             <div class="container">
-                <div class="hero-content">
-                    <p class="section-label" style="animation: fadeUp 1s ease 0.2s forwards; opacity: 0;">Get in Touch</p>
-                    <h1 style="font-size: clamp(36px, 6vw, 64px);">Let's build the<br><span class="gold">future</span> together</h1>
+                <div data-reveal>
+                    <span class="pill">Contact</span>
+                    <h1>Let us build the <span style="color: var(--gold);">future</span> together</h1>
+                    <p class="hero-sub">Partnerships, investment inquiries, press, and government coordination. We respond quickly.</p>
                 </div>
             </div>
         </section>
 
-        <!-- Contact Form Section -->
-        <section style="padding-top: 0;">
-            <div class="container">
-                <div class="grid-2" style="gap: 80px; align-items: start;">
-                    <!-- Form -->
-                    <div class="reveal">
-                        <form action="https://formspree.io/f/your-form-id" method="POST" style="background: var(--bg-card); border: 1px solid var(--border); padding: 48px; backdrop-filter: blur(20px);">
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <label>Name *</label>
-                                    <input type="text" name="name" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Email *</label>
-                                    <input type="email" name="email" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Company</label>
-                                    <input type="text" name="company">
-                                </div>
-                                <div class="form-group">
-                                    <label>Phone</label>
-                                    <input type="tel" name="phone">
-                                </div>
-                                <div class="form-group full">
-                                    <label>Inquiry Type</label>
-                                    <select name="inquiry-type" id="inquiry-type">
-                                        <option value="">Select...</option>
-                                        <option value="investment">Investment</option>
-                                        <option value="hotel">Hotel Partnership</option>
-                                        <option value="restaurant">Restaurant Partnership</option>
-                                        <option value="safety">Safety Partnership</option>
-                                        <option value="media">Media</option>
-                                        <option value="government">Government</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                </div>
-                                <div class="form-group full">
-                                    <label>Message</label>
-                                    <textarea name="message" placeholder="Tell us about your interest..."></textarea>
-                                </div>
+        <section class="section" style="padding-top: 0;">
+            <div class="container split">
+                <div class="form-card" data-reveal>
+                    <form action="https://formspree.io/f/your-form-id" method="POST">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Name *</label>
+                                <input type="text" name="name" required>
                             </div>
-                            <button type="submit" class="btn btn-primary" style="width: 100%;">
-                                Send Message
-                                <span class="btn-arrow">&rarr;</span>
-                            </button>
-                        </form>
+                            <div class="form-group">
+                                <label>Email *</label>
+                                <input type="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Company</label>
+                                <input type="text" name="company">
+                            </div>
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="tel" name="phone">
+                            </div>
+                            <div class="form-group full">
+                                <label>Inquiry Type</label>
+                                <select name="inquiry-type" id="inquiry-type">
+                                    <option value="">Select...</option>
+                                    <option value="investment">Investment</option>
+                                    <option value="hotel">Hotel Partnership</option>
+                                    <option value="restaurant">Restaurant Partnership</option>
+                                    <option value="safety">Safety Partnership</option>
+                                    <option value="media">Media</option>
+                                    <option value="government">Government</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group full">
+                                <label>Message</label>
+                                <textarea name="message" placeholder="Tell us about your interest..."></textarea>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 12px;">
+                            Send Message <span class="btn-arrow">&rarr;</span>
+                        </button>
+                    </form>
+                </div>
+                <div data-reveal>
+                    <div class="card" style="margin-bottom: 24px;">
+                        <h3>Direct</h3>
+                        <p>Primary inboxes for fast routing.</p>
+                        <ul class="list">
+                            <li><span>01</span> <a href="mailto:hello@hamptonsrobotaxi.com">hello@hamptonsrobotaxi.com</a></li>
+                            <li><span>02</span> <a href="mailto:investors@hamptonsrobotaxi.com">investors@hamptonsrobotaxi.com</a></li>
+                            <li><span>03</span> <a href="mailto:partners@hamptonsrobotaxi.com">partners@hamptonsrobotaxi.com</a></li>
+                            <li><span>04</span> <a href="mailto:press@hamptonsrobotaxi.com">press@hamptonsrobotaxi.com</a></li>
+                        </ul>
                     </div>
-
-                    <!-- Contact Info -->
-                    <div class="reveal">
-                        <div style="margin-bottom: 48px;">
-                            <p class="section-label">Direct</p>
-                            <h3 style="margin-bottom: 24px;">Reach out</h3>
-                            <div style="display: flex; flex-direction: column; gap: 16px;">
-                                <a href="mailto:hello@hamptonsrobotaxi.com" style="color: var(--white-dim); text-decoration: none; font-size: 15px;">
-                                    hello@hamptonsrobotaxi.com
-                                </a>
-                                <a href="mailto:investors@hamptonsrobotaxi.com" style="color: var(--white-dim); text-decoration: none; font-size: 15px;">
-                                    investors@hamptonsrobotaxi.com
-                                </a>
-                                <a href="mailto:partners@hamptonsrobotaxi.com" style="color: var(--white-dim); text-decoration: none; font-size: 15px;">
-                                    partners@hamptonsrobotaxi.com
-                                </a>
-                                <a href="mailto:press@hamptonsrobotaxi.com" style="color: var(--white-dim); text-decoration: none; font-size: 15px;">
-                                    press@hamptonsrobotaxi.com
-                                </a>
-                            </div>
-                        </div>
-
-                        <div style="margin-bottom: 48px;">
-                            <p class="section-label">Location</p>
-                            <h3 style="margin-bottom: 24px;">Find us</h3>
-                            <p style="font-size: 15px;">
-                                Hamptons Robotaxi, LLC<br>
-                                Southampton, NY 11968
-                            </p>
-                        </div>
-
-                        <div class="metric-box">
-                            <p style="font-size: 14px; color: var(--white-dim); margin-bottom: 16px;">Looking for investment details?</p>
-                            <a href="investors.html" class="btn btn-ghost" style="width: 100%; justify-content: center;">
-                                View Investor Info
-                            </a>
-                        </div>
+                    <div class="card" style="margin-bottom: 24px;">
+                        <h3>Location</h3>
+                        <p>Hamptons Robotaxi, LLC<br>Southampton, NY 11968</p>
+                    </div>
+                    <div class="card">
+                        <h3>Investors</h3>
+                        <p>See the financial model and launch roadmap.</p>
+                        <a href="investors.html" class="btn btn-ghost" style="margin-top: 16px;">View Investor Info</a>
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <div class="footer-bottom" style="border-top: none; padding-top: 0;">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3>Hamptons Robotaxi</h3>
+                    <p>Autonomous rides for America's most exclusive destination.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="team.html">Team</a></li>
+                        <li><a href="investors.html">Investors</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><a href="mailto:hello@hamptonsrobotaxi.com">hello@hamptonsrobotaxi.com</a></li>
+                        <li><a href="mailto:investors@hamptonsrobotaxi.com">investors@hamptonsrobotaxi.com</a></li>
+                        <li><a href="mailto:partners@hamptonsrobotaxi.com">partners@hamptonsrobotaxi.com</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
                 <p>&copy; 2026 Hamptons Robotaxi, LLC</p>
                 <div class="footer-legal">
                     <a href="index.html">Home</a>
@@ -144,51 +147,6 @@
         </div>
     </footer>
 
-    <script>
-        // Generate stars
-        const starsContainer = document.getElementById('stars');
-        for (let i = 0; i < 100; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            star.style.left = Math.random() * 100 + '%';
-            star.style.top = Math.random() * 100 + '%';
-            star.style.setProperty('--duration', (3 + Math.random() * 4) + 's');
-            star.style.setProperty('--delay', Math.random() * 5 + 's');
-            star.style.setProperty('--opacity', 0.3 + Math.random() * 0.7);
-            starsContainer.appendChild(star);
-        }
-
-        // Nav scroll effect
-        const nav = document.getElementById('nav');
-        window.addEventListener('scroll', () => {
-            nav.classList.toggle('scrolled', window.scrollY > 50);
-        });
-
-        // Mobile nav toggle
-        document.getElementById('navToggle').addEventListener('click', () => {
-            document.getElementById('navLinks').classList.toggle('active');
-        });
-
-        // Pre-fill inquiry type from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const type = urlParams.get('type');
-        if (type) {
-            document.getElementById('inquiry-type').value = type;
-        }
-
-        // Reveal on scroll
-        const reveals = document.querySelectorAll('.reveal');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry, index) => {
-                if (entry.isIntersecting) {
-                    setTimeout(() => {
-                        entry.target.classList.add('visible');
-                    }, index * 150);
-                }
-            });
-        }, { threshold: 0.1 });
-
-        reveals.forEach(el => observer.observe(el));
-    </script>
+    <script src="site.js"></script>
 </body>
 </html>
