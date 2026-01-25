@@ -64,17 +64,16 @@
     };
 
     const autoSettings = {
-        speedMultiplier: 1.2,
-        alignDeadzone: 4,
-        planCooldown: 0.2,
-        corridorStep: 18,
-        corridorBuffer: 14
+        speedMultiplier: 1.4,
+        alignDeadzone: 3,
+        planCooldown: 0.1,
+        laneBuffer: 6
     };
 
     const autoState = {
         direction: 1,
-        corridorX: null,
-        crossing: false,
+        targetX: width / 2,
+        targetLane: null,
         planTimer: 0
     };
 
@@ -151,9 +150,9 @@
 
     const getLaneByIndex = (index) => (index >= 0 && index < laneCount ? lanes[index] : null);
 
-    const lookAhead = 1.0;
-    const autoSafetyHorizon = 0.8;
-    const autoSafetyPad = 4;
+    const lookAhead = 0.45;
+    const autoSafetyHorizon = 0.25;
+    const autoSafetyPad = 1;
 
     const getCarFutureX = (car, t) => {
         if (t <= 0) return car.x;
@@ -183,49 +182,6 @@
         });
     };
 
-    const findSafeGapX = (laneIndex) => {
-        const lane = getLaneByIndex(laneIndex);
-        if (!lane) return null;
-        const pad = player.w / 2 + 10;
-        const spans = cars
-            .filter((car) => car.lane === lane)
-            .map((car) => {
-                const futureX = getCarFutureX(car, lookAhead);
-                const minX = Math.min(car.x, futureX);
-                const maxX = Math.max(car.x + car.w, futureX + car.w);
-                return {
-                    start: minX - pad,
-                    end: maxX + pad
-                };
-            })
-            .filter((span) => span.end >= -80 && span.start <= width + 80)
-            .sort((a, b) => a.start - b.start);
-
-        let bestGap = 0;
-        let bestCenter = null;
-        let cursor = 0;
-        spans.forEach((span) => {
-            if (span.start > cursor) {
-                const gap = span.start - cursor;
-                if (gap > bestGap) {
-                    bestGap = gap;
-                    bestCenter = cursor + gap / 2;
-                }
-            }
-            cursor = Math.max(cursor, span.end);
-        });
-
-        if (width - cursor > bestGap) {
-            bestGap = width - cursor;
-            bestCenter = cursor + bestGap / 2;
-        }
-
-        if (bestGap < player.w + 12) return null;
-        return clamp(bestCenter, player.w / 2, width - player.w / 2);
-    };
-
-    const getLaneCrossTime = (speed) => laneHeight / speed;
-
     const getAutoSpeed = () => (state.mode === 'auto' ? player.speed * autoSettings.speedMultiplier : player.speed);
 
     const updateAutoTimers = (dt) => {
@@ -238,73 +194,76 @@
         return clamp(delta / 28, -1, 1);
     };
 
-    const getBoundaryY = (direction) => (direction > 0 ? topZone : height - bottomZone);
+    const findSafeGapX = (laneIndex, preferredX) => {
+        const lane = getLaneByIndex(laneIndex);
+        const margin = player.w / 2 + 6;
+        const target = clamp(preferredX, margin, width - margin);
+        if (!lane) return target;
 
-    const getTimeToBoundary = (direction, speed) => {
-        const boundaryY = getBoundaryY(direction);
-        const distance = direction > 0
-            ? Math.max(0, boundaryY - player.y)
-            : Math.max(0, player.y - boundaryY);
-        return distance / speed;
-    };
+        const pad = player.w / 2 + autoSettings.laneBuffer;
+        const spans = cars
+            .filter((car) => car.lane === lane)
+            .map((car) => {
+                const futureX = getCarFutureX(car, lookAhead);
+                const minX = Math.min(car.x, futureX);
+                const maxX = Math.max(car.x + car.w, futureX + car.w);
+                return {
+                    start: minX - pad,
+                    end: maxX + pad
+                };
+            })
+            .sort((a, b) => a.start - b.start);
 
-    const isCorridorSafe = (x, direction, speed) => {
-        const laneTime = getLaneCrossTime(speed);
-        const alignTime = Math.abs(x - player.x) / speed;
-        const startT = getTimeToBoundary(direction, speed) + alignTime;
-        for (let i = 0; i < laneCount; i += 1) {
-            const laneIndex = direction > 0 ? i : laneCount - 1 - i;
-            const tEntry = startT + i * laneTime;
-            const tExit = tEntry + laneTime;
-            if (!isLaneSafeAtXForWindow(laneIndex, x, tEntry, tExit, autoSettings.corridorBuffer)) {
-                return false;
+        if (spans.length === 0) return target;
+
+        const gaps = [];
+        let cursor = 0;
+        spans.forEach((span) => {
+            if (span.start > cursor) {
+                gaps.push({ start: cursor, end: span.start });
             }
+            cursor = Math.max(cursor, span.end);
+        });
+        if (cursor < width) {
+            gaps.push({ start: cursor, end: width });
         }
-        return true;
-    };
 
-    const findCorridorX = (direction, preferredX, speed) => {
-        const margin = player.w / 2 + 8;
         let bestX = null;
         let bestScore = Number.POSITIVE_INFINITY;
-        for (let x = margin; x <= width - margin; x += autoSettings.corridorStep) {
-            if (!isCorridorSafe(x, direction, speed)) continue;
-            const score = Math.abs(x - preferredX);
+        gaps.forEach((gap) => {
+            const size = gap.end - gap.start;
+            if (size < player.w + 6) return;
+            const center = clamp((gap.start + gap.end) / 2, margin, width - margin);
+            const score = Math.abs(center - target);
             if (score < bestScore) {
                 bestScore = score;
-                bestX = x;
+                bestX = center;
             }
-        }
+        });
+
         return bestX;
     };
 
-    const planCorridor = (direction, preferredX, speed) => {
-        if (autoState.corridorX !== null && isCorridorSafe(autoState.corridorX, direction, speed)) {
+    const updateAutoPlan = (laneIndex, preferredX) => {
+        if (laneIndex < 0 || laneIndex >= laneCount) {
+            autoState.targetLane = null;
+            autoState.targetX = clamp(preferredX, player.w / 2, width - player.w / 2);
             return;
         }
-        if (autoState.planTimer > 0) return;
-        autoState.corridorX = findCorridorX(direction, preferredX, speed);
-        autoState.planTimer = autoSettings.planCooldown;
-    };
 
-    const isLaneSafeAtXForWindow = (laneIndex, x, startT, endT, buffer = 12) => {
-        const lane = getLaneByIndex(laneIndex);
-        if (!lane) return true;
-        const xMin = x - player.w / 2 - buffer;
-        const xMax = x + player.w / 2 + buffer;
-        const samples = 4;
-        for (let i = 0; i <= samples; i += 1) {
-            const t = startT + ((endT - startT) * i) / samples;
-            for (let c = 0; c < cars.length; c += 1) {
-                const car = cars[c];
-                if (car.lane !== lane) continue;
-                const futureX = getCarFutureX(car, t);
-                if (xMax > futureX && xMin < futureX + car.w) {
-                    return false;
-                }
-            }
+        if (autoState.targetLane !== laneIndex) {
+            autoState.targetLane = laneIndex;
+            autoState.planTimer = 0;
         }
-        return true;
+
+        const targetSafe = isLaneSafeAtX(laneIndex, autoState.targetX, autoSettings.laneBuffer);
+        if (autoState.planTimer > 0 && targetSafe) return;
+
+        const candidate = findSafeGapX(laneIndex, preferredX);
+        if (candidate !== null) {
+            autoState.targetX = candidate;
+        }
+        autoState.planTimer = autoSettings.planCooldown;
     };
 
     const resetPlayer = () => {
@@ -329,8 +288,8 @@
         if (ui.modeAuto) {
             ui.modeAuto.classList.toggle('active', mode === 'auto');
         }
-        autoState.corridorX = null;
-        autoState.crossing = false;
+        autoState.targetX = player.x;
+        autoState.targetLane = null;
         autoState.planTimer = 0;
         syncStatus();
         if (announce) {
@@ -351,10 +310,10 @@
         state.totalContrib = 0;
         state.message = '';
         state.messageTimer = 0;
-        autoState.corridorX = null;
-        autoState.crossing = false;
-        autoState.planTimer = 0;
         resetPlayer();
+        autoState.targetX = player.x;
+        autoState.targetLane = null;
+        autoState.planTimer = 0;
         spawnPassenger();
         updateUI();
         setStatus('Ready to launch');
@@ -660,51 +619,40 @@
 
         if (autoState.direction !== verticalDir) {
             autoState.direction = verticalDir;
-            autoState.corridorX = null;
-            autoState.crossing = false;
+            autoState.targetLane = null;
+            autoState.targetX = player.x;
             autoState.planTimer = 0;
         }
 
         // === SAFE ZONE BEHAVIOR ===
         if (inSafeZone) {
-            autoState.crossing = false;
-
             if (inTopZone && !player.hasPassenger) {
-                autoState.corridorX = null;
                 const dx = getAlignedDx(passenger.x);
                 const dy = Math.abs(passenger.y - player.y) > 3 ? Math.sign(passenger.y - player.y) : 0;
                 return { dx, dy };
             }
 
             if (inBottomZone && player.hasPassenger) {
-                autoState.corridorX = null;
                 return { dx: 0, dy: 1 };
             }
 
-            planCorridor(verticalDir, preferredX, speed);
-            if (autoState.corridorX === null) {
-                const dx = getAlignedDx(preferredX);
-                return { dx, dy: 0 };
+            const nextLane = goingDown ? 0 : laneCount - 1;
+            updateAutoPlan(nextLane, preferredX);
+            const dx = getAlignedDx(autoState.targetX);
+            if (dx === 0 && isLaneSafeAtX(nextLane, player.x, autoSettings.laneBuffer)) {
+                return { dx: 0, dy: verticalDir };
             }
-
-            const dx = getAlignedDx(autoState.corridorX);
-            if (dx === 0) {
-                if (isCorridorSafe(autoState.corridorX, verticalDir, speed)) {
-                    return { dx: 0, dy: verticalDir };
+            if (dx !== 0) {
+                const nextX = player.x + dx * step;
+                const nextY = player.y + verticalDir * step;
+                if (isLaneSafeAtX(nextLane, nextX, autoSettings.laneBuffer) && isPositionSafe(nextX, nextY, 0.18)) {
+                    return { dx, dy: verticalDir };
                 }
-                return { dx: 0, dy: 0 };
             }
             return { dx, dy: 0 };
         }
 
         // === TRAFFIC ZONE BEHAVIOR ===
-        if (!autoState.crossing) {
-            autoState.crossing = true;
-            if (autoState.corridorX === null) {
-                autoState.corridorX = clamp(player.x, player.w / 2, width - player.w / 2);
-            }
-        }
-
         const nextLane = currentLane + verticalDir;
         const forwardY = player.y + verticalDir * step;
 
@@ -712,11 +660,31 @@
             return { dx: 0, dy: verticalDir };
         }
 
-        if (!isLaneSafeAtX(nextLane, autoState.corridorX, 14) || !isPositionSafe(autoState.corridorX, forwardY, 0.35)) {
-            return { dx: 0, dy: 0 };
+        if (isLaneSafeAtX(nextLane, player.x, autoSettings.laneBuffer) && isPositionSafe(player.x, forwardY, 0.2)) {
+            return { dx: 0, dy: verticalDir };
         }
 
-        return { dx: 0, dy: verticalDir };
+        updateAutoPlan(nextLane, preferredX);
+        const dx = getAlignedDx(autoState.targetX);
+        if (dx !== 0) {
+            const nextX = player.x + dx * step;
+            if (isPositionSafe(nextX, player.y, 0.2)) {
+                const diagSafe = isLaneSafeAtX(nextLane, nextX, autoSettings.laneBuffer)
+                    && isPositionSafe(nextX, forwardY, 0.2);
+                return diagSafe ? { dx, dy: verticalDir } : { dx, dy: 0 };
+            }
+        }
+
+        if (isPositionSafe(player.x, forwardY, 0.15)) {
+            return { dx: 0, dy: verticalDir };
+        }
+
+        const fallback = findSafeGapX(currentLane, player.x);
+        if (fallback !== null && Math.abs(fallback - player.x) > autoSettings.alignDeadzone) {
+            return { dx: getAlignedDx(fallback), dy: 0 };
+        }
+
+        return { dx: 0, dy: 0 };
     };
 
     const applyAutoSafety = (input, dt) => {
@@ -730,9 +698,9 @@
         const nextX = clamp(player.x + stepX, player.w / 2, width - player.w / 2);
         const nextY = clamp(player.y + stepY, player.h / 2, height - player.h / 2);
 
-        if (isPositionSafe(nextX, nextY, 0.3)) return { dx, dy };
-        if (dx !== 0 && isPositionSafe(nextX, player.y, 0.3)) return { dx, dy: 0 };
-        if (dy !== 0 && isPositionSafe(player.x, nextY, 0.3)) return { dx: 0, dy };
+        if (isPositionSafe(nextX, nextY, 0.18)) return { dx, dy };
+        if (dx !== 0 && isPositionSafe(nextX, player.y, 0.18)) return { dx, dy: 0 };
+        if (dy !== 0 && isPositionSafe(player.x, nextY, 0.18)) return { dx: 0, dy };
 
         return { dx: 0, dy: 0 };
     };
@@ -761,7 +729,6 @@
     };
 
     const handleCollision = () => {
-        if (state.mode === 'auto') return;
         const rect = playerRect();
         const hit = cars.some((car) => rectsIntersect(rect, car));
         if (hit) {
@@ -773,6 +740,9 @@
             if (hadPassenger) {
                 spawnPassenger();
             }
+            autoState.targetLane = null;
+            autoState.targetX = player.x;
+            autoState.planTimer = 0;
             state.message = 'Crash! -3s';
             state.messageTimer = 1.2;
         }
