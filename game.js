@@ -139,7 +139,7 @@
                     h: 24,
                     x: direction === 1 ? -j * gap : width + j * gap,
                     y: y + laneHeight / 2 - 12,
-                    tint: j % 2 === 0 ? '#7ad3c4' : '#d8b46b'
+                    tint: j % 2 === 0 ? '#5eb8a8' : '#c9a962'
                 });
             }
         }
@@ -413,9 +413,9 @@
 
     const drawBackground = () => {
         const gradient = ctx.createLinearGradient(0, 0, 0, height);
-        gradient.addColorStop(0, '#0a1220');
-        gradient.addColorStop(0.55, '#0a0f1b');
-        gradient.addColorStop(1, '#070b14');
+        gradient.addColorStop(0, '#0a0a0f');
+        gradient.addColorStop(0.55, '#080810');
+        gradient.addColorStop(1, '#050508');
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, width, height);
 
@@ -440,14 +440,14 @@
 
     const drawZones = () => {
         const topGradient = ctx.createLinearGradient(0, 0, 0, topZone);
-        topGradient.addColorStop(0, 'rgba(122, 211, 196, 0.24)');
-        topGradient.addColorStop(1, 'rgba(122, 211, 196, 0.08)');
+        topGradient.addColorStop(0, 'rgba(94, 184, 168, 0.22)');
+        topGradient.addColorStop(1, 'rgba(94, 184, 168, 0.06)');
         ctx.fillStyle = topGradient;
         ctx.fillRect(0, 0, width, topZone);
 
         const bottomGradient = ctx.createLinearGradient(0, height - bottomZone, 0, height);
-        bottomGradient.addColorStop(0, 'rgba(216, 180, 107, 0.08)');
-        bottomGradient.addColorStop(1, 'rgba(216, 180, 107, 0.24)');
+        bottomGradient.addColorStop(0, 'rgba(201, 169, 98, 0.06)');
+        bottomGradient.addColorStop(1, 'rgba(201, 169, 98, 0.22)');
         ctx.fillStyle = bottomGradient;
         ctx.fillRect(0, height - bottomZone, width, bottomZone);
 
@@ -460,10 +460,10 @@
         ctx.lineTo(width, height - bottomZone);
         ctx.stroke();
 
-        ctx.fillStyle = 'rgba(7, 11, 20, 0.6)';
+        ctx.fillStyle = 'rgba(5, 5, 8, 0.6)';
         ctx.fillRect(12, 10, 112, 20);
         ctx.fillRect(12, height - bottomZone + 10, 112, 20);
-        ctx.fillStyle = 'rgba(248, 245, 240, 0.8)';
+        ctx.fillStyle = 'rgba(250, 250, 250, 0.8)';
         ctx.font = '11px "DM Sans"';
         ctx.fillText('Pickup Zone', 20, 24);
         ctx.fillText('Dropoff Zone', 20, height - bottomZone + 24);
@@ -472,7 +472,7 @@
     const drawLanes = () => {
         for (let i = 0; i < laneCount; i += 1) {
             const y = topZone + i * laneHeight;
-            ctx.fillStyle = i % 2 === 0 ? 'rgba(9, 15, 26, 0.65)' : 'rgba(12, 18, 30, 0.65)';
+            ctx.fillStyle = i % 2 === 0 ? 'rgba(10, 10, 15, 0.6)' : 'rgba(16, 16, 20, 0.6)';
             ctx.fillRect(0, y, width, laneHeight);
         }
 
@@ -516,10 +516,10 @@
             ctx.fillStyle = 'rgba(255, 255, 255, 0.14)';
             drawRoundedRect(2, 2, car.w - 4, car.h / 2, 5);
 
-            ctx.fillStyle = 'rgba(7, 11, 20, 0.7)';
+            ctx.fillStyle = 'rgba(5, 5, 8, 0.7)';
             ctx.fillRect(8, 6, car.w - 16, car.h - 12);
 
-            ctx.fillStyle = '#05070d';
+            ctx.fillStyle = '#050508';
             ctx.fillRect(6, -2, 8, 4);
             ctx.fillRect(car.w - 14, -2, 8, 4);
             ctx.fillRect(6, car.h - 2, 8, 4);
@@ -527,7 +527,7 @@
 
             const headX = car.lane.direction === 1 ? car.w - 3 : 0;
             const tailX = car.lane.direction === 1 ? 0 : car.w - 3;
-            ctx.fillStyle = 'rgba(248, 245, 240, 0.8)';
+            ctx.fillStyle = 'rgba(250, 250, 250, 0.8)';
             ctx.fillRect(headX, 4, 3, 6);
             ctx.fillStyle = 'rgba(248, 104, 104, 0.8)';
             ctx.fillRect(tailX, car.h - 10, 3, 6);
@@ -540,7 +540,7 @@
         const pulse = (Math.sin(performance.now() / 180) + 1) / 2;
         ctx.save();
         ctx.globalAlpha = 0.7;
-        ctx.strokeStyle = 'rgba(216, 180, 107, 0.7)';
+        ctx.strokeStyle = 'rgba(201, 169, 98, 0.6)';
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.arc(passenger.x, passenger.y, passenger.r + 6 + pulse * 4, 0, Math.PI * 2);
@@ -548,18 +548,18 @@
         ctx.restore();
 
         ctx.beginPath();
-        ctx.fillStyle = '#f0d8a6';
+        ctx.fillStyle = '#e4d4a8';
         ctx.arc(passenger.x, passenger.y, passenger.r + pulse * 1.5, 0, Math.PI * 2);
         ctx.fill();
 
         ctx.beginPath();
-        ctx.fillStyle = '#0b1220';
+        ctx.fillStyle = '#0a0a0f';
         ctx.arc(passenger.x, passenger.y + 6, passenger.r - 4, 0, Math.PI * 2);
         ctx.fill();
     };
 
     const drawPlayer = () => {
-        const color = player.hasPassenger ? '#d8b46b' : '#7ad3c4';
+        const color = player.hasPassenger ? '#c9a962' : '#5eb8a8';
         ctx.save();
         ctx.translate(player.x - player.w / 2, player.y - player.h / 2);
         ctx.fillStyle = color;
@@ -568,19 +568,19 @@
         ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
         drawRoundedRect(2, 2, player.w - 4, player.h / 2, 5);
 
-        ctx.fillStyle = 'rgba(7, 11, 20, 0.8)';
+        ctx.fillStyle = 'rgba(5, 5, 8, 0.8)';
         ctx.fillRect(6, 7, player.w - 12, player.h - 14);
 
         const roofW = 14;
         const roofH = 5;
         const roofX = (player.w - roofW) / 2;
         const roofY = -6;
-        ctx.fillStyle = state.mode === 'auto' ? '#f8f5f0' : '#d8b46b';
+        ctx.fillStyle = state.mode === 'auto' ? '#fafafa' : '#c9a962';
         ctx.fillRect(roofX, roofY, roofW, roofH);
-        ctx.fillStyle = 'rgba(7, 11, 20, 0.8)';
+        ctx.fillStyle = 'rgba(5, 5, 8, 0.8)';
         ctx.fillRect(roofX + 2, roofY + 1, roofW - 4, roofH - 2);
 
-        ctx.strokeStyle = 'rgba(248, 245, 240, 0.45)';
+        ctx.strokeStyle = 'rgba(250, 250, 250, 0.45)';
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(4, player.h / 2);
@@ -590,7 +590,7 @@
 
         if (state.mode === 'auto') {
             ctx.save();
-            ctx.fillStyle = 'rgba(248, 245, 240, 0.75)';
+            ctx.fillStyle = 'rgba(250, 250, 250, 0.75)';
             ctx.font = '9px "Space Grotesk"';
             ctx.textAlign = 'center';
             ctx.fillText('AUTO', player.x, player.y - player.h / 2 - 8);
@@ -600,11 +600,11 @@
 
     const drawMessage = () => {
         if (!state.message) return;
-        ctx.fillStyle = 'rgba(7, 11, 20, 0.7)';
+        ctx.fillStyle = 'rgba(5, 5, 8, 0.7)';
         ctx.fillRect(width / 2 - 120, height / 2 - 20, 240, 40);
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
         ctx.strokeRect(width / 2 - 120, height / 2 - 20, 240, 40);
-        ctx.fillStyle = '#f8f5f0';
+        ctx.fillStyle = '#fafafa';
         ctx.font = '14px "DM Sans"';
         ctx.textAlign = 'center';
         ctx.fillText(state.message, width / 2, height / 2 + 5);
