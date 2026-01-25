@@ -63,6 +63,13 @@
         auto: 'Self-Driving'
     };
 
+    const autoState = {
+        corridorX: null,
+        crossing: false,
+        direction: 1,
+        lastScan: 0
+    };
+
     const player = {
         x: width / 2,
         y: height - bottomZone / 2,
@@ -138,7 +145,7 @@
 
     const lookAhead = 0.7;
     const autoSafetyHorizon = 0.7;
-    const autoSafetyPad = 3;
+    const autoSafetyPad = 6;
 
     const getCarFutureX = (car, t) => {
         if (t <= 0) return car.x;
@@ -226,6 +233,70 @@
         return nearest;
     };
 
+    const getLaneCrossTime = () => laneHeight / player.speed;
+
+    const isLaneSafeAtXForWindow = (laneIndex, x, startT, endT, buffer = 12) => {
+        const lane = getLaneByIndex(laneIndex);
+        if (!lane) return true;
+        const xMin = x - player.w / 2 - buffer;
+        const xMax = x + player.w / 2 + buffer;
+        const samples = 4;
+        for (let i = 0; i <= samples; i += 1) {
+            const t = startT + ((endT - startT) * i) / samples;
+            for (let c = 0; c < cars.length; c += 1) {
+                const car = cars[c];
+                if (car.lane !== lane) continue;
+                const futureX = getCarFutureX(car, t);
+                if (xMax > futureX && xMin < futureX + car.w) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    };
+
+    const isCorridorSafe = (x, direction) => {
+        const crossTime = getLaneCrossTime();
+        for (let i = 0; i < laneCount; i += 1) {
+            const order = direction > 0 ? i : laneCount - 1 - i;
+            const startT = order * crossTime;
+            const endT = startT + crossTime;
+            if (!isLaneSafeAtXForWindow(i, x, startT, endT, 12)) {
+                return false;
+            }
+        }
+        return true;
+    };
+
+    const findCorridorX = (direction, preferredX) => {
+        const step = 24;
+        const margin = player.w / 2 + 10;
+        let bestX = null;
+        let bestScore = Number.POSITIVE_INFINITY;
+        for (let x = margin; x <= width - margin; x += step) {
+            if (!isCorridorSafe(x, direction)) continue;
+            const score = Math.abs(x - preferredX);
+            if (score < bestScore) {
+                bestScore = score;
+                bestX = x;
+            }
+        }
+        return bestX;
+    };
+
+    const updateAutoPlan = (direction, preferredX) => {
+        const now = performance.now();
+        if (!autoState.crossing && autoState.corridorX !== null) {
+            if (!isCorridorSafe(autoState.corridorX, direction)) {
+                autoState.corridorX = null;
+            }
+        }
+        if (autoState.corridorX === null && now - autoState.lastScan > 180) {
+            autoState.lastScan = now;
+            autoState.corridorX = findCorridorX(direction, preferredX);
+        }
+    };
+
     const resetPlayer = () => {
         player.x = width / 2;
         player.y = height - bottomZone / 2;
@@ -248,6 +319,9 @@
         if (ui.modeAuto) {
             ui.modeAuto.classList.toggle('active', mode === 'auto');
         }
+        autoState.corridorX = null;
+        autoState.crossing = false;
+        autoState.lastScan = 0;
         syncStatus();
         if (announce) {
             state.message = mode === 'auto' ? 'Autopilot engaged' : 'Human control';
@@ -267,6 +341,9 @@
         state.totalContrib = 0;
         state.message = '';
         state.messageTimer = 0;
+        autoState.corridorX = null;
+        autoState.crossing = false;
+        autoState.lastScan = 0;
         resetPlayer();
         spawnPassenger();
         updateUI();
@@ -558,66 +635,68 @@
     };
 
     const getAutoInput = () => {
-        const target = player.hasPassenger
-            ? { x: player.x, y: height - bottomZone / 2 }
-            : { x: passenger.x, y: passenger.y };
-        const deltaX = target.x - player.x;
-        const deltaY = target.y - player.y;
-        const verticalDir = Math.abs(deltaY) > 6 ? Math.sign(deltaY) : 0;
         const currentBand = getLaneIndex(player.y);
-        const inSafeZone = currentBand === -1 || currentBand === laneCount;
-        let laneToEnter = currentBand;
+        const inTopZone = currentBand === -1;
+        const inBottomZone = currentBand === laneCount;
 
-        if (verticalDir < 0) {
-            laneToEnter = currentBand === -1 ? -1 : currentBand - 1;
-        } else if (verticalDir > 0) {
-            laneToEnter = currentBand === laneCount ? laneCount : currentBand + 1;
+        if (!player.hasPassenger && inTopZone) {
+            autoState.corridorX = null;
+            autoState.crossing = false;
+            const dx = Math.abs(passenger.x - player.x) > 3 ? Math.sign(passenger.x - player.x) : 0;
+            return { dx, dy: 0 };
         }
 
-        const currentLaneSafe = inSafeZone ? true : isLaneSafeAtX(currentBand, player.x, 10);
-        const targetLaneSafe = laneToEnter === -1 || laneToEnter === laneCount
-            ? true
-            : isLaneSafeAtX(laneToEnter, player.x, 10);
-        const verticalAllowed = verticalDir !== 0 && currentLaneSafe && targetLaneSafe;
+        if (player.hasPassenger && inBottomZone) {
+            autoState.corridorX = null;
+            autoState.crossing = false;
+            return { dx: 0, dy: 0 };
+        }
 
-        let dx = 0;
+        const direction = player.hasPassenger ? 1 : -1;
+        if (autoState.direction !== direction) {
+            autoState.direction = direction;
+            autoState.corridorX = null;
+            autoState.crossing = false;
+            autoState.lastScan = 0;
+        }
+
+        if (autoState.crossing) {
+            if ((direction > 0 && inBottomZone) || (direction < 0 && inTopZone)) {
+                autoState.crossing = false;
+                autoState.corridorX = null;
+            }
+        } else if (currentBand >= 0 && currentBand < laneCount) {
+            if (isCorridorSafe(player.x, direction)) {
+                autoState.corridorX = player.x;
+                autoState.crossing = true;
+            }
+        }
+
+        const preferredX = player.hasPassenger ? player.x : passenger.x;
+        if (!autoState.crossing) {
+            updateAutoPlan(direction, preferredX);
+        }
+
+        const corridorX = autoState.corridorX;
+        if (corridorX === null) {
+            return { dx: 0, dy: 0 };
+        }
+
+        const aligned = Math.abs(corridorX - player.x) < 4;
+        const dx = aligned ? 0 : Math.sign(corridorX - player.x);
         let dy = 0;
 
-        if (!inSafeZone && !currentLaneSafe) {
-            const gapX = findSafeGapX(currentBand);
-            if (gapX !== null) {
-                dx = Math.sign(gapX - player.x);
-            } else {
-                const nearest = findNearestCar(currentBand);
-                if (nearest) {
-                    dx = Math.sign(player.x - (nearest.x + nearest.w / 2));
+        if (aligned) {
+            if (!autoState.crossing) {
+                if (isCorridorSafe(corridorX, direction)) {
+                    autoState.crossing = true;
                 }
             }
-            return { dx, dy };
-        }
-
-        if (inSafeZone) {
-            let desiredX = target.x;
-            if (laneToEnter >= 0 && laneToEnter < laneCount && !verticalAllowed) {
-                const gapX = findSafeGapX(laneToEnter);
-                if (gapX !== null) desiredX = gapX;
+            if (autoState.crossing) {
+                dy = direction;
             }
-            if (Math.abs(desiredX - player.x) > 4) {
-                dx = Math.sign(desiredX - player.x);
-            }
-        } else {
-            if (!verticalAllowed && laneToEnter >= 0 && laneToEnter < laneCount) {
-                const gapX = findSafeGapX(laneToEnter);
-                if (gapX !== null && Math.abs(gapX - player.x) > 4) {
-                    dx = Math.sign(gapX - player.x);
-                }
-            } else if (Math.abs(deltaX) > 8) {
-                dx = Math.sign(deltaX);
-            }
-        }
-
-        if (verticalAllowed) {
-            dy = verticalDir;
+        } else if (autoState.crossing) {
+            dy = direction;
         }
 
         return { dx, dy };
