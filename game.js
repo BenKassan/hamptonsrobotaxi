@@ -326,11 +326,6 @@
             return false;
         });
     };
-        x: player.x - player.w / 2,
-        y: player.y - player.h / 2,
-        w: player.w,
-        h: player.h
-    });
 
     const updateUI = () => {
         if (!ui.timeLeft) return;
