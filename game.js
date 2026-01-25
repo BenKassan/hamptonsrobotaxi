@@ -36,7 +36,6 @@
         runRate: document.getElementById('runRate'),
         status: document.getElementById('gameStatus'),
         start: document.getElementById('startGame'),
-        quick: document.getElementById('quickGame'),
         reset: document.getElementById('resetGame'),
         modeHuman: document.getElementById('modeHuman'),
         modeAuto: document.getElementById('modeAuto')
@@ -45,8 +44,8 @@
     const state = {
         running: false,
         mode: 'human',
-        timeLeft: 300,
-        sessionDuration: 300,
+        timeLeft: 60,
+        sessionDuration: 60,
         trips: 0,
         streak: 0,
         totalFare: 0,
@@ -238,7 +237,7 @@
         }
     };
 
-    const resetGame = (duration = 300) => {
+    const resetGame = (duration = 60) => {
         state.running = false;
         state.sessionDuration = duration;
         state.timeLeft = duration;
@@ -593,6 +592,7 @@
     };
 
     const handleCollision = () => {
+        if (state.mode === 'auto') return;
         const rect = playerRect();
         const hit = cars.some((car) => rectsIntersect(rect, car));
         if (hit) {
@@ -699,11 +699,7 @@
     });
 
     if (ui.start) {
-        ui.start.addEventListener('click', () => startGame(300));
-    }
-
-    if (ui.quick) {
-        ui.quick.addEventListener('click', () => startGame(60));
+        ui.start.addEventListener('click', () => startGame(60));
     }
 
     if (ui.reset) {
@@ -722,6 +718,6 @@
     window.addEventListener('resize', resizeCanvas);
     createLanes();
     setMode(state.mode, false);
-    resetGame(300);
+    resetGame(60);
     requestAnimationFrame(loop);
 })();
