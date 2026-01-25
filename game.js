@@ -136,7 +136,23 @@
 
     const getLaneByIndex = (index) => (index >= 0 && index < laneCount ? lanes[index] : null);
 
-    const lookAhead = 0.45;
+    const lookAhead = 0.7;
+    const autoSafetyHorizon = 0.7;
+    const autoSafetyPad = 3;
+
+    const getCarFutureX = (car, t) => {
+        if (t <= 0) return car.x;
+        const span = width + car.w + 120;
+        let future = car.x + car.lane.speed * car.lane.direction * t;
+        if (car.lane.direction === 1) {
+            while (future > width + 60) future -= span;
+            while (future < -car.w - 60) future += span;
+        } else {
+            while (future < -car.w - 60) future += span;
+            while (future > width + 60) future -= span;
+        }
+        return future;
+    };
 
     const isLaneSafeAtX = (laneIndex, x, buffer = 12) => {
         const lane = getLaneByIndex(laneIndex);
@@ -145,7 +161,7 @@
         const xMax = x + player.w / 2 + buffer;
         return !cars.some((car) => {
             if (car.lane !== lane) return false;
-            const futureX = car.x + lane.speed * lane.direction * lookAhead;
+            const futureX = getCarFutureX(car, lookAhead);
             const minX = Math.min(car.x, futureX);
             const maxX = Math.max(car.x + car.w, futureX + car.w);
             return xMax > minX && xMin < maxX;
@@ -159,10 +175,12 @@
         const spans = cars
             .filter((car) => car.lane === lane)
             .map((car) => {
-                const futureX = car.x + lane.speed * lane.direction * lookAhead;
+                const futureX = getCarFutureX(car, lookAhead);
+                const minX = Math.min(car.x, futureX);
+                const maxX = Math.max(car.x + car.w, futureX + car.w);
                 return {
-                    start: futureX - pad,
-                    end: futureX + car.w + pad
+                    start: minX - pad,
+                    end: maxX + pad
                 };
             })
             .filter((span) => span.end >= -80 && span.start <= width + 80)
@@ -270,7 +288,44 @@
         );
     };
 
-    const playerRect = () => ({
+    const playerRectAt = (x, y) => ({
+        x: x - player.w / 2,
+        y: y - player.h / 2,
+        w: player.w,
+        h: player.h
+    });
+
+    const playerSafetyRectAt = (x, y) => ({
+        x: x - player.w / 2 - autoSafetyPad,
+        y: y - player.h / 2 - autoSafetyPad,
+        w: player.w + autoSafetyPad * 2,
+        h: player.h + autoSafetyPad * 2
+    });
+
+    const playerRect = () => playerRectAt(player.x, player.y);
+
+    const isPositionSafe = (x, y, horizon = autoSafetyHorizon) => {
+        const rect = playerSafetyRectAt(x, y);
+        return !cars.some((car) => {
+            const carTop = car.y;
+            const carBottom = car.y + car.h;
+            if (rect.y + rect.h < carTop || rect.y > carBottom) return false;
+            const sampleCount = horizon > 0 ? 4 : 0;
+            for (let i = 0; i <= sampleCount; i += 1) {
+                const t = sampleCount === 0 ? 0 : (horizon * i) / sampleCount;
+                const futureX = getCarFutureX(car, t);
+                if (rectsIntersect(rect, {
+                    x: futureX,
+                    y: car.y,
+                    w: car.w,
+                    h: car.h
+                })) {
+                    return true;
+                }
+            }
+            return false;
+        });
+    };
         x: player.x - player.w / 2,
         y: player.y - player.h / 2,
         w: player.w,
@@ -524,17 +579,27 @@
             laneToEnter = currentBand === laneCount ? laneCount : currentBand + 1;
         }
 
-        let verticalAllowed = false;
-        if (verticalDir === 0) {
-            verticalAllowed = false;
-        } else if (laneToEnter === -1 || laneToEnter === laneCount) {
-            verticalAllowed = true;
-        } else {
-            verticalAllowed = isLaneSafeAtX(laneToEnter, player.x, 14);
-        }
+        const currentLaneSafe = inSafeZone ? true : isLaneSafeAtX(currentBand, player.x, 10);
+        const targetLaneSafe = laneToEnter === -1 || laneToEnter === laneCount
+            ? true
+            : isLaneSafeAtX(laneToEnter, player.x, 10);
+        const verticalAllowed = verticalDir !== 0 && currentLaneSafe && targetLaneSafe;
 
         let dx = 0;
         let dy = 0;
+
+        if (!inSafeZone && !currentLaneSafe) {
+            const gapX = findSafeGapX(currentBand);
+            if (gapX !== null) {
+                dx = Math.sign(gapX - player.x);
+            } else {
+                const nearest = findNearestCar(currentBand);
+                if (nearest) {
+                    dx = Math.sign(player.x - (nearest.x + nearest.w / 2));
+                }
+            }
+            return { dx, dy };
+        }
 
         if (inSafeZone) {
             let desiredX = target.x;
@@ -546,34 +611,50 @@
                 dx = Math.sign(desiredX - player.x);
             }
         } else {
-            const safeHere = isLaneSafeAtX(currentBand, player.x, 10);
-            if (!safeHere) {
-                const gapX = findSafeGapX(currentBand);
-                if (gapX !== null) {
+            if (!verticalAllowed && laneToEnter >= 0 && laneToEnter < laneCount) {
+                const gapX = findSafeGapX(laneToEnter);
+                if (gapX !== null && Math.abs(gapX - player.x) > 4) {
                     dx = Math.sign(gapX - player.x);
-                } else {
-                    const nearest = findNearestCar(currentBand);
-                    if (nearest) {
-                        dx = Math.sign(player.x - (nearest.x + nearest.w / 2));
-                    }
                 }
+            } else if (Math.abs(deltaX) > 8) {
+                dx = Math.sign(deltaX);
             }
         }
 
         if (verticalAllowed) {
             dy = verticalDir;
-        } else if (!inSafeZone && dx === 0 && Math.abs(deltaX) > 8) {
-            dx = Math.sign(deltaX);
         }
 
         return { dx, dy };
+    };
+
+    const applyAutoSafety = (input, dt) => {
+        const { dx, dy } = input;
+        if (dx === 0 && dy === 0) return input;
+        const length = Math.hypot(dx, dy) || 1;
+        const stepX = (dx / length) * player.speed * dt;
+        const stepY = (dy / length) * player.speed * dt;
+        const nextX = clamp(player.x + stepX, player.w / 2, width - player.w / 2);
+        const nextY = clamp(player.y + stepY, player.h / 2, height - player.h / 2);
+
+        if (isPositionSafe(nextX, nextY)) return { dx, dy };
+
+        if (dx !== 0 && isPositionSafe(nextX, player.y)) {
+            return { dx, dy: 0 };
+        }
+
+        if (dy !== 0 && isPositionSafe(player.x, nextY)) {
+            return { dx: 0, dy };
+        }
+
+        return { dx: 0, dy: 0 };
     };
 
     const updatePlayer = (dt) => {
         let dx = 0;
         let dy = 0;
         if (state.mode === 'auto') {
-            const autoInput = getAutoInput();
+            const autoInput = applyAutoSafety(getAutoInput(), dt);
             dx = autoInput.dx;
             dy = autoInput.dy;
         } else {
