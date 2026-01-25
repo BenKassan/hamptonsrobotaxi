@@ -74,7 +74,10 @@
         direction: 1,
         targetX: width / 2,
         targetLane: null,
-        planTimer: 0
+        planTimer: 0,
+        lastX: width / 2,
+        lastY: height - bottomZone / 2,
+        stuckTime: 0
     };
 
     const player = {
@@ -188,6 +191,17 @@
         autoState.planTimer = Math.max(0, autoState.planTimer - dt);
     };
 
+    const updateAutoStuck = (dt) => {
+        const moved = Math.hypot(player.x - autoState.lastX, player.y - autoState.lastY);
+        autoState.lastX = player.x;
+        autoState.lastY = player.y;
+        if (moved < 0.5) {
+            autoState.stuckTime += dt;
+        } else {
+            autoState.stuckTime = 0;
+        }
+    };
+
     const getAlignedDx = (targetX) => {
         const delta = targetX - player.x;
         if (Math.abs(delta) <= autoSettings.alignDeadzone) return 0;
@@ -291,6 +305,9 @@
         autoState.targetX = player.x;
         autoState.targetLane = null;
         autoState.planTimer = 0;
+        autoState.lastX = player.x;
+        autoState.lastY = player.y;
+        autoState.stuckTime = 0;
         syncStatus();
         if (announce) {
             state.message = mode === 'auto' ? 'Autopilot engaged' : 'Human control';
@@ -314,6 +331,9 @@
         autoState.targetX = player.x;
         autoState.targetLane = null;
         autoState.planTimer = 0;
+        autoState.lastX = player.x;
+        autoState.lastY = player.y;
+        autoState.stuckTime = 0;
         spawnPassenger();
         updateUI();
         setStatus('Ready to launch');
@@ -605,6 +625,7 @@
 
     const getAutoInput = (dt) => {
         updateAutoTimers(dt);
+        updateAutoStuck(dt);
 
         const speed = getAutoSpeed();
         const step = speed * dt;
@@ -622,6 +643,7 @@
             autoState.targetLane = null;
             autoState.targetX = player.x;
             autoState.planTimer = 0;
+            autoState.stuckTime = 0;
         }
 
         // === SAFE ZONE BEHAVIOR ===
@@ -660,6 +682,14 @@
             return { dx: 0, dy: verticalDir };
         }
 
+        const unsafeHere = !isPositionSafe(player.x, player.y, 0.25);
+        if (unsafeHere) {
+            const urgentGap = findSafeGapX(currentLane, player.x);
+            if (urgentGap !== null && Math.abs(urgentGap - player.x) > autoSettings.alignDeadzone) {
+                return { dx: getAlignedDx(urgentGap), dy: 0 };
+            }
+        }
+
         if (isLaneSafeAtX(nextLane, player.x, autoSettings.laneBuffer) && isPositionSafe(player.x, forwardY, 0.2)) {
             return { dx: 0, dy: verticalDir };
         }
@@ -682,6 +712,13 @@
         const fallback = findSafeGapX(currentLane, player.x);
         if (fallback !== null && Math.abs(fallback - player.x) > autoSettings.alignDeadzone) {
             return { dx: getAlignedDx(fallback), dy: 0 };
+        }
+
+        if (autoState.stuckTime > 0.4) {
+            const retreatY = player.y - verticalDir * step;
+            if (isPositionSafe(player.x, retreatY, 0.2)) {
+                return { dx: 0, dy: -verticalDir };
+            }
         }
 
         return { dx: 0, dy: 0 };
@@ -743,6 +780,9 @@
             autoState.targetLane = null;
             autoState.targetX = player.x;
             autoState.planTimer = 0;
+            autoState.lastX = player.x;
+            autoState.lastY = player.y;
+            autoState.stuckTime = 0;
             state.message = 'Crash! -3s';
             state.messageTimer = 1.2;
         }
