@@ -51,6 +51,7 @@
                         <li><span>WASD or arrows</span> to move the robotaxi.</li>
                         <li><span>Pickup zone</span> is at the top of the map.</li>
                         <li><span>Dropoff zone</span> is at the bottom.</li>
+                        <li><span>Switch modes</span> to watch self-driving play itself.</li>
                         <li><span>Each trip</span> adds revenue and contribution.</li>
                     </ul>
                     <p class="panel-foot">Default run is 5 minutes. Quick mode available for a fast demo.</p>
@@ -67,6 +68,14 @@
                             <div class="game-score-row"><span>Time left</span><strong class="game-timer" id="timeLeft">05:00</strong></div>
                             <div class="game-score-row"><span>Trips completed</span><strong id="tripCount">0</strong></div>
                             <div class="game-score-row"><span>Streak</span><strong id="tripStreak">0</strong></div>
+                        </div>
+                        <div class="game-mode" style="margin-top: 16px;">
+                            <span class="game-label">Mode</span>
+                            <div class="game-actions" style="margin-top: 8px;">
+                                <button class="btn btn-ghost btn-toggle active" id="modeHuman">Human Mode</button>
+                                <button class="btn btn-ghost btn-toggle" id="modeAuto">Self-Driving</button>
+                            </div>
+                            <p class="game-hint" style="margin-top: 10px;">Self-driving runs the route for you while the numbers update.</p>
                         </div>
                         <div class="game-actions" style="margin-top: 16px;">
                             <button class="btn btn-primary" id="startGame">Start 5-minute run</button>
@@ -109,7 +118,7 @@
 
                 <div class="game-board" data-reveal>
                     <canvas id="gameCanvas" class="game-canvas" width="900" height="540" aria-label="Robotaxi Rush game board"></canvas>
-                    <p class="game-hint" style="margin-top: 12px;">Tip: cross quickly, avoid traffic, and keep the streak alive.</p>
+                    <p class="game-hint" style="margin-top: 12px;">Tip: cross quickly, avoid traffic, or toggle self-driving for a guided run.</p>
                 </div>
             </div>
         </section>

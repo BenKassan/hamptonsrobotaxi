@@ -37,11 +37,14 @@
         status: document.getElementById('gameStatus'),
         start: document.getElementById('startGame'),
         quick: document.getElementById('quickGame'),
-        reset: document.getElementById('resetGame')
+        reset: document.getElementById('resetGame'),
+        modeHuman: document.getElementById('modeHuman'),
+        modeAuto: document.getElementById('modeAuto')
     };
 
     const state = {
         running: false,
+        mode: 'human',
         timeLeft: 300,
         sessionDuration: 300,
         trips: 0,
@@ -55,6 +58,11 @@
     };
 
     const keys = {};
+
+    const modeLabels = {
+        human: 'Human',
+        auto: 'Self-Driving'
+    };
 
     const player = {
         x: width / 2,
@@ -82,6 +90,20 @@
 
     const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
+    const getBaseStatus = () => {
+        if (state.running) return 'Running';
+        if (state.timeLeft <= 0) return 'Run complete';
+        return 'Ready to launch';
+    };
+
+    const setStatus = (text) => {
+        if (!ui.status) return;
+        const label = modeLabels[state.mode] || 'Human';
+        ui.status.textContent = `${text} - ${label}`;
+    };
+
+    const syncStatus = () => setStatus(getBaseStatus());
+
     const createLanes = () => {
         lanes.length = 0;
         cars.length = 0;
@@ -107,6 +129,86 @@
         }
     };
 
+    const getLaneIndex = (y) => {
+        if (y < topZone) return -1;
+        if (y >= height - bottomZone) return laneCount;
+        return Math.floor((y - topZone) / laneHeight);
+    };
+
+    const getLaneByIndex = (index) => (index >= 0 && index < laneCount ? lanes[index] : null);
+
+    const lookAhead = 0.45;
+
+    const isLaneSafeAtX = (laneIndex, x, buffer = 12) => {
+        const lane = getLaneByIndex(laneIndex);
+        if (!lane) return true;
+        const xMin = x - player.w / 2 - buffer;
+        const xMax = x + player.w / 2 + buffer;
+        return !cars.some((car) => {
+            if (car.lane !== lane) return false;
+            const futureX = car.x + lane.speed * lane.direction * lookAhead;
+            const minX = Math.min(car.x, futureX);
+            const maxX = Math.max(car.x + car.w, futureX + car.w);
+            return xMax > minX && xMin < maxX;
+        });
+    };
+
+    const findSafeGapX = (laneIndex) => {
+        const lane = getLaneByIndex(laneIndex);
+        if (!lane) return null;
+        const pad = player.w / 2 + 10;
+        const spans = cars
+            .filter((car) => car.lane === lane)
+            .map((car) => {
+                const futureX = car.x + lane.speed * lane.direction * lookAhead;
+                return {
+                    start: futureX - pad,
+                    end: futureX + car.w + pad
+                };
+            })
+            .filter((span) => span.end >= -80 && span.start <= width + 80)
+            .sort((a, b) => a.start - b.start);
+
+        let bestGap = 0;
+        let bestCenter = null;
+        let cursor = 0;
+        spans.forEach((span) => {
+            if (span.start > cursor) {
+                const gap = span.start - cursor;
+                if (gap > bestGap) {
+                    bestGap = gap;
+                    bestCenter = cursor + gap / 2;
+                }
+            }
+            cursor = Math.max(cursor, span.end);
+        });
+
+        if (width - cursor > bestGap) {
+            bestGap = width - cursor;
+            bestCenter = cursor + bestGap / 2;
+        }
+
+        if (bestGap < player.w + 12) return null;
+        return clamp(bestCenter, player.w / 2, width - player.w / 2);
+    };
+
+    const findNearestCar = (laneIndex) => {
+        const lane = getLaneByIndex(laneIndex);
+        if (!lane) return null;
+        let nearest = null;
+        let distance = Number.POSITIVE_INFINITY;
+        cars.forEach((car) => {
+            if (car.lane !== lane) return;
+            const center = car.x + car.w / 2;
+            const diff = Math.abs(center - player.x);
+            if (diff < distance) {
+                distance = diff;
+                nearest = car;
+            }
+        });
+        return nearest;
+    };
+
     const resetPlayer = () => {
         player.x = width / 2;
         player.y = height - bottomZone / 2;
@@ -118,6 +220,22 @@
         passenger.x = padding + Math.random() * (width - padding * 2);
         passenger.y = topZone / 2;
         passenger.active = true;
+    };
+
+    const setMode = (mode, announce = true) => {
+        if (mode !== 'human' && mode !== 'auto') return;
+        state.mode = mode;
+        if (ui.modeHuman) {
+            ui.modeHuman.classList.toggle('active', mode === 'human');
+        }
+        if (ui.modeAuto) {
+            ui.modeAuto.classList.toggle('active', mode === 'auto');
+        }
+        syncStatus();
+        if (announce) {
+            state.message = mode === 'auto' ? 'Autopilot engaged' : 'Human control';
+            state.messageTimer = 1.0;
+        }
     };
 
     const resetGame = (duration = 300) => {
@@ -142,12 +260,6 @@
         resetGame(duration);
         state.running = true;
         setStatus('Running');
-    };
-
-    const setStatus = (text) => {
-        if (ui.status) {
-            ui.status.textContent = text;
-        }
     };
 
     const rectsIntersect = (a, b) => {
@@ -186,20 +298,45 @@
 
     const drawBackground = () => {
         const gradient = ctx.createLinearGradient(0, 0, 0, height);
-        gradient.addColorStop(0, '#0b1220');
-        gradient.addColorStop(0.6, '#0a101c');
+        gradient.addColorStop(0, '#0a1220');
+        gradient.addColorStop(0.55, '#0a0f1b');
         gradient.addColorStop(1, '#070b14');
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, width, height);
+
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+        ctx.lineWidth = 1;
+        for (let y = 0; y <= height; y += 36) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(width, y);
+            ctx.stroke();
+        }
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)';
+        for (let x = 0; x <= width; x += 60) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, height);
+            ctx.stroke();
+        }
+        ctx.restore();
     };
 
     const drawZones = () => {
-        ctx.fillStyle = 'rgba(122, 211, 196, 0.12)';
+        const topGradient = ctx.createLinearGradient(0, 0, 0, topZone);
+        topGradient.addColorStop(0, 'rgba(122, 211, 196, 0.24)');
+        topGradient.addColorStop(1, 'rgba(122, 211, 196, 0.08)');
+        ctx.fillStyle = topGradient;
         ctx.fillRect(0, 0, width, topZone);
-        ctx.fillStyle = 'rgba(216, 180, 107, 0.12)';
+
+        const bottomGradient = ctx.createLinearGradient(0, height - bottomZone, 0, height);
+        bottomGradient.addColorStop(0, 'rgba(216, 180, 107, 0.08)');
+        bottomGradient.addColorStop(1, 'rgba(216, 180, 107, 0.24)');
+        ctx.fillStyle = bottomGradient;
         ctx.fillRect(0, height - bottomZone, width, bottomZone);
 
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(0, topZone);
@@ -208,40 +345,98 @@
         ctx.lineTo(width, height - bottomZone);
         ctx.stroke();
 
-        ctx.fillStyle = 'rgba(248, 245, 240, 0.7)';
-        ctx.font = '12px "DM Sans"';
-        ctx.fillText('Pickup Zone', 16, 24);
-        ctx.fillText('Dropoff Zone', 16, height - bottomZone + 24);
+        ctx.fillStyle = 'rgba(7, 11, 20, 0.6)';
+        ctx.fillRect(12, 10, 112, 20);
+        ctx.fillRect(12, height - bottomZone + 10, 112, 20);
+        ctx.fillStyle = 'rgba(248, 245, 240, 0.8)';
+        ctx.font = '11px "DM Sans"';
+        ctx.fillText('Pickup Zone', 20, 24);
+        ctx.fillText('Dropoff Zone', 20, height - bottomZone + 24);
     };
 
     const drawLanes = () => {
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
-        for (let i = 1; i < laneCount; i += 1) {
+        for (let i = 0; i < laneCount; i += 1) {
             const y = topZone + i * laneHeight;
+            ctx.fillStyle = i % 2 === 0 ? 'rgba(9, 15, 26, 0.65)' : 'rgba(12, 18, 30, 0.65)';
+            ctx.fillRect(0, y, width, laneHeight);
+        }
+
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([18, 14]);
+        for (let i = 0; i < laneCount; i += 1) {
+            const y = topZone + i * laneHeight + laneHeight / 2;
             ctx.beginPath();
-            ctx.setLineDash([12, 10]);
             ctx.moveTo(0, y);
             ctx.lineTo(width, y);
             ctx.stroke();
         }
-        ctx.setLineDash([]);
+        ctx.restore();
+    };
+
+    const drawRoundedRect = (x, y, w, h, r) => {
+        const radius = Math.min(r, w / 2, h / 2);
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + w - radius, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + radius);
+        ctx.lineTo(x + w, y + h - radius);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);
+        ctx.lineTo(x + radius, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
+        ctx.fill();
     };
 
     const drawCars = () => {
         cars.forEach((car) => {
+            ctx.save();
+            ctx.translate(car.x, car.y);
             ctx.fillStyle = car.tint;
-            ctx.fillRect(car.x, car.y, car.w, car.h);
+            drawRoundedRect(0, 0, car.w, car.h, 6);
+
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.14)';
+            drawRoundedRect(2, 2, car.w - 4, car.h / 2, 5);
+
             ctx.fillStyle = 'rgba(7, 11, 20, 0.7)';
-            ctx.fillRect(car.x + 6, car.y + 6, car.w - 12, car.h - 12);
+            ctx.fillRect(8, 6, car.w - 16, car.h - 12);
+
+            ctx.fillStyle = '#05070d';
+            ctx.fillRect(6, -2, 8, 4);
+            ctx.fillRect(car.w - 14, -2, 8, 4);
+            ctx.fillRect(6, car.h - 2, 8, 4);
+            ctx.fillRect(car.w - 14, car.h - 2, 8, 4);
+
+            const headX = car.lane.direction === 1 ? car.w - 3 : 0;
+            const tailX = car.lane.direction === 1 ? 0 : car.w - 3;
+            ctx.fillStyle = 'rgba(248, 245, 240, 0.8)';
+            ctx.fillRect(headX, 4, 3, 6);
+            ctx.fillStyle = 'rgba(248, 104, 104, 0.8)';
+            ctx.fillRect(tailX, car.h - 10, 3, 6);
+            ctx.restore();
         });
     };
 
     const drawPassenger = () => {
         if (!passenger.active) return;
+        const pulse = (Math.sin(performance.now() / 180) + 1) / 2;
+        ctx.save();
+        ctx.globalAlpha = 0.7;
+        ctx.strokeStyle = 'rgba(216, 180, 107, 0.7)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(passenger.x, passenger.y, passenger.r + 6 + pulse * 4, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+
         ctx.beginPath();
         ctx.fillStyle = '#f0d8a6';
-        ctx.arc(passenger.x, passenger.y, passenger.r, 0, Math.PI * 2);
+        ctx.arc(passenger.x, passenger.y, passenger.r + pulse * 1.5, 0, Math.PI * 2);
         ctx.fill();
+
         ctx.beginPath();
         ctx.fillStyle = '#0b1220';
         ctx.arc(passenger.x, passenger.y + 6, passenger.r - 4, 0, Math.PI * 2);
@@ -250,10 +445,42 @@
 
     const drawPlayer = () => {
         const color = player.hasPassenger ? '#d8b46b' : '#7ad3c4';
+        ctx.save();
+        ctx.translate(player.x - player.w / 2, player.y - player.h / 2);
         ctx.fillStyle = color;
-        ctx.fillRect(player.x - player.w / 2, player.y - player.h / 2, player.w, player.h);
+        drawRoundedRect(0, 0, player.w, player.h, 6);
+
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+        drawRoundedRect(2, 2, player.w - 4, player.h / 2, 5);
+
         ctx.fillStyle = 'rgba(7, 11, 20, 0.8)';
-        ctx.fillRect(player.x - player.w / 4, player.y - player.h / 4, player.w / 2, player.h / 2);
+        ctx.fillRect(6, 7, player.w - 12, player.h - 14);
+
+        const roofW = 14;
+        const roofH = 5;
+        const roofX = (player.w - roofW) / 2;
+        const roofY = -6;
+        ctx.fillStyle = state.mode === 'auto' ? '#f8f5f0' : '#d8b46b';
+        ctx.fillRect(roofX, roofY, roofW, roofH);
+        ctx.fillStyle = 'rgba(7, 11, 20, 0.8)';
+        ctx.fillRect(roofX + 2, roofY + 1, roofW - 4, roofH - 2);
+
+        ctx.strokeStyle = 'rgba(248, 245, 240, 0.45)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(4, player.h / 2);
+        ctx.lineTo(player.w - 4, player.h / 2);
+        ctx.stroke();
+        ctx.restore();
+
+        if (state.mode === 'auto') {
+            ctx.save();
+            ctx.fillStyle = 'rgba(248, 245, 240, 0.75)';
+            ctx.font = '9px "Space Grotesk"';
+            ctx.textAlign = 'center';
+            ctx.fillText('AUTO', player.x, player.y - player.h / 2 - 8);
+            ctx.restore();
+        }
     };
 
     const drawMessage = () => {
@@ -281,13 +508,81 @@
         });
     };
 
+    const getAutoInput = () => {
+        const target = player.hasPassenger
+            ? { x: player.x, y: height - bottomZone / 2 }
+            : { x: passenger.x, y: passenger.y };
+        const deltaX = target.x - player.x;
+        const deltaY = target.y - player.y;
+        const verticalDir = Math.abs(deltaY) > 6 ? Math.sign(deltaY) : 0;
+        const currentBand = getLaneIndex(player.y);
+        const inSafeZone = currentBand === -1 || currentBand === laneCount;
+        let laneToEnter = currentBand;
+
+        if (verticalDir < 0) {
+            laneToEnter = currentBand === -1 ? -1 : currentBand - 1;
+        } else if (verticalDir > 0) {
+            laneToEnter = currentBand === laneCount ? laneCount : currentBand + 1;
+        }
+
+        let verticalAllowed = false;
+        if (verticalDir === 0) {
+            verticalAllowed = false;
+        } else if (laneToEnter === -1 || laneToEnter === laneCount) {
+            verticalAllowed = true;
+        } else {
+            verticalAllowed = isLaneSafeAtX(laneToEnter, player.x, 14);
+        }
+
+        let dx = 0;
+        let dy = 0;
+
+        if (inSafeZone) {
+            let desiredX = target.x;
+            if (laneToEnter >= 0 && laneToEnter < laneCount && !verticalAllowed) {
+                const gapX = findSafeGapX(laneToEnter);
+                if (gapX !== null) desiredX = gapX;
+            }
+            if (Math.abs(desiredX - player.x) > 4) {
+                dx = Math.sign(desiredX - player.x);
+            }
+        } else {
+            const safeHere = isLaneSafeAtX(currentBand, player.x, 10);
+            if (!safeHere) {
+                const gapX = findSafeGapX(currentBand);
+                if (gapX !== null) {
+                    dx = Math.sign(gapX - player.x);
+                } else {
+                    const nearest = findNearestCar(currentBand);
+                    if (nearest) {
+                        dx = Math.sign(player.x - (nearest.x + nearest.w / 2));
+                    }
+                }
+            }
+        }
+
+        if (verticalAllowed) {
+            dy = verticalDir;
+        } else if (!inSafeZone && dx === 0 && Math.abs(deltaX) > 8) {
+            dx = Math.sign(deltaX);
+        }
+
+        return { dx, dy };
+    };
+
     const updatePlayer = (dt) => {
         let dx = 0;
         let dy = 0;
-        if (keys['ArrowUp'] || keys['w']) dy -= 1;
-        if (keys['ArrowDown'] || keys['s']) dy += 1;
-        if (keys['ArrowLeft'] || keys['a']) dx -= 1;
-        if (keys['ArrowRight'] || keys['d']) dx += 1;
+        if (state.mode === 'auto') {
+            const autoInput = getAutoInput();
+            dx = autoInput.dx;
+            dy = autoInput.dy;
+        } else {
+            if (keys['ArrowUp'] || keys['w']) dy -= 1;
+            if (keys['ArrowDown'] || keys['s']) dy += 1;
+            if (keys['ArrowLeft'] || keys['a']) dx -= 1;
+            if (keys['ArrowRight'] || keys['d']) dx += 1;
+        }
 
         const length = Math.hypot(dx, dy) || 1;
         player.x += (dx / length) * player.speed * dt;
@@ -303,8 +598,12 @@
         if (hit) {
             state.timeLeft = Math.max(0, state.timeLeft - 3);
             state.streak = 0;
+            const hadPassenger = player.hasPassenger;
             player.hasPassenger = false;
             resetPlayer();
+            if (hadPassenger) {
+                spawnPassenger();
+            }
             state.message = 'Crash! -3s';
             state.messageTimer = 1.2;
         }
@@ -411,9 +710,18 @@
         ui.reset.addEventListener('click', () => resetGame(state.sessionDuration));
     }
 
+    if (ui.modeHuman) {
+        ui.modeHuman.addEventListener('click', () => setMode('human'));
+    }
+
+    if (ui.modeAuto) {
+        ui.modeAuto.addEventListener('click', () => setMode('auto'));
+    }
+
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
     createLanes();
+    setMode(state.mode, false);
     resetGame(300);
     requestAnimationFrame(loop);
 })();

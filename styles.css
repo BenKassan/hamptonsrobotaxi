@@ -535,6 +535,27 @@ p {
     flex-wrap: wrap;
 }
 
+.game-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted-strong);
+    font-family: 'Space Grotesk', sans-serif;
+}
+
+.game-mode {
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: rgba(9, 15, 26, 0.6);
+}
+
+.btn-toggle.active {
+    background: var(--gold);
+    color: var(--ink);
+    border-color: transparent;
+}
+
 .game-timer {
     font-family: 'Space Grotesk', sans-serif;
     font-size: 28px;
