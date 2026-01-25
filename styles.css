@@ -465,6 +465,100 @@ p {
     font-size: 15px;
 }
 
+/* Game */
+.game-shell {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.game-board {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px;
+}
+
+.game-canvas {
+    width: 100%;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: #0a1220;
+    display: block;
+}
+
+.game-ui {
+    display: grid;
+    gap: 16px;
+}
+
+.game-panel {
+    padding: 18px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: var(--card-strong);
+}
+
+.game-panel h3 {
+    margin-bottom: 10px;
+}
+
+.game-score {
+    display: grid;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.game-score-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.game-score-row strong {
+    color: var(--text);
+    font-weight: 600;
+}
+
+.game-badge {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.game-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.game-timer {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    color: var(--gold);
+}
+
+.game-hint {
+    font-size: 13px;
+    color: var(--muted-strong);
+}
+
+.game-status {
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+}
+
 /* Profiles */
 .profile-card {
     display: grid;
@@ -801,6 +895,10 @@ textarea {
     .profile-card.reverse {
         grid-template-columns: 1fr;
         text-align: center;
+    }
+
+    .game-shell {
+        grid-template-columns: 1fr;
     }
 }
 
