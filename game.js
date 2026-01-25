@@ -640,23 +640,29 @@
 
         // === SAFE ZONE BEHAVIOR ===
         if (inSafeZone) {
+            // In top zone: collect passenger
             if (inTopZone && !player.hasPassenger) {
-                const dx = Math.abs(passenger.x - player.x) > 3 ? Math.sign(passenger.x - player.x) : 0;
-                if (dx === 0) return { dx: 0, dy: 0 };
-                return { dx, dy: 0 };
+                const deltaX = passenger.x - player.x;
+                const deltaY = passenger.y - player.y;
+                const dx = Math.abs(deltaX) > 3 ? Math.sign(deltaX) : 0;
+                const dy = Math.abs(deltaY) > 3 ? Math.sign(deltaY) : 0;
+                return { dx, dy };
             }
 
+            // In bottom zone with passenger: move down to complete dropoff
             if (inBottomZone && player.hasPassenger) {
-                return { dx: 0, dy: 0 };
+                return { dx: 0, dy: 1 };
             }
 
+            // In bottom zone without passenger: go back up through traffic
+            // In top zone with passenger: go down through traffic
             const nextLane = goingDown ? 0 : laneCount - 1;
-            if (isLaneSafeAtX(nextLane, player.x, 16)) {
+            if (isLaneSafeAtX(nextLane, player.x, 14)) {
                 return { dx: 0, dy: verticalDir };
             }
 
             const safeX = findSafestX(nextLane);
-            if (Math.abs(safeX - player.x) > 4) {
+            if (Math.abs(safeX - player.x) > 6) {
                 return { dx: Math.sign(safeX - player.x), dy: 0 };
             }
 
@@ -664,7 +670,7 @@
         }
 
         // === TRAFFIC ZONE BEHAVIOR ===
-        const threat = getIncomingThreat(0.6);
+        const threat = getIncomingThreat(0.4);
         if (threat) {
             const car = threat.car;
             const dodgeDir = car.lane.direction === 1 ? -1 : 1;
