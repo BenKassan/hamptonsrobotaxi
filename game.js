@@ -876,6 +876,12 @@
             state.totalOpex += fares.varOpex;
             state.totalContrib += perTrip.contribution;
             player.hasPassenger = false;
+            // Move player fully into bottom safe zone so cooldown logic applies
+            player.y = height - bottomZone / 2;
+            // Set cooldown for post-dropoff pause
+            autoState.safeZoneCooldown = 0.8;
+            autoState.targetLane = null;
+            autoState.planTimer = 0;
             spawnPassenger();
             state.message = 'Trip complete';
             state.messageTimer = 1.0;
