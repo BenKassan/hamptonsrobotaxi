@@ -657,8 +657,8 @@
             autoState.targetX = player.x;
             autoState.planTimer = 0;
             autoState.stuckTime = 0;
-            // Cooldown after direction change - pause to assess traffic
-            autoState.safeZoneCooldown = 0.4;
+            // Cooldown after direction change - full pause to assess traffic
+            autoState.safeZoneCooldown = 0.8;
         }
 
         // Decrement cooldown timer
@@ -683,25 +683,44 @@
             updateAutoPlan(nextLane, preferredX);
 
             if (autoState.safeZoneCooldown > 0) {
-                // Still in cooldown - stay still but keep planning
-                const dx = getAlignedDx(autoState.targetX);
+                // Full freeze during cooldown - completely still while assessing
+                return { dx: 0, dy: 0 };
+            }
+
+            // Use larger buffer when exiting safe zone (2.5x normal) for extra caution
+            const exitBuffer = autoSettings.laneBuffer * 2.5;
+
+            // Check if first TWO lanes are reasonably clear before committing
+            const secondLane = goingDown ? 1 : laneCount - 2;
+            const firstLaneClear = isLaneSafeAtX(nextLane, player.x, exitBuffer);
+            const secondLaneClear = secondLane >= 0 && secondLane < laneCount
+                ? isLaneSafeAtX(secondLane, player.x, autoSettings.laneBuffer)
+                : true;
+
+            const dx = getAlignedDx(autoState.targetX);
+
+            // Only exit if both first lane is very clear AND second lane looks passable
+            if (dx === 0 && firstLaneClear && secondLaneClear) {
+                return { dx: 0, dy: verticalDir };
+            }
+
+            // Try moving laterally first to find a better gap
+            if (dx !== 0) {
+                const nextX = player.x + dx * step;
+                const firstClearAtNextX = isLaneSafeAtX(nextLane, nextX, exitBuffer);
+                const secondClearAtNextX = secondLane >= 0 && secondLane < laneCount
+                    ? isLaneSafeAtX(secondLane, nextX, autoSettings.laneBuffer)
+                    : true;
+
+                if (firstClearAtNextX && secondClearAtNextX && isPositionSafe(nextX, player.y + verticalDir * step, 0.3)) {
+                    return { dx, dy: verticalDir };
+                }
+                // Move laterally to get into position
                 return { dx, dy: 0 };
             }
 
-            // Use larger buffer when exiting safe zone (2x normal) for extra caution
-            const exitBuffer = autoSettings.laneBuffer * 2;
-            const dx = getAlignedDx(autoState.targetX);
-            if (dx === 0 && isLaneSafeAtX(nextLane, player.x, exitBuffer)) {
-                return { dx: 0, dy: verticalDir };
-            }
-            if (dx !== 0) {
-                const nextX = player.x + dx * step;
-                const nextY = player.y + verticalDir * step;
-                if (isLaneSafeAtX(nextLane, nextX, exitBuffer) && isPositionSafe(nextX, nextY, 0.25)) {
-                    return { dx, dy: verticalDir };
-                }
-            }
-            return { dx, dy: 0 };
+            // Wait for better opportunity
+            return { dx: 0, dy: 0 };
         }
 
         // === TRAFFIC ZONE BEHAVIOR ===
