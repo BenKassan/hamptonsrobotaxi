@@ -619,28 +619,19 @@ select {
     background-position: right 16px center;
 }
 
-.contact-emails {
-    margin-top: 32px;
+.success-message {
+    background: rgba(201, 169, 98, 0.1);
+    border: 1px solid var(--accent);
+    border-radius: 16px;
+    padding: 32px;
     text-align: center;
+    margin-bottom: 24px;
 }
 
-.contact-emails p {
-    font-size: 13px;
-    color: var(--text-faint);
-    margin-bottom: 12px;
-}
-
-.contact-emails a {
-    display: inline-block;
-    font-size: 13px;
-    color: var(--text-dim);
-    margin: 0 12px;
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.contact-emails a:hover {
+.success-message p {
     color: var(--accent);
+    font-size: 18px;
+    font-weight: 500;
 }
 
 /* ========================================
