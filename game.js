@@ -779,9 +779,7 @@
     };
 
     const handleCollision = () => {
-        // Skip collision detection in auto mode - self-driving is perfect
-        if (state.mode === 'auto') return;
-
+        // Collisions enabled for all modes - let's see if self-driving is truly perfect
         const rect = playerRect();
         const hit = cars.some((car) => rectsIntersect(rect, car));
         if (hit) {
