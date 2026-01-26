@@ -64,7 +64,7 @@
     };
 
     const autoSettings = {
-        speedMultiplier: 2.5,
+        speedMultiplier: 2.0,
         alignDeadzone: 3,
         planCooldown: 0.05,
         laneBuffer: 12
@@ -714,7 +714,8 @@
         let dx = 0;
         let dy = 0;
         if (state.mode === 'auto') {
-            const autoInput = applyAutoSafety(getAutoInput(dt), dt);
+            // No safety wrapper needed - collisions are disabled in auto mode
+            const autoInput = getAutoInput(dt);
             dx = autoInput.dx;
             dy = autoInput.dy;
         } else {
