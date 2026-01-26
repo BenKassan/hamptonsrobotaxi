@@ -64,7 +64,7 @@
     };
 
     const autoSettings = {
-        speedMultiplier: 2.0,
+        speedMultiplier: 1.0,
         alignDeadzone: 3,
         planCooldown: 0.05,
         laneBuffer: 12
