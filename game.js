@@ -154,9 +154,9 @@
 
     const getLaneByIndex = (index) => (index >= 0 && index < laneCount ? lanes[index] : null);
 
-    const lookAhead = 0.55;
-    const autoSafetyHorizon = 0.35;
-    const autoSafetyPad = 5;
+    const lookAhead = 0.6;
+    const autoSafetyHorizon = 0.4;
+    const autoSafetyPad = 8;
 
     const getCarFutureX = (car, t) => {
         if (t <= 0) return car.x;
@@ -660,29 +660,90 @@
         }
 
         // === SAFE ZONE BEHAVIOR ===
-        // With collisions disabled in auto mode, AI can be aggressive
         if (inSafeZone) {
             if (inTopZone && !player.hasPassenger) {
-                // Go straight to passenger
                 const dx = getAlignedDx(passenger.x);
                 const dy = Math.abs(passenger.y - player.y) > 3 ? Math.sign(passenger.y - player.y) : 0;
                 return { dx, dy };
             }
 
             if (inBottomZone && player.hasPassenger) {
-                // Drop off passenger
                 return { dx: 0, dy: 1 };
             }
 
-            // Just go - no waiting, collisions are disabled anyway
-            return { dx: 0, dy: verticalDir };
+            // About to enter traffic - find a safe gap in the first lane
+            const nextLane = goingDown ? 0 : laneCount - 1;
+            const gapX = findSafeGapX(nextLane, preferredX);
+
+            if (gapX !== null) {
+                const dx = getAlignedDx(gapX);
+                // Only enter traffic when aligned with a gap
+                if (dx === 0 && isLaneSafeAtX(nextLane, player.x, 20)) {
+                    return { dx: 0, dy: verticalDir };
+                }
+                return { dx, dy: 0 };
+            }
+
+            // No gap found - wait for one to open
+            return { dx: 0, dy: 0 };
         }
 
         // === TRAFFIC ZONE BEHAVIOR ===
-        // Collisions disabled in auto mode - just go straight through
-        // Align horizontally with target (passenger when going up, center when going down)
-        const dx = goingDown ? 0 : getAlignedDx(passenger.x);
-        return { dx, dy: verticalDir };
+        // Smart avoidance - weave through gaps without touching cars
+        const nextLane = currentLane + verticalDir;
+        const forwardY = player.y + verticalDir * step;
+
+        // Check if we're about to exit traffic into safe zone
+        if (nextLane < 0 || nextLane >= laneCount) {
+            // Safe to proceed - entering safe zone
+            if (isPositionSafe(player.x, forwardY, 0.15)) {
+                return { dx: 0, dy: verticalDir };
+            }
+            // Wait for gap before exiting
+            return { dx: 0, dy: 0 };
+        }
+
+        // Find the best gap in the next lane
+        const gapX = findSafeGapX(nextLane, preferredX);
+
+        if (gapX !== null) {
+            const dx = getAlignedDx(gapX);
+
+            // Check if current position in next lane is safe
+            const canAdvance = isLaneSafeAtX(nextLane, player.x, 18) &&
+                               isPositionSafe(player.x, forwardY, 0.2);
+
+            if (dx === 0 && canAdvance) {
+                // Aligned with gap - move forward
+                return { dx: 0, dy: verticalDir };
+            }
+
+            // Need to align horizontally first
+            if (dx !== 0) {
+                const nextX = player.x + Math.sign(dx) * step;
+                // Make sure horizontal movement is safe
+                if (isPositionSafe(nextX, player.y, 0.15)) {
+                    // Can we also move forward diagonally?
+                    if (canAdvance && isPositionSafe(nextX, forwardY, 0.15)) {
+                        return { dx, dy: verticalDir };
+                    }
+                    return { dx, dy: 0 };
+                }
+            }
+        }
+
+        // Current lane - check if we need to dodge
+        const currentSafe = isPositionSafe(player.x, player.y, 0.1);
+        if (!currentSafe) {
+            // Urgent - find escape in current lane
+            const escapeX = findSafeGapX(currentLane, player.x);
+            if (escapeX !== null && Math.abs(escapeX - player.x) > 5) {
+                return { dx: getAlignedDx(escapeX), dy: 0 };
+            }
+        }
+
+        // Wait for a gap to open
+        return { dx: 0, dy: 0 };
     };
 
     const applyAutoSafety = (input, dt) => {
@@ -714,8 +775,8 @@
         let dx = 0;
         let dy = 0;
         if (state.mode === 'auto') {
-            // No safety wrapper needed - collisions are disabled in auto mode
-            const autoInput = getAutoInput(dt);
+            // Use safety wrapper to ensure we never touch cars
+            const autoInput = applyAutoSafety(getAutoInput(dt), dt);
             dx = autoInput.dx;
             dy = autoInput.dy;
         } else {
