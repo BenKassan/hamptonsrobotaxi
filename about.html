@@ -4,17 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About | Hamptons Robotaxi</title>
-    <meta name="description" content="Our mission: zero drunk driving in the Hamptons through safe, autonomous rides.">
+    <meta name="description" content="Safe rides. Zero drunk driving. Learn about Hamptons Robotaxi.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
+    <!-- Cosmic Background -->
+    <div class="cosmos">
+        <div class="stars"></div>
+        <div class="stars-2"></div>
+        <div class="nebula nebula-1"></div>
+        <div class="nebula nebula-2"></div>
+    </div>
 
+    <!-- Navigation -->
     <nav class="nav" id="nav">
         <div class="nav-inner">
             <a href="index.html" class="nav-logo">Hamptons <span>Robotaxi</span></a>
@@ -22,190 +27,101 @@
                 <li><a href="about.html" class="active">About</a></li>
                 <li><a href="team.html">Team</a></li>
                 <li><a href="investors.html">Investors</a></li>
-                <li><a href="game.html">Game</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
             <div class="nav-actions">
-                <a href="investors.html" class="btn btn-ghost">Get the Deck</a>
+                <a href="investors.html" class="btn btn-ghost">Invest</a>
                 <button class="nav-toggle" id="navToggle">Menu</button>
             </div>
         </div>
     </nav>
 
-    <main>
-        <section class="hero">
-            <div class="container hero-grid">
-                <div data-reveal>
-                    <span class="pill">Our Mission</span>
-                    <h1>Safe rides. <span style="color: var(--gold);">Zero drunk driving.</span></h1>
-                    <p class="hero-sub">We are building the trusted autonomous ride network for the Hamptons, so no one has to choose between safety and cost.</p>
+    <!-- Hero -->
+    <section class="hero-section" data-reveal>
+        <div class="hero-content">
+            <span class="label">Our Mission</span>
+            <h1>Safe rides.<br><span class="gold">Zero drunk driving.</span></h1>
+            <p class="hero-tagline">Building the autonomous transportation network the Hamptons deserves.</p>
+        </div>
+    </section>
+
+    <!-- The Problem -->
+    <section class="page-section" data-reveal>
+        <div class="section-inner stat-section">
+            <span class="label">The Problem</span>
+            <div class="big-stat">127</div>
+            <p class="stat-label">DUI arrests last summer</p>
+            <p class="stat-context">When safe rides cost $150 and take 45 minutes, people make dangerous choices.</p>
+        </div>
+    </section>
+
+    <!-- The Solution -->
+    <section class="page-section" data-reveal>
+        <div class="section-inner">
+            <span class="label">The Solution</span>
+            <h2>Tesla CyberCabs at<br><span class="gold">$30 flat</span></h2>
+            <p class="subtitle">24/7 availability. No surge pricing. No driver uncertainty. Instant pickup.</p>
+            <div class="stats-row">
+                <div class="mini-stat">
+                    <div class="mini-stat-value">$30</div>
+                    <div class="mini-stat-label">Flat Fare</div>
                 </div>
-                <div class="hero-panel" data-reveal>
-                    <p class="kicker">The Reality</p>
-                    <h3>Late night transportation is broken</h3>
-                    <div class="panel-grid">
-                        <div class="panel-item">
-                            <span class="panel-label">Peak rideshare fares</span>
-                            <span class="panel-value">$100+</span>
-                        </div>
-                        <div class="panel-item">
-                            <span class="panel-label">Average wait time</span>
-                            <span class="panel-value">45 min</span>
-                        </div>
-                        <div class="panel-item">
-                            <span class="panel-label">DUI arrests</span>
-                            <span class="panel-value">127</span>
-                        </div>
-                        <div class="panel-item">
-                            <span class="panel-label">Target fare</span>
-                            <span class="panel-value">$30</span>
-                        </div>
-                    </div>
-                    <p class="panel-foot">Source: Suffolk County and 2024 field research.</p>
+                <div class="mini-stat">
+                    <div class="mini-stat-value">24/7</div>
+                    <div class="mini-stat-label">Always On</div>
+                </div>
+                <div class="mini-stat">
+                    <div class="mini-stat-value">L4</div>
+                    <div class="mini-stat-label">Autonomy</div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="section section-alt">
-            <div class="container">
-                <div class="section-header" data-reveal>
-                    <p class="kicker">The Problem</p>
-                    <h2>The late night gap forces bad decisions</h2>
-                    <p class="lead">When rides are scarce, people wait alone at 2 AM, get in a stranger's car, or drive home. We remove the gap.</p>
+    <!-- Why Tesla -->
+    <section class="page-section" data-reveal>
+        <div class="section-inner">
+            <span class="label">The Vehicle</span>
+            <h2>Why Tesla wins</h2>
+            <div class="cards-grid" style="max-width: 900px; margin: 48px auto 0;">
+                <div class="card">
+                    <h3>Neural Nets</h3>
+                    <p>Pure vision-based AI. No LIDAR dependency. Scales infinitely.</p>
                 </div>
-                <div class="stat-grid">
-                    <div class="stat-card" data-reveal>
-                        <div class="stat-value danger">$150</div>
-                        <div class="stat-label">Peak ride from East Hampton to Montauk</div>
-                    </div>
-                    <div class="stat-card" data-reveal>
-                        <div class="stat-value danger">45 min</div>
-                        <div class="stat-label">Typical wait time</div>
-                    </div>
-                    <div class="stat-card" data-reveal>
-                        <div class="stat-value danger">127</div>
-                        <div class="stat-label">DUI arrests last summer</div>
-                    </div>
-                    <div class="stat-card" data-reveal>
-                        <div class="stat-value">500K</div>
-                        <div class="stat-label">Summer visitors</div>
-                    </div>
+                <div class="card">
+                    <h3>Decentralized</h3>
+                    <p>Third-party operators deploy everywhere. Tesla builds. We operate.</p>
+                </div>
+                <div class="card">
+                    <h3>$25,000</h3>
+                    <p>Production line efficiency. 8x cheaper than Waymo vehicles.</p>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="section">
-            <div class="container">
-                <div class="section-header" data-reveal>
-                    <p class="kicker">The Solution</p>
-                    <h2>Robotaxi service that makes the safe choice effortless</h2>
-                </div>
-                <div class="card-grid">
-                    <div class="card" data-reveal>
-                        <div class="card-tag">01</div>
-                        <h3>Flat $30 fare</h3>
-                        <p>No surge pricing. Transparent pricing every time.</p>
-                    </div>
-                    <div class="card" data-reveal>
-                        <div class="card-tag">02</div>
-                        <h3>Always on</h3>
-                        <p>24/7 availability for nightlife, early mornings, and weekends.</p>
-                    </div>
-                    <div class="card" data-reveal>
-                        <div class="card-tag">03</div>
-                        <h3>Instant pickup</h3>
-                        <p>No driver acceptance delays or cancellations.</p>
-                    </div>
-                    <div class="card" data-reveal>
-                        <div class="card-tag">04</div>
-                        <h3>Partner access</h3>
-                        <p>Venues can book safe rides for guests directly.</p>
-                    </div>
-                </div>
+    <!-- CTA -->
+    <section class="page-section" data-reveal>
+        <div class="section-inner">
+            <h2>Learn more</h2>
+            <div class="hero-cta" style="margin-top: 32px;">
+                <a href="investors.html" class="btn btn-primary">Investor Info <span class="btn-arrow">&rarr;</span></a>
+                <a href="team.html" class="btn btn-ghost">Meet the Team</a>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="section section-alt">
-            <div class="container split">
-                <div data-reveal>
-                    <p class="kicker">Safety</p>
-                    <h2>Built on trust and transparency</h2>
-                    <p class="lead">We use geo fenced operations, remote monitoring, and real time incident response.</p>
-                    <ul class="list">
-                        <li><span>01</span> 24/7 remote monitoring and incident response.</li>
-                        <li><span>02</span> Municipal coordination for emergency protocols.</li>
-                        <li><span>03</span> Transparent public reporting on safety performance.</li>
-                    </ul>
-                </div>
-                <div class="metric-grid" data-reveal>
-                    <div class="metric-card">
-                        <div class="metric-value">24/7</div>
-                        <div class="metric-label">Monitoring</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-value">L4</div>
-                        <div class="metric-label">Autonomy target</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-value">0</div>
-                        <div class="metric-label">Driver risk</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-value">100%</div>
-                        <div class="metric-label">Incident logging</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section">
-            <div class="container" data-reveal style="text-align: center;">
-                <p class="kicker">Local Roots</p>
-                <h2>Built for the East End</h2>
-                <p class="lead" style="max-width: 640px; margin: 20px auto 0;">We understand the seasonal rhythms, the roads, and the community. This is not a tech company parachuting in - it is local operators building a safer Hamptons.</p>
-                <div class="hero-ctas" style="justify-content: center; margin-top: 32px;">
-                    <a href="contact.html" class="btn btn-primary">Get in Touch <span class="btn-arrow">&rarr;</span></a>
-                    <a href="team.html" class="btn btn-ghost">Meet the Team</a>
-                </div>
-            </div>
-        </section>
-    </main>
-
+    <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <h3>Hamptons Robotaxi</h3>
-                    <p>Autonomous rides for America's most exclusive destination.</p>
-                </div>
-                <div class="footer-links">
-                    <h4>Company</h4>
-                    <ul>
-                        <li><a href="about.html">About</a></li>
-                        <li><a href="team.html">Team</a></li>
-                        <li><a href="game.html">Game</a></li>
-                        <li><a href="investors.html">Investors</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Contact</h4>
-                    <ul>
-                        <li><a href="contact.html">Contact</a></li>
-                        <li><a href="mailto:hello@hamptonsrobotaxi.com">hello@hamptonsrobotaxi.com</a></li>
-                        <li><a href="mailto:partners@hamptonsrobotaxi.com">partners@hamptonsrobotaxi.com</a></li>
-                    </ul>
-                </div>
+        <div class="footer-inner">
+            <div class="footer-brand">Hamptons <span>Robotaxi</span></div>
+            <div class="footer-links">
+                <a href="about.html">About</a>
+                <a href="team.html">Team</a>
+                <a href="investors.html">Investors</a>
+                <a href="contact.html">Contact</a>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 Hamptons Robotaxi, LLC</p>
-                <div class="footer-legal">
-                    <a href="index.html">Home</a>
-                    <a href="team.html">Team</a>
-                    <a href="game.html">Game</a>
-                    <a href="investors.html">Investors</a>
-                    <a href="contact.html">Contact</a>
-                </div>
-            </div>
+            <div class="footer-copy">&copy; 2026 Hamptons Robotaxi, LLC</div>
         </div>
     </footer>
 

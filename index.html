@@ -4,19 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hamptons Robotaxi</title>
-    <meta name="description" content="Autonomous rides for the Hamptons. Flat $30 fares, 24/7 availability, launching Summer 2026.">
-    <meta property="og:title" content="Hamptons Robotaxi">
-    <meta property="og:description" content="Autonomous rides for the Hamptons. Flat $30 fares, 24/7 availability, launching Summer 2026.">
+    <meta name="description" content="Autonomous rides for the Hamptons. Launching Summer 2026.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
+    <!-- Cosmic Background -->
+    <div class="cosmos">
+        <div class="stars"></div>
+        <div class="stars-2"></div>
+        <div class="nebula nebula-1"></div>
+        <div class="nebula nebula-2"></div>
+    </div>
 
+    <!-- Navigation -->
     <nav class="nav" id="nav">
         <div class="nav-inner">
             <a href="index.html" class="nav-logo">Hamptons <span>Robotaxi</span></a>
@@ -24,219 +27,123 @@
                 <li><a href="about.html">About</a></li>
                 <li><a href="team.html">Team</a></li>
                 <li><a href="investors.html">Investors</a></li>
-                <li><a href="game.html">Game</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
             <div class="nav-actions">
-                <a href="investors.html" class="btn btn-ghost">Get the Deck</a>
+                <a href="investors.html" class="btn btn-ghost">Invest</a>
                 <button class="nav-toggle" id="navToggle">Menu</button>
             </div>
         </div>
     </nav>
 
-    <main>
-        <section class="hero">
-            <div class="container hero-grid">
-                <div data-reveal>
-                    <span class="pill">Launching Summer 2026</span>
-                    <h1>Autonomous rides for the <span style="color: var(--gold);">Hamptons</span></h1>
-                    <p class="hero-sub">Tesla CyberCab fleet operator delivering safe, 24/7 rides at a flat $30 fare. No surge pricing. No driver uncertainty.</p>
-                    <div class="hero-ctas">
-                        <a href="investors.html" class="btn btn-primary">Request Investor Deck <span class="btn-arrow">&rarr;</span></a>
-                        <a href="contact.html?type=partnership" class="btn btn-ghost">Partner With Us</a>
-                    </div>
-                    <p class="hero-note">Seed round target: $3M to secure permits, partners, and fleet orders.</p>
+    <!-- Section 1: Hero -->
+    <section class="hero-section" data-reveal>
+        <div class="hero-content">
+            <h1>The future of<br><span class="gold">transportation.</span></h1>
+            <p class="hero-tagline">Autonomous Tesla CyberCabs for the Hamptons. Launching Summer 2026.</p>
+            <div class="hero-cta">
+                <a href="investors.html" class="btn btn-primary">Investor Deck <span class="btn-arrow">&rarr;</span></a>
+                <a href="contact.html" class="btn btn-ghost">Get in Touch</a>
+            </div>
+        </div>
+        <div class="scroll-hint">
+            <span>Scroll</span>
+            <div class="scroll-hint-arrow"></div>
+        </div>
+    </section>
+
+    <!-- Section 2: The Problem -->
+    <section class="page-section" data-reveal>
+        <div class="section-inner stat-section">
+            <span class="label">The Problem</span>
+            <div class="big-stat">$150</div>
+            <p class="stat-label">Average late-night Uber in the Hamptons</p>
+            <p class="stat-context">When safe rides cost this much, people make unsafe choices. 127 DUI arrests last summer.</p>
+        </div>
+    </section>
+
+    <!-- Section 3: The Solution -->
+    <section class="page-section" data-reveal>
+        <div class="section-inner stat-section">
+            <span class="label">Our Solution</span>
+            <div class="big-stat">$30</div>
+            <p class="stat-label">Flat fare. Any ride. 24/7.</p>
+            <p class="stat-context">When the safe choice is affordable, everyone takes it.</p>
+        </div>
+    </section>
+
+    <!-- Section 4: The Opportunity -->
+    <section class="page-section" data-reveal>
+        <div class="section-inner">
+            <span class="label">The Opportunity</span>
+            <h2>First mover in an<br><span class="gold">$85M market</span></h2>
+            <p class="subtitle">Zero autonomous operators in the Hamptons today. 500,000 affluent summer visitors. Proven willingness to pay.</p>
+            <div class="stats-row">
+                <div class="mini-stat">
+                    <div class="mini-stat-value">46%</div>
+                    <div class="mini-stat-label">Contribution Margin</div>
                 </div>
-                <div class="hero-panel" data-reveal>
-                    <p class="kicker">Model Highlights</p>
-                    <h3>Unit economics built for profitability</h3>
-                    <div class="panel-grid">
-                        <div class="panel-item">
-                            <span class="panel-label">Net rev per vehicle / mo</span>
-                            <span class="panel-value">$8.8k</span>
-                        </div>
-                        <div class="panel-item">
-                            <span class="panel-label">Contribution / mo</span>
-                            <span class="panel-value">$4.1k</span>
-                        </div>
-                        <div class="panel-item">
-                            <span class="panel-label">Contribution margin</span>
-                            <span class="panel-value">46%</span>
-                        </div>
-                        <div class="panel-item">
-                            <span class="panel-label">Platform fee</span>
-                            <span class="panel-value">27.5%</span>
-                        </div>
-                    </div>
-                    <p class="panel-foot">Base case at 75% utilization. See investor page for full model.</p>
+                <div class="mini-stat">
+                    <div class="mini-stat-value">$4.1k</div>
+                    <div class="mini-stat-label">Profit / Vehicle / Month</div>
+                </div>
+                <div class="mini-stat">
+                    <div class="mini-stat-value">~6 mo</div>
+                    <div class="mini-stat-label">Payback Period</div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="section section-alt">
-            <div class="container">
-                <div class="section-header" data-reveal>
-                    <p class="kicker">Why the Hamptons</p>
-                    <h2>Premium market with zero late night transportation</h2>
-                    <p class="lead">A concentrated community that already pays premium prices, with no AV operators today.</p>
+    <!-- Section 5: Timeline -->
+    <section class="page-section" data-reveal>
+        <div class="section-inner">
+            <span class="label">The Plan</span>
+            <h2>Hamptons to <span class="gold">New York City</span></h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">Summer 2026</div>
+                    <div class="timeline-title">Hamptons Launch</div>
+                    <div class="timeline-desc">10-20 CyberCabs. Premium market. Prove the model.</div>
                 </div>
-                <div class="stat-grid">
-                    <div class="stat-card" data-reveal>
-                        <div class="stat-value">500K</div>
-                        <div class="stat-label">Summer visitors</div>
-                    </div>
-                    <div class="stat-card" data-reveal>
-                        <div class="stat-value">$85M</div>
-                        <div class="stat-label">Beachhead market</div>
-                    </div>
-                    <div class="stat-card" data-reveal>
-                        <div class="stat-value">$30</div>
-                        <div class="stat-label">Flat fare target</div>
-                    </div>
-                    <div class="stat-card" data-reveal>
-                        <div class="stat-value danger">127</div>
-                        <div class="stat-label">DUI arrests last summer</div>
-                    </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">Fall 2026</div>
+                    <div class="timeline-title">Philadelphia & Atlanta</div>
+                    <div class="timeline-desc">Year-round markets for off-season deployment.</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">2027</div>
+                    <div class="timeline-title">New York City</div>
+                    <div class="timeline-desc">700,000 Uber rides per day. The biggest market in America.</div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="section">
-            <div class="container">
-                <div class="section-header" data-reveal>
-                    <p class="kicker">The Edge</p>
-                    <h2>First mover advantage with a local moat</h2>
-                </div>
-                <div class="card-grid">
-                    <div class="card" data-reveal>
-                        <div class="card-tag">01</div>
-                        <h3>Tesla CyberCab in 2026</h3>
-                        <p>Tesla delivers the autonomy stack. We deploy, maintain, and operate the fleet locally.</p>
-                    </div>
-                    <div class="card" data-reveal>
-                        <div class="card-tag">02</div>
-                        <h3>Regulatory window opening</h3>
-                        <p>NY AV legislation is moving. We are building relationships with Suffolk County now.</p>
-                    </div>
-                    <div class="card" data-reveal>
-                        <div class="card-tag">03</div>
-                        <h3>Partner network</h3>
-                        <p>Hotels, restaurants, and venues become dedicated pickup and dropoff nodes.</p>
-                    </div>
-                    <div class="card" data-reveal>
-                        <div class="card-tag">04</div>
-                        <h3>Seasonal redeploy</h3>
-                        <p>Redeploy vehicles to Philly and Atlanta off season for year round utilization.</p>
-                    </div>
-                </div>
+    <!-- Section 6: CTA -->
+    <section class="page-section" data-reveal>
+        <div class="section-inner">
+            <span class="label">Join Us</span>
+            <h2>Seed round <span class="gold">open</span></h2>
+            <p class="subtitle">$3M to launch the fleet, secure permits, and reach profitability.</p>
+            <div class="hero-cta" style="margin-top: 48px;">
+                <a href="investors.html" class="btn btn-primary">View Investor Info <span class="btn-arrow">&rarr;</span></a>
+                <a href="contact.html" class="btn btn-ghost">Contact Us</a>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="section section-alt">
-            <div class="container split">
-                <div data-reveal>
-                    <p class="kicker">Operating Model</p>
-                    <h2>Designed to scale with lean operations</h2>
-                    <p class="lead">We run an AI native operating system across legal, compliance, fleet ops, and customer support.</p>
-                    <ul class="list">
-                        <li><span>01</span> Tesla platform handles autonomy while we focus on local execution.</li>
-                        <li><span>02</span> High frequency demand compresses wait times and boosts vehicle yield.</li>
-                        <li><span>03</span> Dedicated curb access at high traffic venues creates repeat usage.</li>
-                    </ul>
-                </div>
-                <div class="metric-grid" data-reveal>
-                    <div class="metric-card">
-                        <div class="metric-value">$8.8k</div>
-                        <div class="metric-label">Net rev per vehicle / mo</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-value">$4.1k</div>
-                        <div class="metric-label">Contribution / vehicle</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-value">46%</div>
-                        <div class="metric-label">Contribution margin</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-value">24/7</div>
-                        <div class="metric-label">Availability</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section">
-            <div class="container split">
-                <div data-reveal>
-                    <p class="kicker">Impact</p>
-                    <h2>When the safe choice is affordable, everyone takes it</h2>
-                    <p class="lead">We remove the late night transportation gap that drives drunk driving in the Hamptons.</p>
-                </div>
-                <div class="timeline" data-reveal>
-                    <div class="timeline-item">
-                        <h4>Summer 2026 - Hamptons launch</h4>
-                        <p>Premium pricing, limited fleet, live operations and feedback loop.</p>
-                    </div>
-                    <div class="timeline-item">
-                        <h4>Fall 2026 - Philly + Atlanta</h4>
-                        <p>Year round redeploy to keep utilization high.</p>
-                    </div>
-                    <div class="timeline-item">
-                        <h4>2028 - New York City</h4>
-                        <p>Largest ride hail market in the US with proven model.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section section-alt">
-            <div class="container" data-reveal style="text-align: center;">
-                <p class="kicker">Partner With Us</p>
-                <h2>Join the future of Hamptons transportation</h2>
-                <p class="lead" style="max-width: 560px; margin: 20px auto 0;">Investors, venues, and local partners - we are building the region's most trusted autonomous ride network.</p>
-                <div class="hero-ctas" style="justify-content: center; margin-top: 32px;">
-                    <a href="investors.html" class="btn btn-primary">Investors <span class="btn-arrow">&rarr;</span></a>
-                    <a href="contact.html" class="btn btn-ghost">Contact</a>
-                </div>
-            </div>
-        </section>
-    </main>
-
+    <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <h3>Hamptons Robotaxi</h3>
-                    <p>Autonomous rides for America's most exclusive destination.</p>
-                </div>
-                <div class="footer-links">
-                    <h4>Company</h4>
-                    <ul>
-                        <li><a href="about.html">About</a></li>
-                        <li><a href="team.html">Team</a></li>
-                        <li><a href="game.html">Game</a></li>
-                        <li><a href="investors.html">Investors</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Contact</h4>
-                    <ul>
-                        <li><a href="contact.html">Contact</a></li>
-                        <li><a href="mailto:investors@hamptonsrobotaxi.com">investors@hamptonsrobotaxi.com</a></li>
-                        <li><a href="mailto:partners@hamptonsrobotaxi.com">partners@hamptonsrobotaxi.com</a></li>
-                    </ul>
-                </div>
+        <div class="footer-inner">
+            <div class="footer-brand">Hamptons <span>Robotaxi</span></div>
+            <div class="footer-links">
+                <a href="about.html">About</a>
+                <a href="team.html">Team</a>
+                <a href="investors.html">Investors</a>
+                <a href="contact.html">Contact</a>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 Hamptons Robotaxi, LLC</p>
-                <div class="footer-legal">
-                    <a href="about.html">About</a>
-                    <a href="team.html">Team</a>
-                    <a href="game.html">Game</a>
-                    <a href="investors.html">Investors</a>
-                    <a href="contact.html">Contact</a>
-                </div>
-            </div>
+            <div class="footer-copy">&copy; 2026 Hamptons Robotaxi, LLC</div>
         </div>
     </footer>
 

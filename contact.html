@@ -4,17 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact | Hamptons Robotaxi</title>
-    <meta name="description" content="Get in touch with Hamptons Robotaxi. Partnerships, investment, and media inquiries.">
+    <meta name="description" content="Get in touch with Hamptons Robotaxi.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
+    <!-- Cosmic Background -->
+    <div class="cosmos">
+        <div class="stars"></div>
+        <div class="stars-2"></div>
+        <div class="nebula nebula-1"></div>
+        <div class="nebula nebula-2"></div>
+    </div>
 
+    <!-- Navigation -->
     <nav class="nav" id="nav">
         <div class="nav-inner">
             <a href="index.html" class="nav-logo">Hamptons <span>Robotaxi</span></a>
@@ -25,127 +30,78 @@
                 <li><a href="contact.html" class="active">Contact</a></li>
             </ul>
             <div class="nav-actions">
-                <a href="investors.html" class="btn btn-ghost">Get the Deck</a>
+                <a href="investors.html" class="btn btn-ghost">Invest</a>
                 <button class="nav-toggle" id="navToggle">Menu</button>
             </div>
         </div>
     </nav>
 
-    <main>
-        <section class="hero" style="min-height: 70vh;">
-            <div class="container">
-                <div data-reveal>
-                    <span class="pill">Contact</span>
-                    <h1>Let us build the <span style="color: var(--gold);">future</span> together</h1>
-                    <p class="hero-sub">Partnerships, investment inquiries, press, and government coordination. We respond quickly.</p>
-                </div>
+    <!-- Contact Section -->
+    <section class="contact-section">
+        <div class="contact-container" data-reveal>
+            <div class="contact-header">
+                <h1>Contact</h1>
+                <p>We respond quickly.</p>
             </div>
-        </section>
 
-        <section class="section" style="padding-top: 0;">
-            <div class="container split">
-                <div class="form-card" data-reveal>
-                    <form action="https://formspree.io/f/your-form-id" method="POST">
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label>Name *</label>
-                                <input type="text" name="name" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Email *</label>
-                                <input type="email" name="email" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Company</label>
-                                <input type="text" name="company">
-                            </div>
-                            <div class="form-group">
-                                <label>Phone</label>
-                                <input type="tel" name="phone">
-                            </div>
-                            <div class="form-group full">
-                                <label>Inquiry Type</label>
-                                <select name="inquiry-type" id="inquiry-type">
-                                    <option value="">Select...</option>
-                                    <option value="investment">Investment</option>
-                                    <option value="hotel">Hotel Partnership</option>
-                                    <option value="restaurant">Restaurant Partnership</option>
-                                    <option value="safety">Safety Partnership</option>
-                                    <option value="media">Media</option>
-                                    <option value="government">Government</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-                            <div class="form-group full">
-                                <label>Message</label>
-                                <textarea name="message" placeholder="Tell us about your interest..."></textarea>
-                            </div>
+            <div class="form-card">
+                <form action="https://formspree.io/f/your-form-id" method="POST">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Name *</label>
+                            <input type="text" name="name" required>
                         </div>
-                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 12px;">
-                            Send Message <span class="btn-arrow">&rarr;</span>
-                        </button>
-                    </form>
-                </div>
-                <div data-reveal>
-                    <div class="card" style="margin-bottom: 24px;">
-                        <h3>Direct</h3>
-                        <p>Primary inboxes for fast routing.</p>
-                        <ul class="list">
-                            <li><span>01</span> <a href="mailto:hello@hamptonsrobotaxi.com">hello@hamptonsrobotaxi.com</a></li>
-                            <li><span>02</span> <a href="mailto:investors@hamptonsrobotaxi.com">investors@hamptonsrobotaxi.com</a></li>
-                            <li><span>03</span> <a href="mailto:partners@hamptonsrobotaxi.com">partners@hamptonsrobotaxi.com</a></li>
-                            <li><span>04</span> <a href="mailto:press@hamptonsrobotaxi.com">press@hamptonsrobotaxi.com</a></li>
-                        </ul>
+                        <div class="form-group">
+                            <label>Email *</label>
+                            <input type="email" name="email" required>
+                        </div>
                     </div>
-                    <div class="card" style="margin-bottom: 24px;">
-                        <h3>Location</h3>
-                        <p>Hamptons Robotaxi, LLC<br>Southampton, NY 11968</p>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Company</label>
+                            <input type="text" name="company">
+                        </div>
+                        <div class="form-group">
+                            <label>Inquiry Type</label>
+                            <select name="inquiry-type">
+                                <option value="">Select...</option>
+                                <option value="investment">Investment</option>
+                                <option value="partnership">Partnership</option>
+                                <option value="media">Media</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="card">
-                        <h3>Investors</h3>
-                        <p>See the financial model and launch roadmap.</p>
-                        <a href="investors.html" class="btn btn-ghost" style="margin-top: 16px;">View Investor Info</a>
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea name="message" placeholder="Tell us about your interest..."></textarea>
                     </div>
-                </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px;">
+                        Send <span class="btn-arrow">&rarr;</span>
+                    </button>
+                </form>
             </div>
-        </section>
-    </main>
 
+            <div class="contact-emails">
+                <p>Or email us directly</p>
+                <a href="mailto:hello@hamptonsrobotaxi.com">hello@</a>
+                <a href="mailto:investors@hamptonsrobotaxi.com">investors@</a>
+                <a href="mailto:partners@hamptonsrobotaxi.com">partners@</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <h3>Hamptons Robotaxi</h3>
-                    <p>Autonomous rides for America's most exclusive destination.</p>
-                </div>
-                <div class="footer-links">
-                    <h4>Company</h4>
-                    <ul>
-                        <li><a href="about.html">About</a></li>
-                        <li><a href="team.html">Team</a></li>
-                        <li><a href="game.html">Game</a></li>
-                        <li><a href="investors.html">Investors</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Contact</h4>
-                    <ul>
-                        <li><a href="mailto:hello@hamptonsrobotaxi.com">hello@hamptonsrobotaxi.com</a></li>
-                        <li><a href="mailto:investors@hamptonsrobotaxi.com">investors@hamptonsrobotaxi.com</a></li>
-                        <li><a href="mailto:partners@hamptonsrobotaxi.com">partners@hamptonsrobotaxi.com</a></li>
-                    </ul>
-                </div>
+        <div class="footer-inner">
+            <div class="footer-brand">Hamptons <span>Robotaxi</span></div>
+            <div class="footer-links">
+                <a href="about.html">About</a>
+                <a href="team.html">Team</a>
+                <a href="investors.html">Investors</a>
+                <a href="contact.html">Contact</a>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 Hamptons Robotaxi, LLC</p>
-                <div class="footer-legal">
-                    <a href="index.html">Home</a>
-                    <a href="about.html">About</a>
-                    <a href="team.html">Team</a>
-                    <a href="game.html">Game</a>
-                    <a href="investors.html">Investors</a>
-                </div>
-            </div>
+            <div class="footer-copy">&copy; 2026 Hamptons Robotaxi, LLC</div>
         </div>
     </footer>
 

@@ -4,17 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Team | Hamptons Robotaxi</title>
-    <meta name="description" content="Meet the operators building the Hamptons robotaxi fleet with AI-native operations.">
+    <meta name="description" content="Meet the team building Hamptons Robotaxi.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
+    <!-- Cosmic Background -->
+    <div class="cosmos">
+        <div class="stars"></div>
+        <div class="stars-2"></div>
+        <div class="nebula nebula-1"></div>
+        <div class="nebula nebula-2"></div>
+    </div>
 
+    <!-- Navigation -->
     <nav class="nav" id="nav">
         <div class="nav-inner">
             <a href="index.html" class="nav-logo">Hamptons <span>Robotaxi</span></a>
@@ -22,194 +27,94 @@
                 <li><a href="about.html">About</a></li>
                 <li><a href="team.html" class="active">Team</a></li>
                 <li><a href="investors.html">Investors</a></li>
-                <li><a href="game.html">Game</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
             <div class="nav-actions">
-                <a href="investors.html" class="btn btn-ghost">Get the Deck</a>
+                <a href="investors.html" class="btn btn-ghost">Invest</a>
                 <button class="nav-toggle" id="navToggle">Menu</button>
             </div>
         </div>
     </nav>
 
-    <main>
-        <section class="hero">
-            <div class="container hero-grid">
-                <div data-reveal>
-                    <span class="pill">The Team</span>
-                    <h1>Operators with <span style="color: var(--gold);">local edge</span> and technical depth</h1>
-                    <p class="hero-sub">We combine Hamptons market knowledge with AI powered execution to launch the first trusted robotaxi operator.</p>
+    <!-- Hero -->
+    <section class="hero-section" data-reveal>
+        <div class="hero-content">
+            <span class="label">The Team</span>
+            <h1>Two founders.<br><span class="gold">Four AI agents.</span></h1>
+            <p class="hero-tagline">Local expertise meets AI-native operations.</p>
+        </div>
+    </section>
+
+    <!-- Founders -->
+    <section class="page-section" data-reveal>
+        <div class="section-inner">
+            <span class="label">Founders</span>
+            <div class="team-grid" style="max-width: 800px; margin: 0 auto;">
+                <div class="team-card">
+                    <div class="team-photo">B</div>
+                    <div class="team-name">Ben Kassan</div>
+                    <div class="team-role">Co-Founder & CEO</div>
+                    <p class="team-bio">UPenn - Economics & Machine Learning. Serial entrepreneur. Hamptons resident. Has been preparing for the robotaxi moment for years.</p>
                 </div>
-                <div class="hero-panel" data-reveal>
-                    <p class="kicker">AI Native Ops</p>
-                    <h3>Humans plus AI, not humans versus AI</h3>
-                    <div class="panel-grid">
-                        <div class="panel-item">
-                            <span class="panel-label">Strategy</span>
-                            <span class="panel-value">ChatGPT</span>
-                        </div>
-                        <div class="panel-item">
-                            <span class="panel-label">Execution</span>
-                            <span class="panel-value">Claude</span>
-                        </div>
-                        <div class="panel-item">
-                            <span class="panel-label">Research</span>
-                            <span class="panel-value">Grok</span>
-                        </div>
-                        <div class="panel-item">
-                            <span class="panel-label">Multimodal QA</span>
-                            <span class="panel-value">Gemini</span>
-                        </div>
-                    </div>
-                    <p class="panel-foot">Lean headcount with high velocity execution.</p>
+                <div class="team-card">
+                    <div class="team-photo"><img src="andrew.jpg" alt="Andrew"></div>
+                    <div class="team-name">Andrew</div>
+                    <div class="team-role">Co-Founder & COO</div>
+                    <p class="team-bio">Emory - Economics & Business. Real estate operations background. Brings execution rigor to fleet management and scaling.</p>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="section">
-            <div class="container">
-                <div class="section-header" data-reveal>
-                    <p class="kicker">Founders</p>
-                    <h2>The humans behind the machines</h2>
+    <!-- AI Operating System -->
+    <section class="page-section" data-reveal>
+        <div class="section-inner">
+            <span class="label">AI Operating System</span>
+            <h2>Lean headcount.<br><span class="gold">High velocity.</span></h2>
+            <div class="stats-row" style="margin-top: 48px;">
+                <div class="mini-stat">
+                    <div class="mini-stat-value">ChatGPT</div>
+                    <div class="mini-stat-label">Strategy</div>
                 </div>
-                <div class="profile-card" data-reveal style="margin-bottom: 32px;">
-                    <div style="text-align: center;">
-                        <div class="profile-photo">B</div>
-                        <h3>Ben Kassan</h3>
-                        <p class="profile-role">Co-Founder and CEO</p>
-                    </div>
-                    <div>
-                        <p><strong style="color: var(--gold);">UPenn</strong> - Economics and Machine Learning</p>
-                        <p class="lead">Serial entrepreneur with deep robotics and AI experience. Ben has been preparing for the robotaxi moment for years and is a Hamptons resident.</p>
-                    </div>
+                <div class="mini-stat">
+                    <div class="mini-stat-value">Codex</div>
+                    <div class="mini-stat-label">Coding</div>
                 </div>
-                <div class="profile-card reverse" data-reveal>
-                    <div>
-                        <p><strong style="color: var(--gold);">Emory</strong> - Economics and Business</p>
-                        <p class="lead">Real estate operations leader with expertise in asset deployment and operational scale. Andrew brings execution rigor to fleet management.</p>
-                    </div>
-                    <div style="text-align: center;">
-                        <img src="andrew.jpg" alt="Andrew" class="profile-photo" style="object-fit: cover;">
-                        <h3>Andrew</h3>
-                        <p class="profile-role">Co-Founder and COO</p>
-                    </div>
+                <div class="mini-stat">
+                    <div class="mini-stat-value">Claude</div>
+                    <div class="mini-stat-label">Execution</div>
+                </div>
+                <div class="mini-stat">
+                    <div class="mini-stat-value">Grok</div>
+                    <div class="mini-stat-label">Research</div>
                 </div>
             </div>
-        </section>
+            <p class="subtitle" style="margin-top: 48px;">AI handles legal prep, compliance, fleet ops, and customer support. Founders focus on execution.</p>
+        </div>
+    </section>
 
-        <section class="section section-alt">
-            <div class="container">
-                <div class="section-header" data-reveal>
-                    <p class="kicker">AI Operating System</p>
-                    <h2>Run lean without sacrificing quality</h2>
-                    <p class="lead">AI agents handle research, compliance prep, and operations support so the team stays focused on execution.</p>
-                </div>
-                <div class="card-grid">
-                    <div class="card" data-reveal>
-                        <div class="card-tag">01</div>
-                        <h3>Legal and compliance</h3>
-                        <p>Contracts, regulatory filings, and policy monitoring with human review.</p>
-                    </div>
-                    <div class="card" data-reveal>
-                        <div class="card-tag">02</div>
-                        <h3>Operations tooling</h3>
-                        <p>Fleet dashboards, incident workflows, and vendor management automation.</p>
-                    </div>
-                    <div class="card" data-reveal>
-                        <div class="card-tag">03</div>
-                        <h3>Customer support</h3>
-                        <p>24/7 support workflows, escalation, and rider experience tracking.</p>
-                    </div>
-                    <div class="card" data-reveal>
-                        <div class="card-tag">04</div>
-                        <h3>Deployment cadence</h3>
-                        <p>Rapid testing and iteration as the fleet scales across markets.</p>
-                    </div>
-                </div>
+    <!-- CTA -->
+    <section class="page-section" data-reveal>
+        <div class="section-inner">
+            <h2>Join the mission</h2>
+            <div class="hero-cta" style="margin-top: 32px;">
+                <a href="investors.html" class="btn btn-primary">Invest <span class="btn-arrow">&rarr;</span></a>
+                <a href="contact.html" class="btn btn-ghost">Contact</a>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="section">
-            <div class="container split">
-                <div data-reveal>
-                    <p class="kicker">Why It Matters</p>
-                    <h2>Operational leverage creates the moat</h2>
-                    <p class="lead">The winning operator is the one that can scale safely, fast, and with disciplined economics. AI native operations give us the leverage to do it.</p>
-                    <ul class="list">
-                        <li><span>01</span> Lean headcount keeps margins high.</li>
-                        <li><span>02</span> Automated workflows improve reliability.</li>
-                        <li><span>03</span> Faster rollouts across seasonal markets.</li>
-                    </ul>
-                </div>
-                <div class="metric-grid" data-reveal>
-                    <div class="metric-card">
-                        <div class="metric-value">2</div>
-                        <div class="metric-label">Founders</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-value">4</div>
-                        <div class="metric-label">AI systems</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-value">90%</div>
-                        <div class="metric-label">Lower overhead target</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-value">24/7</div>
-                        <div class="metric-label">Ops visibility</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section section-alt">
-            <div class="container" data-reveal style="text-align: center;">
-                <p class="kicker">Join Us</p>
-                <h2>The future is being built now</h2>
-                <p class="lead" style="max-width: 560px; margin: 20px auto 0;">We are raising our seed round and welcoming operators, investors, and partners who see the opportunity.</p>
-                <div class="hero-ctas" style="justify-content: center; margin-top: 32px;">
-                    <a href="investors.html" class="btn btn-primary">Investors <span class="btn-arrow">&rarr;</span></a>
-                    <a href="contact.html" class="btn btn-ghost">Contact</a>
-                </div>
-            </div>
-        </section>
-    </main>
-
+    <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <h3>Hamptons Robotaxi</h3>
-                    <p>Autonomous rides for America's most exclusive destination.</p>
-                </div>
-                <div class="footer-links">
-                    <h4>Company</h4>
-                    <ul>
-                        <li><a href="about.html">About</a></li>
-                        <li><a href="team.html">Team</a></li>
-                        <li><a href="game.html">Game</a></li>
-                        <li><a href="investors.html">Investors</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Contact</h4>
-                    <ul>
-                        <li><a href="contact.html">Contact</a></li>
-                        <li><a href="mailto:investors@hamptonsrobotaxi.com">investors@hamptonsrobotaxi.com</a></li>
-                        <li><a href="mailto:partners@hamptonsrobotaxi.com">partners@hamptonsrobotaxi.com</a></li>
-                    </ul>
-                </div>
+        <div class="footer-inner">
+            <div class="footer-brand">Hamptons <span>Robotaxi</span></div>
+            <div class="footer-links">
+                <a href="about.html">About</a>
+                <a href="team.html">Team</a>
+                <a href="investors.html">Investors</a>
+                <a href="contact.html">Contact</a>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 Hamptons Robotaxi, LLC</p>
-                <div class="footer-legal">
-                    <a href="index.html">Home</a>
-                    <a href="about.html">About</a>
-                    <a href="game.html">Game</a>
-                    <a href="investors.html">Investors</a>
-                    <a href="contact.html">Contact</a>
-                </div>
-            </div>
+            <div class="footer-copy">&copy; 2026 Hamptons Robotaxi, LLC</div>
         </div>
     </footer>
 
