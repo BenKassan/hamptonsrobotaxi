@@ -154,9 +154,9 @@
 
     const getLaneByIndex = (index) => (index >= 0 && index < laneCount ? lanes[index] : null);
 
-    const lookAhead = 0.6;
-    const autoSafetyHorizon = 0.4;
-    const autoSafetyPad = 8;
+    const lookAhead = 0.5;
+    const autoSafetyHorizon = 0.3;
+    const autoSafetyPad = 4;
 
     const getCarFutureX = (car, t) => {
         if (t <= 0) return car.x;
@@ -354,6 +354,17 @@
             a.y < b.y + b.h &&
             a.y + a.h > b.y
         );
+    };
+
+    // Simple collision check - does this position overlap ANY car right now?
+    const wouldHitCar = (x, y, buffer = 6) => {
+        const rect = {
+            x: x - player.w / 2 - buffer,
+            y: y - player.h / 2 - buffer,
+            w: player.w + buffer * 2,
+            h: player.h + buffer * 2
+        };
+        return cars.some(car => rectsIntersect(rect, car));
     };
 
     const playerRectAt = (x, y) => ({
@@ -636,147 +647,39 @@
         });
     };
 
-    const getAutoInput = (dt) => {
-        updateAutoTimers(dt);
-        updateAutoStuck(dt);
-
-        const speed = getAutoSpeed();
-        const step = speed * dt;
+    // Simple AI - just express intent, let movement handle safety
+    const getAutoInput = () => {
         const currentLane = getLaneIndex(player.y);
         const inTopZone = currentLane === -1;
         const inBottomZone = currentLane === laneCount;
-        const inSafeZone = inTopZone || inBottomZone;
 
         const goingDown = player.hasPassenger;
         const verticalDir = goingDown ? 1 : -1;
-        const preferredX = goingDown ? player.x : passenger.x;
 
-        if (autoState.direction !== verticalDir) {
-            autoState.direction = verticalDir;
-            autoState.targetLane = null;
-            autoState.targetX = player.x;
-            autoState.planTimer = 0;
-            autoState.stuckTime = 0;
+        // In pickup zone without passenger - go to passenger
+        if (inTopZone && !player.hasPassenger) {
+            const dx = getAlignedDx(passenger.x);
+            const dy = player.y > passenger.y + 3 ? -1 : 0;
+            return { dx, dy };
         }
 
-        // === SAFE ZONE BEHAVIOR ===
-        if (inSafeZone) {
-            if (inTopZone && !player.hasPassenger) {
-                const dx = getAlignedDx(passenger.x);
-                const dy = Math.abs(passenger.y - player.y) > 3 ? Math.sign(passenger.y - player.y) : 0;
-                return { dx, dy };
-            }
-
-            if (inBottomZone && player.hasPassenger) {
-                return { dx: 0, dy: 1 };
-            }
-
-            // About to enter traffic - find a safe gap in the first lane
-            const nextLane = goingDown ? 0 : laneCount - 1;
-            const gapX = findSafeGapX(nextLane, preferredX);
-
-            if (gapX !== null) {
-                const dx = getAlignedDx(gapX);
-                // Only enter traffic when aligned with a gap
-                if (dx === 0 && isLaneSafeAtX(nextLane, player.x, 20)) {
-                    return { dx: 0, dy: verticalDir };
-                }
-                return { dx, dy: 0 };
-            }
-
-            // No gap found - wait for one to open
-            return { dx: 0, dy: 0 };
+        // In dropoff zone with passenger - complete dropoff
+        if (inBottomZone && player.hasPassenger) {
+            return { dx: 0, dy: 1 };
         }
 
-        // === TRAFFIC ZONE BEHAVIOR ===
-        // Smart avoidance - weave through gaps without touching cars
-        const nextLane = currentLane + verticalDir;
-        const forwardY = player.y + verticalDir * step;
-
-        // Check if we're about to exit traffic into safe zone
-        if (nextLane < 0 || nextLane >= laneCount) {
-            // Safe to proceed - entering safe zone
-            if (isPositionSafe(player.x, forwardY, 0.15)) {
-                return { dx: 0, dy: verticalDir };
-            }
-            // Wait for gap before exiting
-            return { dx: 0, dy: 0 };
-        }
-
-        // Find the best gap in the next lane
-        const gapX = findSafeGapX(nextLane, preferredX);
-
-        if (gapX !== null) {
-            const dx = getAlignedDx(gapX);
-
-            // Check if current position in next lane is safe
-            const canAdvance = isLaneSafeAtX(nextLane, player.x, 18) &&
-                               isPositionSafe(player.x, forwardY, 0.2);
-
-            if (dx === 0 && canAdvance) {
-                // Aligned with gap - move forward
-                return { dx: 0, dy: verticalDir };
-            }
-
-            // Need to align horizontally first
-            if (dx !== 0) {
-                const nextX = player.x + Math.sign(dx) * step;
-                // Make sure horizontal movement is safe
-                if (isPositionSafe(nextX, player.y, 0.15)) {
-                    // Can we also move forward diagonally?
-                    if (canAdvance && isPositionSafe(nextX, forwardY, 0.15)) {
-                        return { dx, dy: verticalDir };
-                    }
-                    return { dx, dy: 0 };
-                }
-            }
-        }
-
-        // Current lane - check if we need to dodge
-        const currentSafe = isPositionSafe(player.x, player.y, 0.1);
-        if (!currentSafe) {
-            // Urgent - find escape in current lane
-            const escapeX = findSafeGapX(currentLane, player.x);
-            if (escapeX !== null && Math.abs(escapeX - player.x) > 5) {
-                return { dx: getAlignedDx(escapeX), dy: 0 };
-            }
-        }
-
-        // Wait for a gap to open
-        return { dx: 0, dy: 0 };
-    };
-
-    const applyAutoSafety = (input, dt) => {
-        const { dx, dy } = input;
-        if (dx === 0 && dy === 0) return input;
-
-        const speed = getAutoSpeed();
-        const length = Math.hypot(dx, dy) || 1;
-        const stepX = (dx / length) * speed * dt;
-        const stepY = (dy / length) * speed * dt;
-        const nextX = clamp(player.x + stepX, player.w / 2, width - player.w / 2);
-        const nextY = clamp(player.y + stepY, player.h / 2, height - player.h / 2);
-
-        // For diagonal moves, check the entire path not just the endpoint
-        if (dx !== 0 && dy !== 0) {
-            if (isPathSafe(player.x, player.y, nextX, nextY, 0.25)) return { dx, dy };
-        } else {
-            if (isPositionSafe(nextX, nextY, 0.25)) return { dx, dy };
-        }
-
-        // Fall back to single-axis movement
-        if (dx !== 0 && isPositionSafe(nextX, player.y, 0.25)) return { dx, dy: 0 };
-        if (dy !== 0 && isPositionSafe(player.x, nextY, 0.25)) return { dx: 0, dy };
-
-        return { dx: 0, dy: 0 };
+        // Otherwise: move toward goal while aligning with target
+        const targetX = goingDown ? player.x : passenger.x;
+        const dx = getAlignedDx(targetX);
+        return { dx, dy: verticalDir };
     };
 
     const updatePlayer = (dt) => {
         let dx = 0;
         let dy = 0;
+
         if (state.mode === 'auto') {
-            // Use safety wrapper to ensure we never touch cars
-            const autoInput = applyAutoSafety(getAutoInput(dt), dt);
+            const autoInput = getAutoInput();
             dx = autoInput.dx;
             dy = autoInput.dy;
         } else {
@@ -786,13 +689,46 @@
             if (keys['ArrowRight'] || keys['d']) dx += 1;
         }
 
+        if (dx === 0 && dy === 0) return;
+
         const length = Math.hypot(dx, dy) || 1;
         const speed = getAutoSpeed();
-        player.x += (dx / length) * speed * dt;
-        player.y += (dy / length) * speed * dt;
+        const moveX = (dx / length) * speed * dt;
+        const moveY = (dy / length) * speed * dt;
 
-        player.x = clamp(player.x, player.w / 2, width - player.w / 2);
-        player.y = clamp(player.y, player.h / 2, height - player.h / 2);
+        let newX = clamp(player.x + moveX, player.w / 2, width - player.w / 2);
+        let newY = clamp(player.y + moveY, player.h / 2, height - player.h / 2);
+
+        // AUTO MODE: Hard block - never overlap a car
+        if (state.mode === 'auto') {
+            const buffer = 4;  // Keep small gap from cars
+
+            // Try full move
+            if (!wouldHitCar(newX, newY, buffer)) {
+                player.x = newX;
+                player.y = newY;
+                return;
+            }
+
+            // Try vertical only
+            if (dy !== 0 && !wouldHitCar(player.x, newY, buffer)) {
+                player.y = newY;
+                return;
+            }
+
+            // Try horizontal only
+            if (dx !== 0 && !wouldHitCar(newX, player.y, buffer)) {
+                player.x = newX;
+                return;
+            }
+
+            // Blocked - don't move (wait for gap)
+            return;
+        }
+
+        // Human mode - just move
+        player.x = newX;
+        player.y = newY;
     };
 
     const handleCollision = () => {
