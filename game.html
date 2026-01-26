@@ -4,17 +4,217 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Robotaxi Rush | Hamptons Robotaxi</title>
-    <meta name="description" content="Play Robotaxi Rush, a quick frogger-style game that walks through robotaxi profitability.">
+    <meta name="description" content="Play Robotaxi Rush - see robotaxi profitability in action.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Game-specific styles */
+        .game-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+            padding: 120px 24px 60px;
+        }
+
+        .game-container {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .game-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .game-header h1 {
+            font-size: clamp(32px, 5vw, 48px);
+            margin-bottom: 12px;
+        }
+
+        .game-header p {
+            color: var(--text-dim);
+            font-size: 16px;
+        }
+
+        .game-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .game-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .game-panel {
+            background: var(--surface);
+            border: 1px solid var(--edge);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .game-badge {
+            display: inline-block;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 12px;
+        }
+
+        .game-score-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--edge);
+            font-size: 13px;
+        }
+
+        .game-score-row:last-child {
+            border-bottom: none;
+        }
+
+        .game-score-row span {
+            color: var(--text-dim);
+        }
+
+        .game-score-row strong {
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .game-timer {
+            font-size: 20px !important;
+            color: var(--accent) !important;
+        }
+
+        .game-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .game-actions .btn {
+            width: 100%;
+            justify-content: center;
+            padding: 12px 16px;
+            font-size: 10px;
+        }
+
+        .btn-toggle {
+            opacity: 0.5;
+        }
+
+        .btn-toggle.active {
+            opacity: 1;
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .game-hint {
+            font-size: 11px;
+            color: var(--text-faint);
+            line-height: 1.5;
+            margin-top: 8px;
+        }
+
+        .game-status {
+            font-size: 11px;
+            color: var(--text-dim);
+            text-align: center;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--edge);
+        }
+
+        .game-board {
+            background: var(--surface);
+            border: 1px solid var(--edge);
+            border-radius: 16px;
+            padding: 16px;
+            overflow: hidden;
+        }
+
+        .game-canvas {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+        }
+
+        .game-controls-hint {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 12px;
+            font-size: 11px;
+            color: var(--text-faint);
+        }
+
+        .game-controls-hint span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .key {
+            display: inline-block;
+            padding: 4px 8px;
+            background: var(--surface);
+            border: 1px solid var(--edge);
+            border-radius: 4px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 10px;
+        }
+
+        @media (max-width: 900px) {
+            .game-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .game-sidebar {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .game-sidebar .game-panel:first-child {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .game-sidebar {
+                grid-template-columns: 1fr;
+            }
+
+            .game-sidebar .game-panel:first-child {
+                grid-column: span 1;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
+    <!-- Cosmic Background -->
+    <div class="cosmos">
+        <div class="stars"></div>
+        <div class="stars-2"></div>
+        <div class="nebula nebula-1"></div>
+        <div class="nebula nebula-2"></div>
+    </div>
 
+    <!-- Navigation -->
     <nav class="nav" id="nav">
         <div class="nav-inner">
             <a href="index.html" class="nav-logo">Hamptons <span>Robotaxi</span></a>
@@ -26,150 +226,95 @@
                 <li><a href="contact.html">Contact</a></li>
             </ul>
             <div class="nav-actions">
-                <a href="investors.html" class="btn btn-ghost">Get the Deck</a>
+                <a href="investors.html" class="btn btn-ghost">Invest</a>
                 <button class="nav-toggle" id="navToggle">Menu</button>
             </div>
         </div>
     </nav>
 
-    <main>
-        <section class="hero" style="min-height: 70vh;">
-            <div class="container hero-grid">
-                <div data-reveal>
-                    <span class="pill">Robotaxi Rush</span>
-                    <h1>Play the <span style="color: var(--gold);">1-minute</span> profitability sprint</h1>
-                    <p class="hero-sub">Pick up riders, dodge traffic, and stack points in 60 seconds. Simple, fast, and built to show why robotaxis scale.</p>
-                    <div class="hero-ctas">
-                        <a href="#play" class="btn btn-primary">Play Now <span class="btn-arrow">&rarr;</span></a>
-                        <a href="investors.html" class="btn btn-ghost">See the Model</a>
-                    </div>
-                </div>
-                <div class="hero-panel" data-reveal>
-                    <p class="kicker">How it works</p>
-                    <h3>Pick up at the top, drop off at the bottom</h3>
-                    <ul class="list">
-                        <li><span>WASD or arrows</span> to move the robotaxi.</li>
-                        <li><span>Pickup zone</span> is at the top of the map.</li>
-                        <li><span>Dropoff zone</span> is at the bottom.</li>
-                        <li><span>Switch modes</span> to watch self-driving play itself.</li>
-                        <li><span>Each trip</span> adds revenue and contribution.</li>
-                    </ul>
-                    <p class="panel-foot">Each run is 60 seconds. Rack up points and keep the streak alive.</p>
-                </div>
+    <!-- Game Section -->
+    <section class="game-section">
+        <div class="game-container" data-reveal>
+            <div class="game-header">
+                <span class="label">Robotaxi Rush</span>
+                <h1>See the <span class="gold">economics</span> in action</h1>
+                <p>Pick up riders, dodge traffic, watch the numbers add up.</p>
             </div>
-        </section>
 
-        <section class="section" id="play">
-            <div class="container game-shell">
-                <div class="game-ui">
-                    <div class="game-panel" data-reveal>
+            <div class="game-layout">
+                <div class="game-sidebar">
+                    <div class="game-panel">
                         <span class="game-badge">Session</span>
                         <div class="game-score">
                             <div class="game-score-row"><span>Time left</span><strong class="game-timer" id="timeLeft">01:00</strong></div>
-                            <div class="game-score-row"><span>Points (trips)</span><strong id="tripCount">0</strong></div>
+                            <div class="game-score-row"><span>Trips</span><strong id="tripCount">0</strong></div>
                             <div class="game-score-row"><span>Streak</span><strong id="tripStreak">0</strong></div>
                         </div>
-                        <div class="game-mode" style="margin-top: 16px;">
-                            <span class="game-label">Mode</span>
-                            <div class="game-actions" style="margin-top: 8px;">
-                                <button class="btn btn-ghost btn-toggle active" id="modeHuman">Human Mode</button>
-                                <button class="btn btn-ghost btn-toggle" id="modeAuto">Self-Driving</button>
-                            </div>
-                            <p class="game-hint" style="margin-top: 10px;">Self-driving runs the route for you while the numbers update.</p>
+                        <div class="game-actions">
+                            <button class="btn btn-ghost btn-toggle active" id="modeHuman">Human Mode</button>
+                            <button class="btn btn-ghost btn-toggle" id="modeAuto">Self-Driving</button>
                         </div>
-                        <div class="game-actions" style="margin-top: 16px;">
-                            <button class="btn btn-primary" id="startGame">Start 1-minute run</button>
+                        <p class="game-hint">Toggle self-driving to watch the AI run routes automatically.</p>
+                        <div class="game-actions">
+                            <button class="btn btn-primary" id="startGame">Start Game</button>
                             <button class="btn btn-ghost" id="resetGame">Reset</button>
                         </div>
                         <div class="game-status" id="gameStatus">Ready to launch</div>
                     </div>
 
-                    <div class="game-panel" data-reveal>
-                        <span class="game-badge">Trip Economics</span>
+                    <div class="game-panel">
+                        <span class="game-badge">Per Trip</span>
                         <div class="game-score">
-                            <div class="game-score-row"><span>Fare per trip</span><strong>$30.00</strong></div>
-                            <div class="game-score-row"><span>Tesla platform fee</span><strong>$8.25</strong></div>
-                            <div class="game-score-row"><span>Variable opex</span><strong>$11.65</strong></div>
-                            <div class="game-score-row"><span>Contribution</span><strong>$10.10</strong></div>
-                        </div>
-                        <p class="game-hint" style="margin-top: 10px;">Based on the base case model at 75% utilization.</p>
-                    </div>
-
-                    <div class="game-panel" data-reveal>
-                        <span class="game-badge">Totals</span>
-                        <div class="game-score">
-                            <div class="game-score-row"><span>Total fares</span><strong id="fareTotal">$0</strong></div>
-                            <div class="game-score-row"><span>Total platform fees</span><strong id="feeTotal">$0</strong></div>
-                            <div class="game-score-row"><span>Total variable opex</span><strong id="opexTotal">$0</strong></div>
-                            <div class="game-score-row"><span>Total contribution</span><strong id="contribTotal">$0</strong></div>
+                            <div class="game-score-row"><span>Fare</span><strong>$30.00</strong></div>
+                            <div class="game-score-row"><span>Tesla fee</span><strong>-$8.25</strong></div>
+                            <div class="game-score-row"><span>Opex</span><strong>-$11.65</strong></div>
+                            <div class="game-score-row"><span>Contribution</span><strong style="color: var(--accent);">$10.10</strong></div>
                         </div>
                     </div>
 
-                    <div class="game-panel" data-reveal>
+                    <div class="game-panel">
+                        <span class="game-badge">Session Totals</span>
+                        <div class="game-score">
+                            <div class="game-score-row"><span>Fares</span><strong id="fareTotal">$0</strong></div>
+                            <div class="game-score-row"><span>Fees</span><strong id="feeTotal">$0</strong></div>
+                            <div class="game-score-row"><span>Opex</span><strong id="opexTotal">$0</strong></div>
+                            <div class="game-score-row"><span>Contribution</span><strong id="contribTotal" style="color: var(--accent);">$0</strong></div>
+                        </div>
+                    </div>
+
+                    <div class="game-panel">
                         <span class="game-badge">Run Rate</span>
                         <div class="game-score">
-                            <div class="game-score-row"><span>Trips per day pace</span><strong id="paceTrips">0.0</strong></div>
-                            <div class="game-score-row"><span>Projected monthly contribution</span><strong id="runRate">$0</strong></div>
+                            <div class="game-score-row"><span>Trips/day pace</span><strong id="paceTrips">0.0</strong></div>
+                            <div class="game-score-row"><span>Monthly contrib</span><strong id="runRate">$0</strong></div>
                         </div>
-                        <p class="game-hint" style="margin-top: 10px;">Base case: 13.5 trips/day delivers $4.1k contribution per month.</p>
+                        <p class="game-hint">Base case: 13.5 trips/day = $4.1k/month contribution.</p>
                     </div>
                 </div>
 
-                <div class="game-board" data-reveal>
-                    <canvas id="gameCanvas" class="game-canvas" width="900" height="540" aria-label="Robotaxi Rush game board"></canvas>
-                    <p class="game-hint" style="margin-top: 12px;">Tip: cross quickly, avoid traffic, or toggle self-driving for a guided run.</p>
+                <div class="game-board">
+                    <canvas id="gameCanvas" class="game-canvas" width="900" height="540" aria-label="Robotaxi Rush game"></canvas>
+                    <div class="game-controls-hint">
+                        <span><span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span> or arrows to move</span>
+                        <span>Pick up top, drop off bottom</span>
+                    </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="section section-alt">
-            <div class="container" data-reveal style="text-align: center;">
-                <p class="kicker">Want the full model?</p>
-                <h2>See the investor package</h2>
-                <p class="lead" style="max-width: 560px; margin: 20px auto 0;">We can share the complete financial model, regulatory roadmap, and launch plan.</p>
-                <div class="hero-ctas" style="justify-content: center; margin-top: 32px;">
-                    <a href="investors.html" class="btn btn-primary">Request Investor Deck <span class="btn-arrow">&rarr;</span></a>
-                    <a href="contact.html?type=investment" class="btn btn-ghost">Contact Us</a>
-                </div>
-            </div>
-        </section>
-    </main>
-
+    <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <h3>Hamptons Robotaxi</h3>
-                    <p>Autonomous rides for America's most exclusive destination.</p>
-                </div>
-                <div class="footer-links">
-                    <h4>Company</h4>
-                    <ul>
-                        <li><a href="about.html">About</a></li>
-                        <li><a href="team.html">Team</a></li>
-                        <li><a href="game.html">Game</a></li>
-                        <li><a href="investors.html">Investors</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Contact</h4>
-                    <ul>
-                        <li><a href="contact.html">Contact</a></li>
-                        <li><a href="mailto:investors@hamptonsrobotaxi.com">investors@hamptonsrobotaxi.com</a></li>
-                        <li><a href="mailto:partners@hamptonsrobotaxi.com">partners@hamptonsrobotaxi.com</a></li>
-                    </ul>
-                </div>
+        <div class="footer-inner">
+            <div class="footer-brand">Hamptons <span>Robotaxi</span></div>
+            <div class="footer-links">
+                <a href="about.html">About</a>
+                <a href="team.html">Team</a>
+                <a href="investors.html">Investors</a>
+                <a href="game.html">Game</a>
+                <a href="contact.html">Contact</a>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 Hamptons Robotaxi, LLC</p>
-                <div class="footer-legal">
-                    <a href="index.html">Home</a>
-                    <a href="about.html">About</a>
-                    <a href="team.html">Team</a>
-                    <a href="game.html">Game</a>
-                    <a href="contact.html">Contact</a>
-                </div>
-            </div>
+            <div class="footer-copy">&copy; 2026 Hamptons Robotaxi, LLC</div>
         </div>
     </footer>
 
