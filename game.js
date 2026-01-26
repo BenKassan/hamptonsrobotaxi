@@ -367,6 +367,28 @@
         return cars.some(car => rectsIntersect(rect, car));
     };
 
+    // Check if a car is approaching and will hit us soon
+    const isCarApproaching = (lookahead = 0.3) => {
+        const buffer = 8;
+        const rect = {
+            x: player.x - player.w / 2 - buffer,
+            y: player.y - player.h / 2 - buffer,
+            w: player.w + buffer * 2,
+            h: player.h + buffer * 2
+        };
+
+        return cars.some(car => {
+            // Check if car is in same vertical band
+            if (rect.y + rect.h < car.y || rect.y > car.y + car.h) return false;
+
+            // Check if car will reach us within lookahead time
+            const futureX = car.x + car.lane.speed * car.lane.direction * lookahead;
+            const carRect = { x: futureX, y: car.y, w: car.w, h: car.h };
+
+            return rectsIntersect(rect, carRect);
+        });
+    };
+
     const playerRectAt = (x, y) => ({
         x: x - player.w / 2,
         y: y - player.h / 2,
@@ -722,7 +744,32 @@
                 return;
             }
 
-            // Blocked - don't move (wait for gap)
+            // Blocked! Check if we're in danger (car approaching)
+            if (isCarApproaching(0.25)) {
+                // RETREAT - move backwards to safety
+                const retreatDir = -dy || -1;  // Opposite of intended direction, default up
+                const retreatY = player.y + retreatDir * speed * dt;
+
+                if (!wouldHitCar(player.x, retreatY, buffer)) {
+                    player.y = retreatY;
+                    return;
+                }
+
+                // Can't retreat vertically - try sideways escape
+                const escapeLeft = player.x - speed * dt;
+                const escapeRight = player.x + speed * dt;
+
+                if (escapeLeft > player.w / 2 && !wouldHitCar(escapeLeft, player.y, buffer)) {
+                    player.x = escapeLeft;
+                    return;
+                }
+                if (escapeRight < width - player.w / 2 && !wouldHitCar(escapeRight, player.y, buffer)) {
+                    player.x = escapeRight;
+                    return;
+                }
+            }
+
+            // Not in immediate danger - just wait for gap
             return;
         }
 
