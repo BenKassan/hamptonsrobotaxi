@@ -77,7 +77,8 @@
         planTimer: 0,
         lastX: width / 2,
         lastY: height - bottomZone / 2,
-        stuckTime: 0
+        stuckTime: 0,
+        safeZoneCooldown: 0
     };
 
     const player = {
@@ -334,6 +335,7 @@
         autoState.lastX = player.x;
         autoState.lastY = player.y;
         autoState.stuckTime = 0;
+        autoState.safeZoneCooldown = 0.3;
         spawnPassenger();
         updateUI();
         setStatus('Ready to launch');
@@ -655,6 +657,13 @@
             autoState.targetX = player.x;
             autoState.planTimer = 0;
             autoState.stuckTime = 0;
+            // Cooldown after direction change - pause to assess traffic
+            autoState.safeZoneCooldown = 0.4;
+        }
+
+        // Decrement cooldown timer
+        if (autoState.safeZoneCooldown > 0) {
+            autoState.safeZoneCooldown -= dt;
         }
 
         // === SAFE ZONE BEHAVIOR ===
@@ -669,16 +678,26 @@
                 return { dx: 0, dy: 1 };
             }
 
+            // After dropoff/direction change, wait during cooldown to assess traffic
             const nextLane = goingDown ? 0 : laneCount - 1;
             updateAutoPlan(nextLane, preferredX);
+
+            if (autoState.safeZoneCooldown > 0) {
+                // Still in cooldown - stay still but keep planning
+                const dx = getAlignedDx(autoState.targetX);
+                return { dx, dy: 0 };
+            }
+
+            // Use larger buffer when exiting safe zone (2x normal) for extra caution
+            const exitBuffer = autoSettings.laneBuffer * 2;
             const dx = getAlignedDx(autoState.targetX);
-            if (dx === 0 && isLaneSafeAtX(nextLane, player.x, autoSettings.laneBuffer)) {
+            if (dx === 0 && isLaneSafeAtX(nextLane, player.x, exitBuffer)) {
                 return { dx: 0, dy: verticalDir };
             }
             if (dx !== 0) {
                 const nextX = player.x + dx * step;
                 const nextY = player.y + verticalDir * step;
-                if (isLaneSafeAtX(nextLane, nextX, autoSettings.laneBuffer) && isPositionSafe(nextX, nextY, 0.18)) {
+                if (isLaneSafeAtX(nextLane, nextX, exitBuffer) && isPositionSafe(nextX, nextY, 0.25)) {
                     return { dx, dy: verticalDir };
                 }
             }
@@ -811,6 +830,7 @@
             autoState.lastX = player.x;
             autoState.lastY = player.y;
             autoState.stuckTime = 0;
+            autoState.safeZoneCooldown = 0.5;
             state.message = 'Crash! -3s';
             state.messageTimer = 1.2;
         }
