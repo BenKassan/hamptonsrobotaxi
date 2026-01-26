@@ -67,7 +67,7 @@
         speedMultiplier: 1.4,
         alignDeadzone: 3,
         planCooldown: 0.1,
-        laneBuffer: 6
+        laneBuffer: 12
     };
 
     const autoState = {
@@ -153,9 +153,9 @@
 
     const getLaneByIndex = (index) => (index >= 0 && index < laneCount ? lanes[index] : null);
 
-    const lookAhead = 0.45;
-    const autoSafetyHorizon = 0.25;
-    const autoSafetyPad = 1;
+    const lookAhead = 0.55;
+    const autoSafetyHorizon = 0.35;
+    const autoSafetyPad = 5;
 
     const getCarFutureX = (car, t) => {
         if (t <= 0) return car.x;
@@ -171,7 +171,7 @@
         return future;
     };
 
-    const isLaneSafeAtX = (laneIndex, x, buffer = 12) => {
+    const isLaneSafeAtX = (laneIndex, x, buffer = 16) => {
         const lane = getLaneByIndex(laneIndex);
         if (!lane) return true;
         const xMin = x - player.w / 2 - buffer;
@@ -376,7 +376,7 @@
             const carTop = car.y;
             const carBottom = car.y + car.h;
             if (rect.y + rect.h < carTop || rect.y > carBottom) return false;
-            const sampleCount = horizon > 0 ? 4 : 0;
+            const sampleCount = horizon > 0 ? 8 : 0;
             for (let i = 0; i <= sampleCount; i += 1) {
                 const t = sampleCount === 0 ? 0 : (horizon * i) / sampleCount;
                 const futureX = getCarFutureX(car, t);
@@ -391,6 +391,17 @@
             }
             return false;
         });
+    };
+
+    const isPathSafe = (fromX, fromY, toX, toY, horizon = autoSafetyHorizon) => {
+        const steps = 4;
+        for (let i = 0; i <= steps; i += 1) {
+            const t = i / steps;
+            const x = fromX + (toX - fromX) * t;
+            const y = fromY + (toY - fromY) * t;
+            if (!isPositionSafe(x, y, horizon)) return false;
+        }
+        return true;
     };
 
     const updateUI = () => {
@@ -714,10 +725,20 @@
             return { dx: getAlignedDx(fallback), dy: 0 };
         }
 
-        if (autoState.stuckTime > 0.4) {
+        if (autoState.stuckTime > 0.5) {
             const retreatY = player.y - verticalDir * step;
-            if (isPositionSafe(player.x, retreatY, 0.2)) {
+            // Use longer horizon and path check for retreat to be extra safe
+            if (isPathSafe(player.x, player.y, player.x, retreatY, 0.35)) {
                 return { dx: 0, dy: -verticalDir };
+            }
+            // Try lateral escape if retreat isn't safe
+            const escapeLeft = player.x - step;
+            const escapeRight = player.x + step;
+            if (escapeLeft > player.w / 2 && isPositionSafe(escapeLeft, player.y, 0.3)) {
+                return { dx: -1, dy: 0 };
+            }
+            if (escapeRight < width - player.w / 2 && isPositionSafe(escapeRight, player.y, 0.3)) {
+                return { dx: 1, dy: 0 };
             }
         }
 
@@ -735,9 +756,16 @@
         const nextX = clamp(player.x + stepX, player.w / 2, width - player.w / 2);
         const nextY = clamp(player.y + stepY, player.h / 2, height - player.h / 2);
 
-        if (isPositionSafe(nextX, nextY, 0.18)) return { dx, dy };
-        if (dx !== 0 && isPositionSafe(nextX, player.y, 0.18)) return { dx, dy: 0 };
-        if (dy !== 0 && isPositionSafe(player.x, nextY, 0.18)) return { dx: 0, dy };
+        // For diagonal moves, check the entire path not just the endpoint
+        if (dx !== 0 && dy !== 0) {
+            if (isPathSafe(player.x, player.y, nextX, nextY, 0.25)) return { dx, dy };
+        } else {
+            if (isPositionSafe(nextX, nextY, 0.25)) return { dx, dy };
+        }
+
+        // Fall back to single-axis movement
+        if (dx !== 0 && isPositionSafe(nextX, player.y, 0.25)) return { dx, dy: 0 };
+        if (dy !== 0 && isPositionSafe(player.x, nextY, 0.25)) return { dx: 0, dy };
 
         return { dx: 0, dy: 0 };
     };
