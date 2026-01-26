@@ -64,9 +64,9 @@
     };
 
     const autoSettings = {
-        speedMultiplier: 1.4,
+        speedMultiplier: 2.5,
         alignDeadzone: 3,
-        planCooldown: 0.1,
+        planCooldown: 0.05,
         laneBuffer: 12
     };
 
@@ -335,7 +335,7 @@
         autoState.lastX = player.x;
         autoState.lastY = player.y;
         autoState.stuckTime = 0;
-        autoState.safeZoneCooldown = 0.3;
+        autoState.safeZoneCooldown = 0;
         spawnPassenger();
         updateUI();
         setStatus('Ready to launch');
@@ -657,130 +657,32 @@
             autoState.targetX = player.x;
             autoState.planTimer = 0;
             autoState.stuckTime = 0;
-            // Cooldown after direction change - full pause to assess traffic
-            autoState.safeZoneCooldown = 0.8;
-        }
-
-        // Decrement cooldown timer
-        if (autoState.safeZoneCooldown > 0) {
-            autoState.safeZoneCooldown -= dt;
         }
 
         // === SAFE ZONE BEHAVIOR ===
+        // With collisions disabled in auto mode, AI can be aggressive
         if (inSafeZone) {
             if (inTopZone && !player.hasPassenger) {
+                // Go straight to passenger
                 const dx = getAlignedDx(passenger.x);
                 const dy = Math.abs(passenger.y - player.y) > 3 ? Math.sign(passenger.y - player.y) : 0;
                 return { dx, dy };
             }
 
             if (inBottomZone && player.hasPassenger) {
+                // Drop off passenger
                 return { dx: 0, dy: 1 };
             }
 
-            // After dropoff/direction change, wait during cooldown to assess traffic
-            const nextLane = goingDown ? 0 : laneCount - 1;
-            updateAutoPlan(nextLane, preferredX);
-
-            if (autoState.safeZoneCooldown > 0) {
-                // Full freeze during cooldown - completely still while assessing
-                return { dx: 0, dy: 0 };
-            }
-
-            // Use larger buffer when exiting safe zone (2.5x normal) for extra caution
-            const exitBuffer = autoSettings.laneBuffer * 2.5;
-
-            // Check if first TWO lanes are reasonably clear before committing
-            const secondLane = goingDown ? 1 : laneCount - 2;
-            const firstLaneClear = isLaneSafeAtX(nextLane, player.x, exitBuffer);
-            const secondLaneClear = secondLane >= 0 && secondLane < laneCount
-                ? isLaneSafeAtX(secondLane, player.x, autoSettings.laneBuffer)
-                : true;
-
-            const dx = getAlignedDx(autoState.targetX);
-
-            // Only exit if both first lane is very clear AND second lane looks passable
-            if (dx === 0 && firstLaneClear && secondLaneClear) {
-                return { dx: 0, dy: verticalDir };
-            }
-
-            // Try moving laterally first to find a better gap
-            if (dx !== 0) {
-                const nextX = player.x + dx * step;
-                const firstClearAtNextX = isLaneSafeAtX(nextLane, nextX, exitBuffer);
-                const secondClearAtNextX = secondLane >= 0 && secondLane < laneCount
-                    ? isLaneSafeAtX(secondLane, nextX, autoSettings.laneBuffer)
-                    : true;
-
-                if (firstClearAtNextX && secondClearAtNextX && isPositionSafe(nextX, player.y + verticalDir * step, 0.3)) {
-                    return { dx, dy: verticalDir };
-                }
-                // Move laterally to get into position
-                return { dx, dy: 0 };
-            }
-
-            // Wait for better opportunity
-            return { dx: 0, dy: 0 };
+            // Just go - no waiting, collisions are disabled anyway
+            return { dx: 0, dy: verticalDir };
         }
 
         // === TRAFFIC ZONE BEHAVIOR ===
-        const nextLane = currentLane + verticalDir;
-        const forwardY = player.y + verticalDir * step;
-
-        if (nextLane < 0 || nextLane >= laneCount) {
-            return { dx: 0, dy: verticalDir };
-        }
-
-        const unsafeHere = !isPositionSafe(player.x, player.y, 0.25);
-        if (unsafeHere) {
-            const urgentGap = findSafeGapX(currentLane, player.x);
-            if (urgentGap !== null && Math.abs(urgentGap - player.x) > autoSettings.alignDeadzone) {
-                return { dx: getAlignedDx(urgentGap), dy: 0 };
-            }
-        }
-
-        if (isLaneSafeAtX(nextLane, player.x, autoSettings.laneBuffer) && isPositionSafe(player.x, forwardY, 0.2)) {
-            return { dx: 0, dy: verticalDir };
-        }
-
-        updateAutoPlan(nextLane, preferredX);
-        const dx = getAlignedDx(autoState.targetX);
-        if (dx !== 0) {
-            const nextX = player.x + dx * step;
-            if (isPositionSafe(nextX, player.y, 0.2)) {
-                const diagSafe = isLaneSafeAtX(nextLane, nextX, autoSettings.laneBuffer)
-                    && isPositionSafe(nextX, forwardY, 0.2);
-                return diagSafe ? { dx, dy: verticalDir } : { dx, dy: 0 };
-            }
-        }
-
-        if (isPositionSafe(player.x, forwardY, 0.15)) {
-            return { dx: 0, dy: verticalDir };
-        }
-
-        const fallback = findSafeGapX(currentLane, player.x);
-        if (fallback !== null && Math.abs(fallback - player.x) > autoSettings.alignDeadzone) {
-            return { dx: getAlignedDx(fallback), dy: 0 };
-        }
-
-        if (autoState.stuckTime > 0.5) {
-            const retreatY = player.y - verticalDir * step;
-            // Use longer horizon and path check for retreat to be extra safe
-            if (isPathSafe(player.x, player.y, player.x, retreatY, 0.35)) {
-                return { dx: 0, dy: -verticalDir };
-            }
-            // Try lateral escape if retreat isn't safe
-            const escapeLeft = player.x - step;
-            const escapeRight = player.x + step;
-            if (escapeLeft > player.w / 2 && isPositionSafe(escapeLeft, player.y, 0.3)) {
-                return { dx: -1, dy: 0 };
-            }
-            if (escapeRight < width - player.w / 2 && isPositionSafe(escapeRight, player.y, 0.3)) {
-                return { dx: 1, dy: 0 };
-            }
-        }
-
-        return { dx: 0, dy: 0 };
+        // Collisions disabled in auto mode - just go straight through
+        // Align horizontally with target (passenger when going up, center when going down)
+        const dx = goingDown ? 0 : getAlignedDx(passenger.x);
+        return { dx, dy: verticalDir };
     };
 
     const applyAutoSafety = (input, dt) => {
@@ -832,6 +734,9 @@
     };
 
     const handleCollision = () => {
+        // Skip collision detection in auto mode - self-driving is perfect
+        if (state.mode === 'auto') return;
+
         const rect = playerRect();
         const hit = cars.some((car) => rectsIntersect(rect, car));
         if (hit) {
@@ -876,10 +781,8 @@
             state.totalOpex += fares.varOpex;
             state.totalContrib += perTrip.contribution;
             player.hasPassenger = false;
-            // Move player fully into bottom safe zone so cooldown logic applies
+            // Move player fully into bottom safe zone
             player.y = height - bottomZone / 2;
-            // Set cooldown for post-dropoff pause
-            autoState.safeZoneCooldown = 0.8;
             autoState.targetLane = null;
             autoState.planTimer = 0;
             spawnPassenger();
