@@ -13,9 +13,9 @@
     const fares = {
         fare: 30,
         feeRate: 0.275,
-        varOpex: 11.65,
+        varOpex: 16.59,
         baseTripsPerDay: 13.5,
-        baseMonthlyContribution: 4091.45
+        baseMonthlyContribution: 2091
     };
 
     const perTrip = {
