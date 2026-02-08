@@ -1,22 +1,22 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 
 (() => {
     const container = document.getElementById('cybercab-canvas-container');
     if (!container) return;
 
-    const isMobile = window.innerWidth < 768;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isMobile = window.innerWidth < 860;
 
-    // ── Scene ────────────────────────────────────────────────
     const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x020912, 0.065);
 
-    const camera = new THREE.PerspectiveCamera(
-        35,
-        container.clientWidth / container.clientHeight,
-        0.1,
-        200
-    );
-    camera.position.set(6, 3, 7);
+    const camera = new THREE.PerspectiveCamera(34, container.clientWidth / container.clientHeight, 0.1, 100);
+    camera.position.set(7.4, 2.6, 8.4);
 
     const renderer = new THREE.WebGLRenderer({
         antialias: !isMobile,
@@ -24,593 +24,536 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
         powerPreference: 'high-performance'
     });
     renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1 : 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.35 : 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.5;
+    renderer.toneMappingExposure = 1.08;
+    renderer.setClearColor(0x000000, 0);
+
+    container.innerHTML = '';
     container.appendChild(renderer.domElement);
 
-    // ── Holographic Cyan palette ─────────────────────────────
-    const CYAN = 0x00d4ff;
-    const CYAN_BRIGHT = 0x40e8ff;
-    const CYAN_DIM = 0x006688;
-    const CYAN_GLOW = 0x00aadd;
-    const TEAL = 0x00ff88;
+    let composer = null;
+    if (!isMobile && !prefersReducedMotion) {
+        composer = new EffectComposer(renderer);
+        composer.addPass(new RenderPass(scene, camera));
+        composer.addPass(new UnrealBloomPass(new THREE.Vector2(container.clientWidth, container.clientHeight), 1.35, 0.62, 0.84));
+    }
 
-    // ── Lights ───────────────────────────────────────────────
-    scene.add(new THREE.AmbientLight(CYAN, 0.08));
-
-    const keyLight = new THREE.PointLight(CYAN_BRIGHT, 3, 30);
-    keyLight.position.set(5, 6, 5);
-    scene.add(keyLight);
-
-    const fillLight = new THREE.PointLight(0x0044aa, 1.2, 20);
-    fillLight.position.set(-6, 3, -4);
-    scene.add(fillLight);
-
-    const rimLight = new THREE.PointLight(CYAN, 2, 15);
-    rimLight.position.set(0, 8, -8);
-    scene.add(rimLight);
-
-    const underGlow = new THREE.PointLight(CYAN_GLOW, 1.0, 6);
-    underGlow.position.set(0, -0.2, 0);
-    scene.add(underGlow);
-
-    const frontSpot = new THREE.PointLight(CYAN_BRIGHT, 1.5, 10);
-    frontSpot.position.set(-3, 1, 0);
-    scene.add(frontSpot);
-
-    // ── Materials ────────────────────────────────────────────
-    const bodyMat = new THREE.MeshPhysicalMaterial({
-        color: 0x001520,
-        transparent: true,
-        opacity: 0.12,
-        roughness: 0.05,
-        metalness: 0.9,
-        side: THREE.DoubleSide,
-    });
-
-    const edgeMat = new THREE.LineBasicMaterial({
-        color: CYAN,
-        transparent: true,
-        opacity: 0.85,
-    });
-
-    const edgeGlowMat = new THREE.LineBasicMaterial({
-        color: CYAN_BRIGHT,
-        transparent: true,
-        opacity: 0.25,
-    });
-
-    const glassMat = new THREE.MeshPhysicalMaterial({
-        color: 0x002233,
-        transparent: true,
-        opacity: 0.08,
-        roughness: 0.02,
-        metalness: 0.3,
-        clearcoat: 1.0,
-        side: THREE.DoubleSide,
-    });
-
-    const glassEdgeMat = new THREE.LineBasicMaterial({
-        color: CYAN_BRIGHT,
-        transparent: true,
-        opacity: 0.6,
-    });
-
-    const accentLineMat = new THREE.LineBasicMaterial({
-        color: CYAN,
-        transparent: true,
-        opacity: 0.35,
-    });
-
-    const internalLineMat = new THREE.LineBasicMaterial({
-        color: CYAN_DIM,
-        transparent: true,
-        opacity: 0.2,
-    });
-
-    // ── CyberCab Group ──────────────────────────────────────
-    const cybercab = new THREE.Group();
-
-    // ── Main Body ───────────────────────────────────────────
-    const bodyShape = new THREE.Shape();
-    bodyShape.moveTo(-1.75, 0.10);
-    bodyShape.lineTo(-1.75, 0.38);
-    bodyShape.lineTo(-1.65, 0.45);
-    bodyShape.lineTo(-1.25, 0.50);
-    bodyShape.lineTo(-0.55, 0.58);
-    bodyShape.lineTo(-0.05, 1.18);
-    bodyShape.lineTo(0.85, 1.22);
-    bodyShape.lineTo(1.35, 1.08);
-    bodyShape.lineTo(1.60, 0.68);
-    bodyShape.lineTo(1.72, 0.58);
-    bodyShape.lineTo(1.75, 0.40);
-    bodyShape.lineTo(1.75, 0.10);
-    bodyShape.lineTo(-1.75, 0.10);
-
-    const extrudeSettings = {
-        steps: 1,
-        depth: 1.55,
-        bevelEnabled: true,
-        bevelThickness: 0.03,
-        bevelSize: 0.03,
-        bevelSegments: 2
+    const palette = {
+        cyan: new THREE.Color(0x78ecff),
+        cyanBright: new THREE.Color(0xbaf8ff),
+        cyanDeep: new THREE.Color(0x1b6fa0),
+        cyanGlow: new THREE.Color(0x4ee7ff),
+        dark: new THREE.Color(0x081423)
     };
 
-    const bodyGeo = new THREE.ExtrudeGeometry(bodyShape, extrudeSettings);
-    bodyGeo.translate(0, 0, -0.775);
+    const world = new THREE.Group();
+    scene.add(world);
 
-    const bodyMesh = new THREE.Mesh(bodyGeo, bodyMat);
-    cybercab.add(bodyMesh);
+    const carAnchor = new THREE.Group();
+    carAnchor.position.y = 0.46;
+    world.add(carAnchor);
 
-    // Primary wireframe edges
-    const edgesGeo = new THREE.EdgesGeometry(bodyGeo, 8);
-    cybercab.add(new THREE.LineSegments(edgesGeo, edgeMat));
+    // Lights
+    scene.add(new THREE.AmbientLight(0x74ddff, 0.12));
 
-    // Glow layer (slightly thicker visual) using same edges
-    const glowEdges = new THREE.LineSegments(edgesGeo.clone(), edgeGlowMat);
-    glowEdges.scale.multiplyScalar(1.003);
-    cybercab.add(glowEdges);
+    const keyLight = new THREE.PointLight(0xb8f3ff, 3.1, 46);
+    keyLight.position.set(4.5, 5.6, 4.2);
+    scene.add(keyLight);
 
-    // ── Windshield ──────────────────────────────────────────
-    const wsShape = new THREE.Shape();
-    wsShape.moveTo(-0.68, 0);
-    wsShape.lineTo(0.68, 0);
-    wsShape.lineTo(0.58, 0.58);
-    wsShape.lineTo(-0.58, 0.58);
-    wsShape.lineTo(-0.68, 0);
+    const rimLeft = new THREE.PointLight(0x49d6ff, 2.3, 48);
+    rimLeft.position.set(-7, 1.5, -4.2);
+    scene.add(rimLeft);
 
-    const wsGeo = new THREE.ShapeGeometry(wsShape);
-    const windshield = new THREE.Mesh(wsGeo, glassMat);
-    windshield.position.set(-0.30, 0.88, 0);
-    windshield.rotation.x = -0.50;
-    cybercab.add(windshield);
+    const rimRight = new THREE.PointLight(0x30a4d4, 1.8, 40);
+    rimRight.position.set(7, 1.8, 3.4);
+    scene.add(rimRight);
 
-    const wsEdgesGeo = new THREE.EdgesGeometry(wsGeo);
-    const wsLines = new THREE.LineSegments(wsEdgesGeo, glassEdgeMat);
-    wsLines.position.copy(windshield.position);
-    wsLines.rotation.copy(windshield.rotation);
-    cybercab.add(wsLines);
+    const overhead = new THREE.SpotLight(0x7fe3ff, 2.1, 46, Math.PI / 5, 0.5, 1.2);
+    overhead.position.set(0, 9, 1);
+    overhead.target.position.set(0, 0.7, 0);
+    scene.add(overhead);
+    scene.add(overhead.target);
 
-    // ── Rear Window ─────────────────────────────────────────
-    const rwShape = new THREE.Shape();
-    rwShape.moveTo(-0.58, 0);
-    rwShape.lineTo(0.58, 0);
-    rwShape.lineTo(0.48, 0.36);
-    rwShape.lineTo(-0.48, 0.36);
-    rwShape.lineTo(-0.58, 0);
+    // Ground and atmosphere
+    const floor = new THREE.Mesh(
+        new THREE.CircleGeometry(22, 96),
+        new THREE.MeshBasicMaterial({
+            color: 0x07101c,
+            transparent: true,
+            opacity: 0.52,
+            side: THREE.DoubleSide
+        })
+    );
+    floor.rotation.x = -Math.PI / 2;
+    floor.position.y = -0.12;
+    world.add(floor);
 
-    const rwGeo = new THREE.ShapeGeometry(rwShape);
-    const rearWindow = new THREE.Mesh(rwGeo, glassMat);
-    rearWindow.position.set(1.48, 0.72, 0);
-    rearWindow.rotation.x = 0.28;
-    cybercab.add(rearWindow);
+    const floorRingA = new THREE.Mesh(
+        new THREE.RingGeometry(2.9, 3.25, 96),
+        new THREE.MeshBasicMaterial({
+            color: palette.cyanGlow,
+            transparent: true,
+            opacity: 0.33,
+            side: THREE.DoubleSide,
+            blending: THREE.AdditiveBlending
+        })
+    );
+    floorRingA.rotation.x = -Math.PI / 2;
+    floorRingA.position.y = -0.1;
+    world.add(floorRingA);
 
-    const rwEdgesGeo = new THREE.EdgesGeometry(rwGeo);
-    const rwLines = new THREE.LineSegments(rwEdgesGeo, glassEdgeMat);
-    rwLines.position.copy(rearWindow.position);
-    rwLines.rotation.copy(rearWindow.rotation);
-    cybercab.add(rwLines);
+    const floorRingB = floorRingA.clone();
+    floorRingB.scale.set(1.42, 1.42, 1.42);
+    floorRingB.material = floorRingA.material.clone();
+    floorRingB.material.opacity = 0.12;
+    world.add(floorRingB);
 
-    // ── Butterfly Doors (open!) ─────────────────────────────
-    function createDoor(zSign) {
-        const door = new THREE.Group();
-        const doorShape = new THREE.Shape();
-        doorShape.moveTo(0, 0);
-        doorShape.lineTo(0.9, 0);
-        doorShape.lineTo(0.9, 0.75);
-        doorShape.lineTo(0.6, 0.9);
-        doorShape.lineTo(0, 0.85);
-        doorShape.lineTo(0, 0);
+    const grid = new THREE.GridHelper(42, 80, 0x1e7ea7, 0x12405b);
+    grid.position.y = -0.11;
+    grid.material.transparent = true;
+    grid.material.opacity = 0.2;
+    world.add(grid);
 
-        const doorGeo = new THREE.ShapeGeometry(doorShape);
-        const doorMesh = new THREE.Mesh(doorGeo, glassMat);
-        door.add(doorMesh);
+    const haze = new THREE.Mesh(
+        new THREE.PlaneGeometry(26, 12),
+        new THREE.MeshBasicMaterial({
+            color: 0x1a6a95,
+            transparent: true,
+            opacity: 0.12,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+        })
+    );
+    haze.position.set(0, 1.2, -5.4);
+    world.add(haze);
 
-        const doorEdges = new THREE.EdgesGeometry(doorGeo);
-        door.add(new THREE.LineSegments(doorEdges, glassEdgeMat));
+    const particleCount = isMobile ? 180 : 420;
+    const particlePositions = new Float32Array(particleCount * 3);
+    const particleVelocities = new Float32Array(particleCount);
+    for (let i = 0; i < particleCount; i += 1) {
+        particlePositions[i * 3] = (Math.random() - 0.5) * 20;
+        particlePositions[i * 3 + 1] = Math.random() * 8;
+        particlePositions[i * 3 + 2] = (Math.random() - 0.5) * 20;
+        particleVelocities[i] = 0.0022 + Math.random() * 0.005;
+    }
 
-        // Position at hinge point (top of car body)
-        const z = 0.78 * zSign;
-        door.position.set(-0.6, 1.15, z);
+    const particleGeometry = new THREE.BufferGeometry();
+    particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
 
-        // Rotate open — butterfly style (rotate around X axis at top)
-        door.rotation.x = zSign * 0.85; // ~50 degrees open
-        door.rotation.z = -0.1;
+    const particles = new THREE.Points(
+        particleGeometry,
+        new THREE.PointsMaterial({
+            color: 0xadf6ff,
+            size: isMobile ? 0.032 : 0.024,
+            transparent: true,
+            opacity: 0.55,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+            sizeAttenuation: true
+        })
+    );
+    world.add(particles);
 
-        if (zSign < 0) {
-            door.scale.z = -1;
+    const holoMaterials = {
+        body: new THREE.MeshPhysicalMaterial({
+            color: palette.dark,
+            metalness: 0.9,
+            roughness: 0.12,
+            clearcoat: 1,
+            clearcoatRoughness: 0.08,
+            transmission: 0.18,
+            transparent: true,
+            opacity: 0.48,
+            emissive: palette.cyan,
+            emissiveIntensity: 0.16,
+            side: THREE.DoubleSide
+        }),
+        glass: new THREE.MeshPhysicalMaterial({
+            color: 0x0a1f35,
+            metalness: 0.4,
+            roughness: 0.06,
+            transmission: 0.28,
+            transparent: true,
+            opacity: 0.26,
+            emissive: 0x2ecde8,
+            emissiveIntensity: 0.08,
+            side: THREE.DoubleSide
+        }),
+        wheel: new THREE.MeshPhysicalMaterial({
+            color: 0x0b1f2f,
+            metalness: 0.88,
+            roughness: 0.18,
+            transparent: true,
+            opacity: 0.52,
+            emissive: 0x3bd2ef,
+            emissiveIntensity: 0.14,
+            side: THREE.DoubleSide
+        }),
+        trim: new THREE.MeshPhysicalMaterial({
+            color: 0x12273e,
+            metalness: 0.84,
+            roughness: 0.14,
+            transparent: true,
+            opacity: 0.4,
+            emissive: 0x47dbf4,
+            emissiveIntensity: 0.17,
+            side: THREE.DoubleSide
+        })
+    };
+
+    const edgeMaterial = new THREE.LineBasicMaterial({
+        color: palette.cyanBright,
+        transparent: true,
+        opacity: 0.62,
+        blending: THREE.AdditiveBlending
+    });
+
+    const edgeMaterialDim = new THREE.LineBasicMaterial({
+        color: palette.cyanDeep,
+        transparent: true,
+        opacity: 0.28
+    });
+
+    const glowShellMaterial = new THREE.MeshBasicMaterial({
+        color: palette.cyanGlow,
+        transparent: true,
+        opacity: 0.06,
+        side: THREE.BackSide,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+    });
+
+    const animatedLineMaterials = [];
+    const wheelObjects = [];
+    let heroCar = null;
+    let fallbackCar = null;
+    const doorWings = [];
+
+    const decorateMesh = (mesh, highFidelity = true) => {
+        if (!mesh.geometry) return;
+
+        const edgeThreshold = highFidelity ? 27 : 14;
+        const edgeLines = new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry, edgeThreshold), edgeMaterial.clone());
+        edgeLines.renderOrder = 4;
+        mesh.add(edgeLines);
+        animatedLineMaterials.push(edgeLines.material);
+
+        if (highFidelity) {
+            const detailEdges = new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry, 8), edgeMaterialDim.clone());
+            detailEdges.renderOrder = 3;
+            mesh.add(detailEdges);
         }
 
-        return door;
-    }
+        const shell = new THREE.Mesh(mesh.geometry, glowShellMaterial);
+        shell.scale.set(1.006, 1.006, 1.006);
+        shell.renderOrder = 2;
+        mesh.add(shell);
 
-    cybercab.add(createDoor(1));
-    cybercab.add(createDoor(-1));
+        if (!isMobile) {
+            const wire = new THREE.Mesh(
+                mesh.geometry,
+                new THREE.MeshBasicMaterial({
+                    color: palette.cyan,
+                    wireframe: true,
+                    transparent: true,
+                    opacity: 0.035,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false
+                })
+            );
+            wire.renderOrder = 5;
+            mesh.add(wire);
+        }
+    };
 
-    // ── Door Frame Lines (on body) ──────────────────────────
-    function makeDoorFrame(zSign) {
-        const z = 0.785 * zSign;
-        const points = [
-            new THREE.Vector3(-0.85, 0.12, z),
-            new THREE.Vector3(-0.85, 1.00, z),
-            new THREE.Vector3(-0.20, 1.15, z),
-            new THREE.Vector3(0.65, 1.18, z),
-            new THREE.Vector3(0.65, 0.12, z),
-        ];
-        const geo = new THREE.BufferGeometry().setFromPoints(points);
-        return new THREE.Line(geo, accentLineMat);
-    }
-    cybercab.add(makeDoorFrame(1));
-    cybercab.add(makeDoorFrame(-1));
+    const applyHologramMaterial = (obj, material) => {
+        obj.material = material;
+        obj.material.needsUpdate = true;
+        decorateMesh(obj, true);
+    };
 
-    // ── Internal Structure (seats, dashboard wireframe) ─────
-    function createInternalWireframe() {
-        const group = new THREE.Group();
-        const mat = internalLineMat;
+    const addDoorWings = (targetGroup, bounds) => {
+        const size = bounds.getSize(new THREE.Vector3());
+        const center = bounds.getCenter(new THREE.Vector3());
 
-        // Front seats (two box wireframes)
-        [-0.35, 0.35].forEach(z => {
-            const seatPoints = [
-                // Seat base
-                [-0.2, 0.15, z - 0.18], [-0.2, 0.15, z + 0.18],
-                [0.2, 0.15, z + 0.18], [0.2, 0.15, z - 0.18],
-                // Seat back
-                [-0.2, 0.15, z - 0.18], [-0.2, 0.65, z - 0.15],
-                [-0.2, 0.65, z + 0.15], [-0.2, 0.15, z + 0.18],
-                // Top of backrest
-                [-0.2, 0.65, z - 0.15], [-0.2, 0.65, z + 0.15],
-            ];
-            for (let i = 0; i < seatPoints.length - 1; i += 2) {
-                const geo = new THREE.BufferGeometry().setFromPoints([
-                    new THREE.Vector3(...seatPoints[i]),
-                    new THREE.Vector3(...seatPoints[i + 1]),
-                ]);
-                group.add(new THREE.Line(geo, mat));
-            }
-
-            // Seat outline box
-            const w = 0.36, d = 0.4, h = 0.06;
-            const boxGeo = new THREE.BoxGeometry(d, h, w);
-            const boxEdges = new THREE.EdgesGeometry(boxGeo);
-            const boxLines = new THREE.LineSegments(boxEdges, mat);
-            boxLines.position.set(0, 0.18, z);
-            group.add(boxLines);
-
-            // Backrest
-            const backGeo = new THREE.BoxGeometry(0.06, 0.45, w * 0.85);
-            const backEdges = new THREE.EdgesGeometry(backGeo);
-            const backLines = new THREE.LineSegments(backEdges, mat);
-            backLines.position.set(-0.18, 0.42, z);
-            group.add(backLines);
+        const wingHeight = size.y * 0.56;
+        const wingLength = size.x * 0.34;
+        const wingGeo = new THREE.PlaneGeometry(wingLength, wingHeight, 1, 1);
+        const wingMat = new THREE.MeshBasicMaterial({
+            color: palette.cyanBright,
+            transparent: true,
+            opacity: 0.16,
+            side: THREE.DoubleSide,
+            blending: THREE.AdditiveBlending
         });
 
-        // Dashboard
-        const dashGeo = new THREE.BoxGeometry(0.08, 0.25, 1.1);
-        const dashEdges = new THREE.EdgesGeometry(dashGeo);
-        const dashLines = new THREE.LineSegments(dashEdges, mat);
-        dashLines.position.set(-0.65, 0.38, 0);
-        group.add(dashLines);
+        const wingEdgeMat = new THREE.LineBasicMaterial({
+            color: palette.cyanBright,
+            transparent: true,
+            opacity: 0.56,
+            blending: THREE.AdditiveBlending
+        });
 
-        // Steering column / screen
-        const screenGeo = new THREE.PlaneGeometry(0.35, 0.2);
-        const screenEdges = new THREE.EdgesGeometry(screenGeo);
-        const screenLines = new THREE.LineSegments(screenEdges, new THREE.LineBasicMaterial({
-            color: CYAN, transparent: true, opacity: 0.3
-        }));
-        screenLines.position.set(-0.58, 0.52, 0);
-        screenLines.rotation.y = Math.PI / 2;
-        group.add(screenLines);
+        [1, -1].forEach((sign) => {
+            const pivot = new THREE.Group();
+            pivot.position.set(center.x - size.x * 0.06, center.y + size.y * 0.18, center.z + sign * size.z * 0.43);
+            pivot.rotation.set(sign * 0.92, 0, -0.08);
 
-        return group;
-    }
+            const wing = new THREE.Mesh(wingGeo, wingMat);
+            wing.position.set(wingLength * 0.34, wingHeight * 0.06, 0);
+            pivot.add(wing);
 
-    cybercab.add(createInternalWireframe());
+            const wingEdge = new THREE.LineSegments(new THREE.EdgesGeometry(wingGeo), wingEdgeMat);
+            wingEdge.position.copy(wing.position);
+            pivot.add(wingEdge);
 
-    // ── LED Headlight Bar ───────────────────────────────────
-    const hlGeo = new THREE.BoxGeometry(0.05, 0.05, 1.40);
-    const hlMat = new THREE.MeshBasicMaterial({
-        color: CYAN_BRIGHT,
-        transparent: true,
-        opacity: 0.95,
-    });
-    const headlight = new THREE.Mesh(hlGeo, hlMat);
-    headlight.position.set(-1.68, 0.42, 0);
-    cybercab.add(headlight);
+            targetGroup.add(pivot);
+            doorWings.push(pivot);
+        });
+    };
 
-    // Headlight glow plane
-    const hlGlowGeo = new THREE.PlaneGeometry(0.8, 0.35);
-    const hlGlowMat = new THREE.MeshBasicMaterial({
-        color: CYAN,
-        transparent: true,
-        opacity: 0.12,
-        side: THREE.DoubleSide,
-    });
-    const hlGlow = new THREE.Mesh(hlGlowGeo, hlGlowMat);
-    hlGlow.position.set(-1.82, 0.42, 0);
-    hlGlow.rotation.y = Math.PI / 2;
-    cybercab.add(hlGlow);
+    const centerAndScaleCar = (carGroup) => {
+        const box = new THREE.Box3().setFromObject(carGroup);
+        const size = box.getSize(new THREE.Vector3());
+        const center = box.getCenter(new THREE.Vector3());
+        carGroup.position.sub(center);
 
-    // ── Taillight Bar ───────────────────────────────────────
-    const tlGeo = new THREE.BoxGeometry(0.05, 0.05, 1.40);
-    const tlMat = new THREE.MeshBasicMaterial({
-        color: CYAN,
-        transparent: true,
-        opacity: 0.7,
-    });
-    const taillight = new THREE.Mesh(tlGeo, tlMat);
-    taillight.position.set(1.77, 0.46, 0);
-    cybercab.add(taillight);
+        const targetLength = 5.2;
+        const scale = targetLength / Math.max(size.x, 0.001);
+        carGroup.scale.setScalar(scale);
 
-    // ── Side Accent Lines ───────────────────────────────────
-    function makeSideLine(zSign) {
-        const z = 0.79 * zSign;
-        const points = [
-            new THREE.Vector3(-1.65, 0.32, z),
-            new THREE.Vector3(-1.25, 0.32, z),
-            new THREE.Vector3(1.50, 0.42, z),
-            new THREE.Vector3(1.72, 0.42, z),
-        ];
-        const geo = new THREE.BufferGeometry().setFromPoints(points);
-        return new THREE.Line(geo, accentLineMat);
-    }
-    cybercab.add(makeSideLine(1));
-    cybercab.add(makeSideLine(-1));
+        const scaledBox = new THREE.Box3().setFromObject(carGroup);
+        const scaledSize = scaledBox.getSize(new THREE.Vector3());
+        carGroup.position.y += scaledSize.y * 0.48;
+        return scaledBox;
+    };
 
-    // Lower body line
-    function makeLowerLine(zSign) {
-        const z = 0.79 * zSign;
-        const points = [
-            new THREE.Vector3(-1.70, 0.14, z),
-            new THREE.Vector3(1.72, 0.14, z),
-        ];
-        const geo = new THREE.BufferGeometry().setFromPoints(points);
-        return new THREE.Line(geo, new THREE.LineBasicMaterial({
-            color: CYAN_DIM, transparent: true, opacity: 0.15
-        }));
-    }
-    cybercab.add(makeLowerLine(1));
-    cybercab.add(makeLowerLine(-1));
+    const buildFallbackCar = () => {
+        const fallback = new THREE.Group();
 
-    // ── Wheels ──────────────────────────────────────────────
-    const wheelGeo = new THREE.CylinderGeometry(0.26, 0.26, 0.13, 24);
-    const wheelMat = new THREE.MeshPhysicalMaterial({
-        color: 0x001118,
-        roughness: 0.6,
-        metalness: 0.7,
-        transparent: true,
-        opacity: 0.4,
-    });
-    const rimGeo = new THREE.TorusGeometry(0.26, 0.015, 8, 32);
-    const rimMat = new THREE.LineBasicMaterial({ color: CYAN, transparent: true, opacity: 0.7 });
+        const body = new THREE.Mesh(
+            new THREE.BoxGeometry(4.6, 0.82, 2.05, 8, 4, 8),
+            new THREE.MeshPhysicalMaterial({
+                color: 0x0c1d30,
+                metalness: 0.86,
+                roughness: 0.18,
+                transmission: 0.12,
+                transparent: true,
+                opacity: 0.42,
+                emissive: 0x44d7ef,
+                emissiveIntensity: 0.14,
+                side: THREE.DoubleSide
+            })
+        );
+        body.position.y = 0.36;
+        fallback.add(body);
 
-    // Spoke pattern
-    function createWheel(x, y, z) {
-        const group = new THREE.Group();
+        const cabin = new THREE.Mesh(
+            new THREE.BoxGeometry(2.55, 0.72, 1.86, 6, 4, 6),
+            new THREE.MeshPhysicalMaterial({
+                color: 0x10263c,
+                metalness: 0.5,
+                roughness: 0.1,
+                transmission: 0.24,
+                transparent: true,
+                opacity: 0.25,
+                emissive: 0x3acde8,
+                emissiveIntensity: 0.1,
+                side: THREE.DoubleSide
+            })
+        );
+        cabin.position.set(0.4, 0.84, 0);
+        fallback.add(cabin);
 
-        const wheel = new THREE.Mesh(wheelGeo, wheelMat);
-        wheel.rotation.x = Math.PI / 2;
-        group.add(wheel);
+        [
+            [-1.45, -0.05, 1.08],
+            [-1.45, -0.05, -1.08],
+            [1.42, -0.05, 1.08],
+            [1.42, -0.05, -1.08]
+        ].forEach(([x, y, z]) => {
+            const wheel = new THREE.Mesh(
+                new THREE.TorusGeometry(0.42, 0.12, 12, 42),
+                new THREE.MeshPhysicalMaterial({
+                    color: 0x0f2434,
+                    metalness: 0.9,
+                    roughness: 0.2,
+                    transparent: true,
+                    opacity: 0.46,
+                    emissive: 0x42d3ec,
+                    emissiveIntensity: 0.18,
+                    side: THREE.DoubleSide
+                })
+            );
+            wheel.position.set(x, y, z);
+            wheel.rotation.y = Math.PI / 2;
+            fallback.add(wheel);
+            wheelObjects.push(wheel);
+            decorateMesh(wheel, false);
+        });
 
-        // Rim edge
-        const rimEdges = new THREE.EdgesGeometry(rimGeo);
-        const rim = new THREE.LineSegments(rimEdges, rimMat);
-        group.add(rim);
+        const lightBar = new THREE.Mesh(
+            new THREE.BoxGeometry(0.06, 0.06, 1.92),
+            new THREE.MeshBasicMaterial({ color: palette.cyanBright, transparent: true, opacity: 0.9 })
+        );
+        lightBar.position.set(-2.28, 0.48, 0);
+        fallback.add(lightBar);
 
-        // Spokes (5-spoke pattern)
-        for (let i = 0; i < 5; i++) {
-            const angle = (i / 5) * Math.PI * 2;
-            const points = [
-                new THREE.Vector3(0, 0, 0),
-                new THREE.Vector3(Math.cos(angle) * 0.22, Math.sin(angle) * 0.22, 0),
-            ];
-            const spokeGeo = new THREE.BufferGeometry().setFromPoints(points);
-            const spoke = new THREE.Line(spokeGeo, new THREE.LineBasicMaterial({
-                color: CYAN_DIM, transparent: true, opacity: 0.35
-            }));
-            group.add(spoke);
+        decorateMesh(body, false);
+        decorateMesh(cabin, false);
+
+        fallback.rotation.y = -0.28;
+        return fallback;
+    };
+
+    fallbackCar = buildFallbackCar();
+    carAnchor.add(fallbackCar);
+
+    const loader = new GLTFLoader();
+    loader.load(
+        'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r162/examples/models/gltf/ferrari.glb',
+        (gltf) => {
+            const rawCar = gltf.scene;
+            wheelObjects.length = 0;
+            rawCar.traverse((node) => {
+                if (!node.isMesh) return;
+                node.frustumCulled = false;
+
+                const name = node.name.toLowerCase();
+                if (name.includes('body') || name.includes('trim')) {
+                    applyHologramMaterial(node, holoMaterials.body);
+                } else if (name.includes('glass')) {
+                    applyHologramMaterial(node, holoMaterials.glass);
+                } else if (name.includes('wheel') || name.includes('rim') || name.includes('tyre') || name.includes('tire')) {
+                    applyHologramMaterial(node, holoMaterials.wheel);
+                } else {
+                    applyHologramMaterial(node, holoMaterials.trim);
+                }
+            });
+
+            ['wheel_fl', 'wheel_fr', 'wheel_rl', 'wheel_rr'].forEach((wheelName) => {
+                const wheel = rawCar.getObjectByName(wheelName);
+                if (wheel) wheelObjects.push(wheel);
+            });
+
+            const centeredBounds = centerAndScaleCar(rawCar);
+            addDoorWings(rawCar, centeredBounds);
+
+            rawCar.rotation.y = -0.24;
+            rawCar.position.y += 0.02;
+
+            if (fallbackCar) {
+                carAnchor.remove(fallbackCar);
+                fallbackCar = null;
+            }
+
+            heroCar = rawCar;
+            carAnchor.add(rawCar);
+        },
+        undefined,
+        () => {
+            // Fallback already rendered above.
         }
+    );
 
-        // Hub
-        const hubGeo = new THREE.RingGeometry(0.03, 0.06, 16);
-        const hubEdges = new THREE.EdgesGeometry(hubGeo);
-        const hub = new THREE.LineSegments(hubEdges, new THREE.LineBasicMaterial({
-            color: CYAN, transparent: true, opacity: 0.5
-        }));
-        hub.position.z = z > 0 ? 0.07 : -0.07;
-        group.add(hub);
-
-        group.position.set(x, y, z);
-        return group;
-    }
-
-    cybercab.add(createWheel(-1.15, 0.05, 0.74));
-    cybercab.add(createWheel(-1.15, 0.05, -0.74));
-    cybercab.add(createWheel(1.18, 0.05, 0.74));
-    cybercab.add(createWheel(1.18, 0.05, -0.74));
-
-    // ── Wheel Arcs ──────────────────────────────────────────
-    function makeWheelArc(cx, zSign) {
-        const z = 0.79 * zSign;
-        const points = [];
-        for (let i = 0; i <= 12; i++) {
-            const angle = Math.PI + (i / 12) * Math.PI;
-            points.push(new THREE.Vector3(
-                cx + Math.cos(angle) * 0.34,
-                0.05 + Math.sin(angle) * 0.34,
-                z
-            ));
-        }
-        const geo = new THREE.BufferGeometry().setFromPoints(points);
-        return new THREE.Line(geo, accentLineMat);
-    }
-    cybercab.add(makeWheelArc(-1.15, 1));
-    cybercab.add(makeWheelArc(-1.15, -1));
-    cybercab.add(makeWheelArc(1.18, 1));
-    cybercab.add(makeWheelArc(1.18, -1));
-
-    // ── Roof Line ───────────────────────────────────────────
-    const roofPoints = [
-        new THREE.Vector3(-0.05, 1.24, -0.65),
-        new THREE.Vector3(-0.05, 1.24, 0.65),
-    ];
-    cybercab.add(new THREE.Line(
-        new THREE.BufferGeometry().setFromPoints(roofPoints),
-        new THREE.LineBasicMaterial({ color: CYAN, transparent: true, opacity: 0.4 })
-    ));
-
-    scene.add(cybercab);
-
-    // ── Ground ──────────────────────────────────────────────
-    const grid = new THREE.GridHelper(30, 60, CYAN, CYAN);
-    grid.position.y = -0.18;
-    grid.material.transparent = true;
-    grid.material.opacity = 0.03;
-    scene.add(grid);
-
-    // Ground reflection plane
-    const groundGeo = new THREE.PlaneGeometry(50, 50);
-    const groundMat = new THREE.MeshPhysicalMaterial({
-        color: 0x000508,
-        roughness: 0.95,
-        metalness: 0.1,
-        transparent: true,
-        opacity: 0.3,
-    });
-    const ground = new THREE.Mesh(groundGeo, groundMat);
-    ground.rotation.x = -Math.PI / 2;
-    ground.position.y = -0.17;
-    scene.add(ground);
-
-    // ── Particles ───────────────────────────────────────────
-    const pCount = isMobile ? 60 : 200;
-    const pGeo = new THREE.BufferGeometry();
-    const pPos = new Float32Array(pCount * 3);
-    const pSizes = new Float32Array(pCount);
-    const pVel = new Float32Array(pCount);
-
-    for (let i = 0; i < pCount; i++) {
-        pPos[i * 3] = (Math.random() - 0.5) * 16;
-        pPos[i * 3 + 1] = Math.random() * 8;
-        pPos[i * 3 + 2] = (Math.random() - 0.5) * 16;
-        pSizes[i] = 0.02 + Math.random() * 0.04;
-        pVel[i] = 0.001 + Math.random() * 0.003;
-    }
-    pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-
-    const pMat = new THREE.PointsMaterial({
-        color: CYAN_BRIGHT,
-        size: isMobile ? 0.05 : 0.04,
-        transparent: true,
-        opacity: 0.6,
-        sizeAttenuation: true,
-    });
-    const particles = new THREE.Points(pGeo, pMat);
-    scene.add(particles);
-
-    // ── Horizontal Scan Line ────────────────────────────────
-    const scanGeo = new THREE.PlaneGeometry(6, 0.02);
-    const scanMat = new THREE.MeshBasicMaterial({
-        color: CYAN_BRIGHT,
-        transparent: true,
-        opacity: 0.0,
-        side: THREE.DoubleSide,
-    });
-    const scanLine = new THREE.Mesh(scanGeo, scanMat);
-    scanLine.rotation.x = -Math.PI / 2;
-    scanLine.position.y = -0.1;
-    scene.add(scanLine);
-
-    // ── Controls ────────────────────────────────────────────
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
-    controls.dampingFactor = 0.04;
-    controls.enableZoom = false;
+    controls.dampingFactor = 0.05;
     controls.enablePan = false;
-    controls.minPolarAngle = Math.PI / 5;
-    controls.maxPolarAngle = Math.PI / 2.1;
-    controls.autoRotate = true;
-    controls.autoRotateSpeed = 0.5;
-    controls.target.set(0, 0.5, 0);
+    controls.enableZoom = false;
+    controls.minPolarAngle = Math.PI / 3.5;
+    controls.maxPolarAngle = Math.PI / 2.06;
+    controls.target.set(0, 1.02, 0);
+    controls.autoRotate = !prefersReducedMotion;
+    controls.autoRotateSpeed = 0.44;
+    if (isMobile) controls.enabled = false;
 
-    if (isMobile) {
-        controls.enabled = false;
+    let pointerX = 0;
+    let pointerY = 0;
+
+    const onPointerMove = (event) => {
+        const rect = container.getBoundingClientRect();
+        pointerX = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
+        pointerY = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
+    };
+
+    if (!isMobile) {
+        container.addEventListener('pointermove', onPointerMove);
     }
 
-    let resumeTimer = null;
-    controls.addEventListener('start', () => {
-        controls.autoRotate = false;
-        if (resumeTimer) clearTimeout(resumeTimer);
-    });
-    controls.addEventListener('end', () => {
-        resumeTimer = setTimeout(() => { controls.autoRotate = true; }, 3000);
-    });
-
-    // ── Animation Loop ──────────────────────────────────────
     const clock = new THREE.Clock();
+    const animate = () => {
+        const delta = Math.min(clock.getDelta(), 0.033);
+        const elapsed = clock.elapsedTime;
 
-    function animate() {
-        requestAnimationFrame(animate);
-        const t = clock.getElapsedTime();
+        carAnchor.position.y = 0.46 + Math.sin(elapsed * 0.82) * 0.06;
+        world.rotation.y += 0.0005;
 
-        // Gentle hover
-        cybercab.position.y = Math.sin(t * 0.6) * 0.03;
+        const activeCar = heroCar || fallbackCar;
+        if (activeCar) {
+            activeCar.rotation.x += ((pointerY * 0.055) - activeCar.rotation.x) * 0.04;
+            const targetY = -0.24 + pointerX * 0.16;
+            activeCar.rotation.y += (targetY - activeCar.rotation.y) * 0.04;
+        }
 
-        // Particle drift
-        const pos = pGeo.attributes.position.array;
-        for (let i = 0; i < pCount; i++) {
-            pos[i * 3 + 1] += pVel[i];
-            pos[i * 3] += Math.sin(t * 0.3 + i * 0.7) * 0.0003;
-            if (pos[i * 3 + 1] > 8) {
-                pos[i * 3 + 1] = -0.5;
-                pos[i * 3] = (Math.random() - 0.5) * 16;
-                pos[i * 3 + 2] = (Math.random() - 0.5) * 16;
+        wheelObjects.forEach((wheel, idx) => {
+            wheel.rotation.x -= delta * (2.9 + (idx % 2) * 0.6);
+        });
+
+        doorWings.forEach((wing, idx) => {
+            const sign = idx % 2 === 0 ? 1 : -1;
+            wing.rotation.x = sign * (0.9 + Math.sin(elapsed * 0.9 + idx * 0.5) * 0.08);
+        });
+
+        floorRingA.rotation.z += 0.0015;
+        floorRingB.rotation.z -= 0.001;
+
+        const positions = particleGeometry.attributes.position.array;
+        for (let i = 0; i < particleCount; i += 1) {
+            positions[i * 3 + 1] += particleVelocities[i];
+            positions[i * 3] += Math.sin(elapsed * 0.22 + i) * 0.0013;
+            if (positions[i * 3 + 1] > 8.5) {
+                positions[i * 3 + 1] = -0.8;
+                positions[i * 3] = (Math.random() - 0.5) * 20;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 20;
             }
         }
-        pGeo.attributes.position.needsUpdate = true;
+        particleGeometry.attributes.position.needsUpdate = true;
 
-        // Headlight pulse
-        hlMat.opacity = 0.8 + Math.sin(t * 1.2) * 0.15;
-        hlGlowMat.opacity = 0.08 + Math.sin(t * 1.2) * 0.06;
+        const pulse = 0.48 + (Math.sin(elapsed * 1.3) + 1) * 0.17;
+        animatedLineMaterials.forEach((mat, idx) => {
+            mat.opacity = (idx % 2 === 0 ? 1 : 0.7) * pulse;
+        });
 
-        // Under glow pulse
-        underGlow.intensity = 0.6 + Math.sin(t * 0.8) * 0.3;
-
-        // Scan line sweep (every ~6 seconds)
-        const scanCycle = (t % 6) / 6;
-        if (scanCycle < 0.3) {
-            const scanProgress = scanCycle / 0.3;
-            scanLine.position.y = -0.1 + scanProgress * 1.6;
-            scanMat.opacity = Math.sin(scanProgress * Math.PI) * 0.15;
-        } else {
-            scanMat.opacity = 0;
-        }
-
-        // Edge glow pulse
-        edgeGlowMat.opacity = 0.15 + Math.sin(t * 0.9) * 0.1;
+        haze.material.opacity = 0.09 + Math.sin(elapsed * 0.6) * 0.02;
 
         controls.update();
-        renderer.render(scene, camera);
-    }
+        if (composer) composer.render();
+        else renderer.render(scene, camera);
 
-    animate();
+        requestAnimationFrame(animate);
+    };
 
-    // ── Resize ──────────────────────────────────────────────
-    window.addEventListener('resize', () => {
+    renderer.domElement.style.opacity = '0';
+    renderer.domElement.style.transition = 'opacity 1.1s ease';
+    requestAnimationFrame(() => {
+        renderer.domElement.style.opacity = '1';
+        requestAnimationFrame(animate);
+    });
+
+    const onResize = () => {
         const w = container.clientWidth;
         const h = container.clientHeight;
         camera.aspect = w / h;
         camera.updateProjectionMatrix();
         renderer.setSize(w, h);
-    });
+        if (composer) composer.setSize(w, h);
+    };
 
-    // ── Fade in ─────────────────────────────────────────────
-    renderer.domElement.style.opacity = '0';
-    renderer.domElement.style.transition = 'opacity 2s ease';
-    requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-            renderer.domElement.style.opacity = '1';
-        });
+    window.addEventListener('resize', onResize);
+    window.addEventListener('pagehide', () => {
+        window.removeEventListener('resize', onResize);
+        if (!isMobile) container.removeEventListener('pointermove', onPointerMove);
     });
-
 })();
