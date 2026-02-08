@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hamptons Robotaxi</title>
-    <meta name="description" content="Accelerating the autonomous revolution. Launching Summer 2026.">
+    <meta name="description" content="Autonomous rides for America's most premium market. Launching Summer 2026.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -45,59 +45,111 @@
         </div>
     </nav>
 
-    <!-- Section 1: Hero -->
-    <section class="hero-section" data-reveal>
+    <!-- Section 1: Hero — CyberCab Visual -->
+    <section class="hero-section" id="hero">
         <div id="cybercab-canvas-container"></div>
-        <div class="hero-content">
-            <h1 data-stagger-reveal>Accelerating the<br><span class="gold">autonomous revolution.</span></h1>
-            <p class="hero-tagline">We deploy robotaxi fleets so the world gets autonomy faster.</p>
-            <div class="hero-cta">
-                <a href="about.html" class="btn btn-primary">Learn More <span class="btn-arrow">&rarr;</span></a>
-                <a href="investors.html" class="btn btn-ghost">Invest</a>
-            </div>
-        </div>
-        <div class="scroll-hint">
-            <span>Scroll</span>
-            <div class="scroll-hint-arrow"></div>
+        <div class="hero-caption">
+            <p class="hero-tagline" data-reveal-up>Autonomous rides for America's most premium market</p>
+            <a href="#mission" class="scroll-cta" data-reveal-up>
+                <span>Learn More</span>
+                <div class="scroll-cta-arrow"></div>
+            </a>
         </div>
     </section>
 
     <!-- Section 2: The Mission -->
-    <section class="page-section" data-reveal>
+    <section class="story-section" id="mission" data-reveal>
         <div class="section-inner">
             <span class="label">The Mission</span>
-            <h2>Tesla builds the cars.<br><span class="gold">We run the fleet.</span></h2>
-            <p class="subtitle">Third-party operators are the key to scaling autonomy everywhere, fast. We're building the playbook—starting with America's most premium market.</p>
+            <h2>Tesla builds the cars.<br><span class="glow-text">We run the fleet.</span></h2>
+            <p class="subtitle">Third-party operators are the key to scaling autonomy everywhere, fast. We're building the playbook — starting with America's most premium market.</p>
         </div>
     </section>
 
-    <!-- Section 3: Why Now -->
-    <section class="page-section" data-reveal>
+    <!-- Section 3: The Problem -->
+    <section class="story-section" id="problem" data-reveal>
+        <div class="section-inner">
+            <span class="label">The Problem</span>
+            <h2>The Hamptons has a <span class="glow-text">deadly</span> transportation crisis</h2>
+            <div class="stats-row" style="margin-top: 56px;">
+                <div class="mini-stat" data-reveal-up>
+                    <div class="mini-stat-value" data-count-to="127">127</div>
+                    <div class="mini-stat-label">DUI Arrests Last Summer</div>
+                </div>
+                <div class="mini-stat" data-reveal-up>
+                    <div class="mini-stat-value" data-count-to="150" data-count-prefix="$">$150</div>
+                    <div class="mini-stat-label">Average Uber Ride</div>
+                </div>
+                <div class="mini-stat" data-reveal-up>
+                    <div class="mini-stat-value" data-count-to="500" data-count-suffix="K+">500K+</div>
+                    <div class="mini-stat-label">Summer Visitors</div>
+                </div>
+            </div>
+            <p class="subtitle" style="margin-top: 40px;">When rides cost $150, people drive drunk. Frequent cancellations and no-shows make it worse.</p>
+        </div>
+    </section>
+
+    <!-- Section 4: The Solution -->
+    <section class="story-section" id="solution" data-reveal>
+        <div class="section-inner">
+            <span class="label">The Solution</span>
+            <div class="comparison">
+                <div class="comparison-card" data-reveal-up>
+                    <div class="comparison-label">Today</div>
+                    <div class="comparison-value dim">$150+</div>
+                    <div class="comparison-desc">Surge pricing, cancellations, no-shows</div>
+                </div>
+                <div class="comparison-vs" data-reveal-up>vs</div>
+                <div class="comparison-card highlight" data-reveal-up>
+                    <div class="comparison-label">With Us</div>
+                    <div class="comparison-value">$30</div>
+                    <div class="comparison-desc">24/7 autonomous, instant pickup, no surge</div>
+                </div>
+            </div>
+            <p class="subtitle" style="margin-top: 48px;">When the safe choice costs $30, everyone makes the safe choice.</p>
+        </div>
+    </section>
+
+    <!-- Section 5: Why Now -->
+    <section class="story-section" id="why-now" data-reveal>
         <div class="section-inner stat-section">
             <span class="label">Why Now</span>
             <div class="big-stat" data-count-to="2026">2026</div>
             <p class="stat-label">The year everything changes</p>
-            <p class="stat-context">Tesla CyberCab production begins April 2026. Governor Hochul announced a commercial AV permit framework for New York. 500+ robotaxis already operating unsupervised in Austin. First movers capture the market.</p>
+            <div class="stats-row" style="margin-top: 48px;">
+                <div class="mini-stat" data-reveal-up>
+                    <div class="mini-stat-value">Apr '26</div>
+                    <div class="mini-stat-label">CyberCab Production</div>
+                </div>
+                <div class="mini-stat" data-reveal-up>
+                    <div class="mini-stat-value">500+</div>
+                    <div class="mini-stat-label">Robotaxis in Austin</div>
+                </div>
+                <div class="mini-stat" data-reveal-up>
+                    <div class="mini-stat-value">NY AV</div>
+                    <div class="mini-stat-label">Hochul Permit Framework</div>
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- Section 4: The Plan -->
-    <section class="page-section" data-reveal>
+    <!-- Section 6: The Vision -->
+    <section class="story-section" id="vision" data-reveal>
         <div class="section-inner">
             <span class="label">The Vision</span>
-            <h2>Hamptons to <span class="gold">everywhere</span></h2>
+            <h2>Hamptons to <span class="glow-text">everywhere</span></h2>
             <div class="timeline">
-                <div class="timeline-item">
+                <div class="timeline-item" data-reveal-up>
                     <div class="timeline-date">Summer 2026</div>
                     <div class="timeline-title">Hamptons Launch</div>
                     <div class="timeline-desc">Premium market. Prove the model. Build the playbook.</div>
                 </div>
-                <div class="timeline-item">
+                <div class="timeline-item" data-reveal-up>
                     <div class="timeline-date">Fall 2026</div>
                     <div class="timeline-title">Expand to Year-Round Markets</div>
                     <div class="timeline-desc">Philadelphia, Atlanta. Deploy off-season. Scale operations.</div>
                 </div>
-                <div class="timeline-item">
+                <div class="timeline-item" data-reveal-up>
                     <div class="timeline-date">2027+</div>
                     <div class="timeline-title">New York City & Beyond</div>
                     <div class="timeline-desc">700,000 rides per day. The biggest opportunity in transportation.</div>
@@ -106,12 +158,12 @@
         </div>
     </section>
 
-    <!-- Section 5: CTA -->
-    <section class="page-section" data-reveal>
+    <!-- Section 7: CTA -->
+    <section class="story-section" id="invest" data-reveal>
         <div class="section-inner">
             <span class="label">Join the Mission</span>
-            <h2>Seed round <span class="gold">open</span></h2>
-            <p class="subtitle">Be part of the autonomous future.</p>
+            <h2>Seed round <span class="glow-text">open</span></h2>
+            <p class="subtitle">$3M to launch. 18 months of runway. Be part of the autonomous future.</p>
             <div class="hero-cta" style="margin-top: 48px;">
                 <a href="investors.html" class="btn btn-primary">View Investor Info <span class="btn-arrow">&rarr;</span></a>
                 <a href="contact.html" class="btn btn-ghost">Contact Us</a>

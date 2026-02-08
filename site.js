@@ -64,31 +64,26 @@
         });
     });
 
-    // ── Staggered text reveal ────────────────────────────────
-    document.querySelectorAll('[data-stagger-reveal]').forEach(el => {
-        const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
-        const textNodes = [];
-        while (walker.nextNode()) textNodes.push(walker.currentNode);
-
-        let wordIndex = 0;
-        textNodes.forEach(node => {
-            const words = node.textContent.split(/(\s+)/);
-            const fragment = document.createDocumentFragment();
-            words.forEach(part => {
-                if (part.trim() === '') {
-                    fragment.appendChild(document.createTextNode(part));
-                } else {
-                    const span = document.createElement('span');
-                    span.className = 'word';
-                    span.textContent = part;
-                    span.style.transitionDelay = `${wordIndex * 0.1}s`;
-                    wordIndex++;
-                    fragment.appendChild(span);
+    // ── Reveal-up for standalone elements (hero caption, etc.) ──
+    const revealUpStandalone = document.querySelectorAll('.hero-caption [data-reveal-up]');
+    if (revealUpStandalone.length) {
+        const upObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('is-revealed');
+                    }, i * 150);
                 }
             });
-            node.parentNode.replaceChild(fragment, node);
-        });
-    });
+        }, { threshold: 0.1 });
+        revealUpStandalone.forEach(el => upObserver.observe(el));
+        // Trigger hero items after a short delay for smooth entrance
+        setTimeout(() => {
+            revealUpStandalone.forEach((el, i) => {
+                setTimeout(() => el.classList.add('is-revealed'), 800 + i * 200);
+            });
+        }, 0);
+    }
 
     // ── Counter animation ────────────────────────────────────
     const counters = document.querySelectorAll('[data-count-to]');
