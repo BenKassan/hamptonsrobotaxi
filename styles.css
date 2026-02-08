@@ -1011,6 +1011,7 @@ select {
     transform-origin: center bottom;
 }
 
+.is-visible [data-stagger-reveal] .word,
 [data-stagger-reveal].is-visible .word {
     opacity: 1;
     transform: translateY(0) rotateX(0);
