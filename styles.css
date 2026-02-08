@@ -970,3 +970,97 @@ select {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--text-faint);
 }
+
+/* ========================================
+   3D CANVAS CONTAINER
+   ======================================== */
+#cybercab-canvas-container {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+}
+
+#cybercab-canvas-container canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.hero-section {
+    position: relative;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.scroll-hint {
+    z-index: 2;
+}
+
+/* ========================================
+   STAGGERED TEXT REVEAL
+   ======================================== */
+[data-stagger-reveal] .word {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(30px) rotateX(-10deg);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    transform-origin: center bottom;
+}
+
+[data-stagger-reveal].is-visible .word {
+    opacity: 1;
+    transform: translateY(0) rotateX(0);
+}
+
+/* ========================================
+   BUTTON GLOW PULSE
+   ======================================== */
+.btn-primary {
+    position: relative;
+    overflow: visible;
+}
+
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    background: var(--accent);
+    opacity: 0;
+    filter: blur(18px);
+    z-index: -1;
+    animation: btn-glow 3s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes btn-glow {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 0.2; }
+}
+
+/* ========================================
+   CARD 3D TILT
+   ======================================== */
+.card {
+    transform-style: preserve-3d;
+    perspective: 800px;
+}
+
+/* ========================================
+   COUNTER REVEAL
+   ======================================== */
+[data-count-to] {
+    transition: opacity 0.5s ease;
+}
+
+/* ========================================
+   MOBILE 3D ADJUSTMENTS
+   ======================================== */
+@media (max-width: 768px) {
+    #cybercab-canvas-container {
+        opacity: 0.5;
+    }
+}
