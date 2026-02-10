@@ -4,19 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hamptons Robotaxi</title>
-    <meta name="description" content="Autonomous rides for America's most premium market. Launching Summer 2026.">
+    <meta name="description" content="Autonomous rides for the Hamptons. Eliminating drunk driving. Launching Summer 2026.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <script type="importmap">
-    {
-        "imports": {
-            "three": "https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js",
-            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/"
-        }
-    }
-    </script>
 </head>
 <body>
     <!-- Cosmic Background -->
@@ -39,57 +31,35 @@
                 <li><a href="contact.html">Contact</a></li>
             </ul>
             <div class="nav-actions">
-                <a href="investors.html" class="btn btn-ghost">Invest</a>
+                <a href="contact.html" class="btn btn-ghost">Get in Touch</a>
                 <button class="nav-toggle" id="navToggle">Menu</button>
             </div>
         </div>
     </nav>
 
-    <!-- Section 1: Hero — CyberCab Visual -->
-    <section class="hero-section" id="hero">
-        <div id="cybercab-canvas-container"></div>
-        <div class="hero-caption">
-            <p class="hero-tagline" data-reveal-up>Autonomous rides for America's most premium market</p>
-            <a href="#mission" class="scroll-cta" data-reveal-up>
-                <span>Learn More</span>
-                <div class="scroll-cta-arrow"></div>
-            </a>
-        </div>
-    </section>
-
-    <!-- Section 2: The Mission -->
-    <section class="story-section" id="mission" data-reveal>
-        <div class="section-inner">
-            <span class="label">The Mission</span>
-            <h2>Tesla builds the cars.<br><span class="glow-text">We run the fleet.</span></h2>
-            <p class="subtitle">Third-party operators are the key to scaling autonomy everywhere, fast. We're building the playbook — starting with America's most premium market.</p>
-        </div>
-    </section>
-
-    <!-- Section 3: The Problem -->
-    <section class="story-section" id="problem" data-reveal>
-        <div class="section-inner">
-            <span class="label">The Problem</span>
-            <h2>The Hamptons has a <span class="glow-text">deadly</span> transportation crisis</h2>
-            <div class="stats-row" style="margin-top: 56px;">
-                <div class="mini-stat" data-reveal-up>
-                    <div class="mini-stat-value" data-count-to="127">127</div>
-                    <div class="mini-stat-label">DUI Arrests Last Summer</div>
-                </div>
-                <div class="mini-stat" data-reveal-up>
-                    <div class="mini-stat-value" data-count-to="150" data-count-prefix="$">$150</div>
-                    <div class="mini-stat-label">Average Uber Ride</div>
-                </div>
-                <div class="mini-stat" data-reveal-up>
-                    <div class="mini-stat-value" data-count-to="500" data-count-suffix="K+">500K+</div>
-                    <div class="mini-stat-label">Summer Visitors</div>
-                </div>
+    <!-- Section 1: Hero -->
+    <section class="hero-section" data-reveal>
+        <div class="hero-content">
+            <span class="label">Summer 2026</span>
+            <h1>Bringing CyberCabs<br><span class="gold">to the Hamptons.</span></h1>
+            <p class="subtitle">Eliminating drunk driving with autonomous rides.</p>
+            <div class="hero-cta">
+                <a href="#problem" class="btn btn-ghost">Learn More</a>
             </div>
-            <p class="subtitle" style="margin-top: 40px;">When rides cost $150, people drive drunk. Frequent cancellations and no-shows make it worse.</p>
         </div>
     </section>
 
-    <!-- Section 4: The Solution -->
+    <!-- Section 2: The Problem -->
+    <section class="story-section" id="problem" data-reveal>
+        <div class="section-inner stat-section">
+            <span class="label">The Problem</span>
+            <div class="big-stat" data-count-to="127">127</div>
+            <p class="stat-label">DUI arrests last summer</p>
+            <p class="stat-context">500,000+ summer visitors. Rides cost $150+. Drivers cancel constantly. People make dangerous choices.</p>
+        </div>
+    </section>
+
+    <!-- Section 3: The Solution -->
     <section class="story-section" id="solution" data-reveal>
         <div class="section-inner">
             <span class="label">The Solution</span>
@@ -102,71 +72,55 @@
                 <div class="comparison-vs" data-reveal-up>vs</div>
                 <div class="comparison-card highlight" data-reveal-up>
                     <div class="comparison-label">With Us</div>
-                    <div class="comparison-value">$30</div>
+                    <div class="comparison-value">~$30</div>
                     <div class="comparison-desc">24/7 autonomous, instant pickup, no surge</div>
                 </div>
             </div>
-            <p class="subtitle" style="margin-top: 48px;">When the safe choice costs $30, everyone makes the safe choice.</p>
+            <p class="subtitle" style="margin-top: 48px;">When the safe choice is affordable, everyone makes the safe choice.</p>
+        </div>
+    </section>
+
+    <!-- Section 4: The Mission -->
+    <section class="story-section" id="mission" data-reveal>
+        <div class="section-inner">
+            <span class="label">The Mission</span>
+            <h2>Tesla builds the cars.<br><span class="glow-text">We run the fleet.</span></h2>
+            <p class="subtitle">Tesla's CyberCab is the most affordable autonomous vehicle ever built. We're deploying them where they're needed most — starting with the Hamptons.</p>
         </div>
     </section>
 
     <!-- Section 5: Why Now -->
     <section class="story-section" id="why-now" data-reveal>
-        <div class="section-inner stat-section">
+        <div class="section-inner">
             <span class="label">Why Now</span>
-            <div class="big-stat" data-count-to="2026">2026</div>
-            <p class="stat-label">The year everything changes</p>
+            <h2>Everything is <span class="glow-text">converging</span></h2>
             <div class="stats-row" style="margin-top: 48px;">
                 <div class="mini-stat" data-reveal-up>
                     <div class="mini-stat-value">Apr '26</div>
-                    <div class="mini-stat-label">CyberCab Production</div>
+                    <div class="mini-stat-label">CyberCab Production Starts</div>
                 </div>
                 <div class="mini-stat" data-reveal-up>
-                    <div class="mini-stat-value">500+</div>
-                    <div class="mini-stat-label">Robotaxis in Austin</div>
+                    <div class="mini-stat-value">Jan 22</div>
+                    <div class="mini-stat-label">Unsupervised Rides in Austin</div>
                 </div>
                 <div class="mini-stat" data-reveal-up>
                     <div class="mini-stat-value">NY AV</div>
                     <div class="mini-stat-label">Hochul Permit Framework</div>
                 </div>
             </div>
+            <p class="subtitle" style="margin-top: 40px;">Tesla confirmed CyberCab production begins April 2026. Unsupervised robotaxi rides are live in Austin. Governor Hochul's budget bill formally authorizes commercial AV deployment in New York.</p>
         </div>
     </section>
 
-    <!-- Section 6: The Vision -->
-    <section class="story-section" id="vision" data-reveal>
-        <div class="section-inner">
-            <span class="label">The Vision</span>
-            <h2>Hamptons to <span class="glow-text">everywhere</span></h2>
-            <div class="timeline">
-                <div class="timeline-item" data-reveal-up>
-                    <div class="timeline-date">Summer 2026</div>
-                    <div class="timeline-title">Hamptons Launch</div>
-                    <div class="timeline-desc">Premium market. Prove the model. Build the playbook.</div>
-                </div>
-                <div class="timeline-item" data-reveal-up>
-                    <div class="timeline-date">Fall 2026</div>
-                    <div class="timeline-title">Expand to Year-Round Markets</div>
-                    <div class="timeline-desc">Philadelphia, Atlanta. Deploy off-season. Scale operations.</div>
-                </div>
-                <div class="timeline-item" data-reveal-up>
-                    <div class="timeline-date">2027+</div>
-                    <div class="timeline-title">New York City & Beyond</div>
-                    <div class="timeline-desc">700,000 rides per day. The biggest opportunity in transportation.</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Section 7: CTA -->
-    <section class="story-section" id="invest" data-reveal>
+    <!-- Section 6: CTA -->
+    <section class="story-section" id="cta" data-reveal>
         <div class="section-inner">
             <span class="label">Join the Mission</span>
-            <h2>Seed round <span class="glow-text">open</span></h2>
-            <p class="subtitle">$3M to launch. 18 months of runway. Be part of the autonomous future.</p>
+            <h2>The Hamptons deserves<br><span class="glow-text">safe rides.</span></h2>
+            <p class="subtitle">We're building the autonomous transportation network that eliminates drunk driving in one of America's most underserved markets.</p>
             <div class="hero-cta" style="margin-top: 48px;">
-                <a href="investors.html" class="btn btn-primary">View Investor Info <span class="btn-arrow">&rarr;</span></a>
-                <a href="contact.html" class="btn btn-ghost">Contact Us</a>
+                <a href="contact.html" class="btn btn-primary">Get in Touch <span class="btn-arrow">&rarr;</span></a>
+                <a href="about.html" class="btn btn-ghost">Learn More</a>
             </div>
         </div>
     </section>
@@ -187,6 +141,5 @@
     </footer>
 
     <script src="site.js"></script>
-    <script type="module" src="cybercab-3d.js"></script>
 </body>
 </html>
