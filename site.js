@@ -132,7 +132,7 @@
     });
 
     // ── Parallax on scroll ───────────────────────────────────
-    const parallaxEls = document.querySelectorAll('.big-stat, .label');
+    const parallaxEls = document.querySelectorAll('.big-stat');
     if (parallaxEls.length) {
         window.addEventListener('scroll', () => {
             parallaxEls.forEach(el => {

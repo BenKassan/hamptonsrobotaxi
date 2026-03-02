@@ -322,7 +322,7 @@ h3 {
    HERO
    ======================================== */
 .hero-section {
-    min-height: auto;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -330,7 +330,7 @@ h3 {
     text-align: center;
     position: relative;
     z-index: 1;
-    padding: 180px 40px 80px;
+    padding: 120px 40px 60px;
     overflow: hidden;
 }
 
@@ -1151,7 +1151,7 @@ select {
     }
 
     .hero-section {
-        padding: 140px 24px 60px;
+        padding: 100px 24px 40px;
     }
 
     .comparison {
