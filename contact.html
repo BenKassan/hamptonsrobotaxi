@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact | Hamptons Robotaxi</title>
-    <meta name="description" content="Get in touch with Hamptons Robotaxi.">
+    <title>Contact | HamptonsRoboTaxi — Self-Driving Car Service in East Hampton, NY</title>
+    <meta name="description" content="Get in touch with HamptonsRoboTaxi. Partner inquiries, investor information, and general contact.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -25,9 +25,9 @@
             <a href="index.html" class="nav-logo">Hamptons <span>Robotaxi</span></a>
             <ul class="nav-links" id="navLinks">
                 <li><a href="about.html">About</a></li>
-                <li><a href="team.html">Team</a></li>
+                <li><a href="about.html#how-it-works">How It Works</a></li>
+                <li><a href="partners.html">Partners</a></li>
                 <li><a href="investors.html">Investors</a></li>
-                <li><a href="game.html">Game</a></li>
                 <li><a href="contact.html" class="active">Contact</a></li>
             </ul>
             <div class="nav-actions">
@@ -43,6 +43,12 @@
             <div class="contact-header">
                 <h1>Contact</h1>
                 <p id="contact-subtitle">We respond quickly.</p>
+            </div>
+
+            <!-- Quick Links -->
+            <div style="display: flex; gap: 16px; margin-bottom: 32px; flex-wrap: wrap;">
+                <a href="mailto:partnerships@hamptonsrobotaxi.com" class="btn btn-ghost" style="flex: 1; min-width: 200px; text-align: center; justify-content: center;">I'm a Partner</a>
+                <a href="mailto:investors@hamptonsrobotaxi.com" class="btn btn-ghost" style="flex: 1; min-width: 200px; text-align: center; justify-content: center;">I'm an Investor</a>
             </div>
 
             <div id="success-message" class="success-message" style="display: none;">
@@ -76,8 +82,8 @@
                             <label>Inquiry Type</label>
                             <select name="inquiry-type" id="inquiry-type">
                                 <option value="">Select...</option>
+                                <option value="partnership">Hotel / Restaurant Partnership</option>
                                 <option value="investment">Investment</option>
-                                <option value="partnership">Partnership</option>
                                 <option value="media">Media</option>
                                 <option value="other">Other</option>
                             </select>
@@ -92,6 +98,14 @@
                     </button>
                 </form>
             </div>
+
+            <div style="text-align: center; margin-top: 32px;">
+                <p style="font-size: 14px; color: var(--text-faint);">
+                    <strong style="color: var(--text-dim);">General:</strong> info@hamptonsrobotaxi.com<br>
+                    <strong style="color: var(--text-dim);">Partners:</strong> partnerships@hamptonsrobotaxi.com<br>
+                    <strong style="color: var(--text-dim);">Investors:</strong> investors@hamptonsrobotaxi.com
+                </p>
+            </div>
         </div>
     </section>
 
@@ -101,9 +115,8 @@
             <div class="footer-brand">Hamptons <span>Robotaxi</span></div>
             <div class="footer-links">
                 <a href="about.html">About</a>
-                <a href="team.html">Team</a>
+                <a href="partners.html">Partners</a>
                 <a href="investors.html">Investors</a>
-                <a href="game.html">Game</a>
                 <a href="contact.html">Contact</a>
             </div>
             <div class="footer-copy">&copy; 2026 Hamptons Robotaxi, LLC</div>
