@@ -1,15 +1,13 @@
 :root {
-    --void: #030308;
-    --surface: rgba(255, 255, 255, 0.03);
+    --void: #0a0a0f;
+    --surface: rgba(255, 255, 255, 0.035);
     --surface-hover: rgba(255, 255, 255, 0.06);
     --edge: rgba(255, 255, 255, 0.08);
     --accent: #c9a962;
     --accent-glow: rgba(201, 169, 98, 0.15);
-    --cyan: #c9a962;
-    --cyan-glow: rgba(201, 169, 98, 0.15);
-    --cyan-dim: rgba(201, 169, 98, 0.4);
-    --text: #ffffff;
-    --text-dim: rgba(255, 255, 255, 0.5);
+    --accent-soft: #d4b876;
+    --text: #f5f5f7;
+    --text-dim: rgba(255, 255, 255, 0.55);
     --text-faint: rgba(255, 255, 255, 0.3);
 }
 
@@ -23,19 +21,21 @@ html {
     scroll-behavior: smooth;
     background: var(--void);
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-size: 16px;
     line-height: 1.6;
     color: var(--text);
     background: var(--void);
     overflow-x: hidden;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
 }
 
 /* ========================================
-   COSMIC BACKGROUND
+   COSMIC BACKGROUND — subtle, warm
    ======================================== */
 .cosmos {
     position: fixed;
@@ -43,45 +43,41 @@ body {
     z-index: 0;
     overflow: hidden;
     background:
-        radial-gradient(ellipse 120% 80% at 20% 10%, rgba(201, 169, 98, 0.08), transparent 50%),
-        radial-gradient(ellipse 100% 60% at 80% 90%, rgba(160, 130, 60, 0.06), transparent 50%),
-        radial-gradient(ellipse 80% 50% at 50% 50%, rgba(201, 169, 98, 0.02), transparent 60%),
-        linear-gradient(180deg, #030308 0%, #060508 50%, #030308 100%);
+        radial-gradient(ellipse 120% 80% at 20% 10%, rgba(201, 169, 98, 0.05), transparent 50%),
+        radial-gradient(ellipse 100% 60% at 80% 90%, rgba(160, 130, 60, 0.04), transparent 50%),
+        linear-gradient(180deg, #0a0a0f 0%, #0d0c10 50%, #0a0a0f 100%);
 }
 
-/* Stars */
+/* Stars — more subtle */
 .stars {
     position: absolute;
     inset: 0;
     background-image:
-        radial-gradient(2px 2px at 20px 30px, white, transparent),
-        radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
-        radial-gradient(1px 1px at 90px 40px, white, transparent),
-        radial-gradient(2px 2px at 130px 80px, rgba(255,255,255,0.6), transparent),
-        radial-gradient(1px 1px at 160px 120px, white, transparent),
-        radial-gradient(1.5px 1.5px at 200px 50px, rgba(255,255,255,0.9), transparent),
-        radial-gradient(1px 1px at 250px 160px, white, transparent),
-        radial-gradient(2px 2px at 300px 100px, rgba(255,255,255,0.7), transparent),
-        radial-gradient(1px 1px at 350px 200px, white, transparent),
-        radial-gradient(1.5px 1.5px at 400px 80px, rgba(255,255,255,0.8), transparent);
+        radial-gradient(1.5px 1.5px at 20px 30px, rgba(255,255,255,0.5), transparent),
+        radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.4), transparent),
+        radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.3), transparent),
+        radial-gradient(1.5px 1.5px at 130px 80px, rgba(255,255,255,0.3), transparent),
+        radial-gradient(1px 1px at 160px 120px, rgba(255,255,255,0.4), transparent),
+        radial-gradient(1px 1px at 200px 50px, rgba(255,255,255,0.5), transparent),
+        radial-gradient(1px 1px at 250px 160px, rgba(255,255,255,0.3), transparent),
+        radial-gradient(1px 1px at 300px 100px, rgba(255,255,255,0.4), transparent);
     background-size: 450px 250px;
-    animation: drift 120s linear infinite;
-    opacity: 0.6;
+    animation: drift 180s linear infinite;
+    opacity: 0.4;
 }
 
 .stars-2 {
     position: absolute;
     inset: 0;
     background-image:
-        radial-gradient(1px 1px at 50px 100px, white, transparent),
-        radial-gradient(1.5px 1.5px at 100px 150px, rgba(255,255,255,0.7), transparent),
-        radial-gradient(1px 1px at 180px 50px, white, transparent),
-        radial-gradient(2px 2px at 220px 180px, rgba(255,255,255,0.5), transparent),
-        radial-gradient(1px 1px at 280px 120px, white, transparent),
-        radial-gradient(1px 1px at 340px 60px, rgba(255,255,255,0.8), transparent);
+        radial-gradient(1px 1px at 50px 100px, rgba(255,255,255,0.3), transparent),
+        radial-gradient(1px 1px at 100px 150px, rgba(255,255,255,0.4), transparent),
+        radial-gradient(1px 1px at 180px 50px, rgba(255,255,255,0.3), transparent),
+        radial-gradient(1px 1px at 220px 180px, rgba(255,255,255,0.2), transparent),
+        radial-gradient(1px 1px at 280px 120px, rgba(255,255,255,0.3), transparent);
     background-size: 380px 220px;
-    animation: drift 180s linear infinite reverse;
-    opacity: 0.4;
+    animation: drift 240s linear infinite reverse;
+    opacity: 0.3;
 }
 
 @keyframes drift {
@@ -89,19 +85,19 @@ body {
     to { transform: translateX(-450px) translateY(-250px); }
 }
 
-/* Nebula glow */
+/* Nebula — very subtle warm glow */
 .nebula {
     position: absolute;
     border-radius: 50%;
-    filter: blur(100px);
-    opacity: 0.4;
-    animation: pulse 8s ease-in-out infinite;
+    filter: blur(120px);
+    opacity: 0.25;
+    animation: pulse 10s ease-in-out infinite;
 }
 
 .nebula-1 {
     width: 600px;
     height: 600px;
-    background: radial-gradient(circle, rgba(201, 169, 98, 0.12), transparent 70%);
+    background: radial-gradient(circle, rgba(201, 169, 98, 0.08), transparent 70%);
     top: -200px;
     right: -100px;
 }
@@ -109,15 +105,15 @@ body {
 .nebula-2 {
     width: 500px;
     height: 500px;
-    background: radial-gradient(circle, rgba(180, 150, 80, 0.10), transparent 70%);
+    background: radial-gradient(circle, rgba(180, 150, 80, 0.06), transparent 70%);
     bottom: -150px;
     left: -100px;
-    animation-delay: -4s;
+    animation-delay: -5s;
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 0.3; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(1.05); }
+    0%, 100% { opacity: 0.2; transform: scale(1); }
+    50% { opacity: 0.35; transform: scale(1.03); }
 }
 
 /* ========================================
@@ -129,14 +125,16 @@ body {
     left: 0;
     right: 0;
     z-index: 1000;
-    padding: 24px 40px;
+    padding: 20px 40px;
     transition: all 0.4s ease;
 }
 
 .nav.scrolled {
-    background: rgba(3, 3, 8, 0.9);
-    backdrop-filter: blur(20px);
+    background: rgba(10, 10, 15, 0.92);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     border-bottom: 1px solid var(--edge);
+    padding: 16px 40px;
 }
 
 .nav-inner {
@@ -148,10 +146,10 @@ body {
 }
 
 .nav-logo {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 14px;
+    font-family: 'Cormorant Garamond', 'Georgia', serif;
+    font-size: 18px;
     font-weight: 600;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--text);
     text-decoration: none;
@@ -163,14 +161,15 @@ body {
 
 .nav-links {
     display: flex;
-    gap: 48px;
+    gap: 40px;
     list-style: none;
 }
 
 .nav-links a {
+    font-family: 'Inter', sans-serif;
     font-size: 12px;
     font-weight: 500;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--text-dim);
     text-decoration: none;
@@ -193,13 +192,14 @@ body {
     background: none;
     border: 1px solid var(--edge);
     color: var(--text-dim);
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 11px;
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.12em;
     padding: 10px 16px;
     cursor: pointer;
+    border-radius: 6px;
 }
 
 /* ========================================
@@ -210,15 +210,16 @@ body {
     align-items: center;
     gap: 10px;
     padding: 14px 28px;
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 11px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
     font-weight: 600;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     text-decoration: none;
     border: 1px solid transparent;
     cursor: pointer;
     transition: all 0.3s ease;
+    border-radius: 8px;
 }
 
 .btn-primary {
@@ -228,9 +229,9 @@ body {
 }
 
 .btn-primary:hover {
-    background: #e4d4a8;
+    background: var(--accent-soft);
     transform: translateY(-2px);
-    box-shadow: 0 20px 40px -10px rgba(201, 169, 98, 0.4);
+    box-shadow: 0 16px 40px -8px rgba(201, 169, 98, 0.35);
 }
 
 .btn-ghost {
@@ -240,8 +241,9 @@ body {
 }
 
 .btn-ghost:hover {
-    border-color: var(--text-dim);
+    border-color: rgba(255,255,255,0.2);
     color: var(--text);
+    background: rgba(255,255,255,0.03);
 }
 
 .btn-arrow {
@@ -274,25 +276,31 @@ body {
 /* ========================================
    TYPOGRAPHY
    ======================================== */
-h1, h2, h3 {
-    font-family: 'Space Grotesk', sans-serif;
+h1, h2 {
+    font-family: 'Cormorant Garamond', 'Georgia', serif;
     font-weight: 500;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.01em;
     line-height: 1.1;
 }
 
-h1 {
-    font-size: clamp(48px, 8vw, 100px);
+h3 {
+    font-family: 'Inter', sans-serif;
     font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+h1 {
+    font-size: clamp(44px, 7vw, 88px);
+    font-weight: 500;
 }
 
 h2 {
-    font-size: clamp(36px, 5vw, 64px);
+    font-size: clamp(32px, 5vw, 56px);
 }
 
 h3 {
-    font-size: clamp(20px, 3vw, 28px);
-    font-weight: 400;
+    font-size: clamp(18px, 2.5vw, 24px);
 }
 
 .gold {
@@ -300,18 +308,19 @@ h3 {
 }
 
 .subtitle {
-    font-size: 18px;
+    font-size: 17px;
     color: var(--text-dim);
     max-width: 600px;
     margin: 24px auto 0;
-    line-height: 1.7;
+    line-height: 1.75;
+    font-weight: 400;
 }
 
 .label {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.25em;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--accent);
     margin-bottom: 20px;
@@ -337,7 +346,7 @@ h3 {
 .hero-tagline {
     font-size: 15px;
     font-weight: 400;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.05em;
     color: var(--text-dim);
     max-width: 400px;
 }
@@ -363,35 +372,35 @@ h3 {
 }
 
 /* ========================================
-   SINGLE STAT SECTION
+   STATS
    ======================================== */
 .stat-section {
     text-align: center;
 }
 
 .big-stat {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Cormorant Garamond', serif;
     font-size: clamp(80px, 15vw, 200px);
-    font-weight: 700;
+    font-weight: 600;
     color: var(--accent);
     line-height: 1;
-    letter-spacing: -0.05em;
+    letter-spacing: -0.03em;
 }
 
 .stat-label {
-    font-size: 14px;
+    font-size: 13px;
     color: var(--text-dim);
     text-transform: uppercase;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.15em;
     margin-top: 16px;
 }
 
 .stat-context {
-    font-size: 18px;
+    font-size: 17px;
     color: var(--text-dim);
     max-width: 500px;
     margin: 32px auto 0;
-    line-height: 1.7;
+    line-height: 1.75;
 }
 
 /* ========================================
@@ -410,7 +419,7 @@ h3 {
 }
 
 .mini-stat-value {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Cormorant Garamond', serif;
     font-size: 36px;
     font-weight: 600;
     color: var(--text);
@@ -420,29 +429,33 @@ h3 {
     font-size: 11px;
     color: var(--text-faint);
     text-transform: uppercase;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.12em;
     margin-top: 8px;
+    font-family: 'Inter', sans-serif;
 }
 
 /* ========================================
-   CARDS (for about/team pages)
+   CARDS
    ======================================== */
 .card {
     background: var(--surface);
     border: 1px solid var(--edge);
     border-radius: 16px;
-    padding: 32px;
-    transition: all 0.3s ease;
+    padding: 36px;
+    transition: all 0.35s ease;
+    text-align: left;
 }
 
 .card:hover {
-    border-color: rgba(201, 169, 98, 0.3);
+    border-color: rgba(201, 169, 98, 0.25);
     transform: translateY(-4px);
+    box-shadow: 0 20px 60px -20px rgba(0,0,0,0.5);
 }
 
 .card h3 {
-    font-size: 18px;
+    font-size: 17px;
     margin-bottom: 12px;
+    font-weight: 600;
 }
 
 .card p {
@@ -480,16 +493,16 @@ h3 {
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    border: 2px solid var(--accent);
+    border: 2px solid rgba(201, 169, 98, 0.4);
     margin: 0 auto 24px;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--void);
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Cormorant Garamond', serif;
     font-size: 40px;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--accent);
 }
 
@@ -500,16 +513,17 @@ h3 {
 }
 
 .team-name {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 22px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
     font-weight: 600;
 }
 
 .team-role {
+    font-family: 'Inter', sans-serif;
     font-size: 11px;
     color: var(--accent);
     text-transform: uppercase;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.15em;
     margin-top: 8px;
 }
 
@@ -534,7 +548,7 @@ h3 {
 }
 
 .contact-container {
-    max-width: 500px;
+    max-width: 520px;
     width: 100%;
 }
 
@@ -544,7 +558,7 @@ h3 {
 }
 
 .contact-header h1 {
-    font-size: 32px;
+    font-size: 36px;
     margin-bottom: 12px;
 }
 
@@ -572,9 +586,10 @@ h3 {
 
 label {
     display: block;
+    font-family: 'Inter', sans-serif;
     font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--text-faint);
     margin-bottom: 8px;
@@ -589,7 +604,7 @@ textarea {
     border: 1px solid var(--edge);
     border-radius: 10px;
     color: var(--text);
-    font-family: inherit;
+    font-family: 'Inter', sans-serif;
     font-size: 15px;
     transition: all 0.3s ease;
 }
@@ -599,7 +614,7 @@ select:focus,
 textarea:focus {
     outline: none;
     border-color: var(--accent);
-    background: rgba(201, 169, 98, 0.05);
+    background: rgba(201, 169, 98, 0.04);
 }
 
 input::placeholder,
@@ -621,8 +636,8 @@ select {
 }
 
 .success-message {
-    background: rgba(201, 169, 98, 0.1);
-    border: 1px solid var(--accent);
+    background: rgba(201, 169, 98, 0.08);
+    border: 1px solid rgba(201, 169, 98, 0.3);
     border-radius: 16px;
     padding: 32px;
     text-align: center;
@@ -631,41 +646,8 @@ select {
 
 .success-message p {
     color: var(--accent);
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 500;
-}
-
-/* ========================================
-   INVESTORS PAGE
-   ======================================== */
-.investor-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    margin-top: 48px;
-}
-
-.investor-card {
-    background: var(--surface);
-    border: 1px solid var(--edge);
-    border-radius: 16px;
-    padding: 32px;
-    text-align: center;
-}
-
-.investor-value {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 32px;
-    font-weight: 600;
-    color: var(--accent);
-}
-
-.investor-label {
-    font-size: 12px;
-    color: var(--text-faint);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-top: 8px;
 }
 
 /* ========================================
@@ -679,32 +661,35 @@ select {
 
 .timeline-item {
     padding: 24px 0 24px 32px;
-    border-left: 2px solid var(--edge);
+    border-left: 1px solid rgba(201, 169, 98, 0.2);
     position: relative;
 }
 
 .timeline-item::before {
     content: '';
     position: absolute;
-    left: -5px;
+    left: -4px;
     top: 28px;
-    width: 8px;
-    height: 8px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     background: var(--accent);
+    box-shadow: 0 0 8px rgba(201, 169, 98, 0.3);
 }
 
 .timeline-date {
+    font-family: 'Inter', sans-serif;
     font-size: 11px;
     color: var(--accent);
     text-transform: uppercase;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.12em;
     margin-bottom: 8px;
+    font-weight: 600;
 }
 
 .timeline-title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 18px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
     font-weight: 500;
 }
 
@@ -712,6 +697,7 @@ select {
     font-size: 14px;
     color: var(--text-dim);
     margin-top: 8px;
+    line-height: 1.6;
 }
 
 /* ========================================
@@ -735,10 +721,10 @@ select {
 }
 
 .footer-brand {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.15em;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
 }
 
@@ -752,10 +738,12 @@ select {
 }
 
 .footer-links a {
+    font-family: 'Inter', sans-serif;
     font-size: 12px;
     color: var(--text-faint);
     text-decoration: none;
     transition: color 0.3s ease;
+    letter-spacing: 0.04em;
 }
 
 .footer-links a:hover {
@@ -792,8 +780,8 @@ select {
 .scroll-hint-arrow {
     width: 20px;
     height: 20px;
-    border-right: 2px solid var(--text-faint);
-    border-bottom: 2px solid var(--text-faint);
+    border-right: 1px solid var(--text-faint);
+    border-bottom: 1px solid var(--text-faint);
     transform: rotate(45deg);
 }
 
@@ -808,7 +796,7 @@ select {
 [data-reveal] {
     opacity: 0;
     transform: translateY(20px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
+    transition: opacity 0.9s ease, transform 0.9s ease;
 }
 
 [data-reveal].is-visible {
@@ -843,8 +831,9 @@ select {
         top: 100%;
         left: 0;
         right: 0;
-        background: rgba(3, 3, 8, 0.98);
-        backdrop-filter: blur(20px);
+        background: rgba(10, 10, 15, 0.98);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
         flex-direction: column;
         padding: 24px;
         gap: 16px;
@@ -887,19 +876,188 @@ select {
         flex-wrap: wrap;
         justify-content: center;
     }
+
+    .story-section {
+        min-height: auto;
+        padding: 80px 24px;
+    }
+
+    .hero-section {
+        padding: 100px 24px 40px;
+    }
+
+    .comparison {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .comparison-card {
+        padding: 28px 36px;
+        width: 100%;
+    }
+
+    .comparison-vs {
+        display: none;
+    }
+
+    .hero-tagline {
+        font-size: 13px;
+    }
 }
 
-/* Hide old elements */
-.orb,
-.section,
-.container:not(.contact-container),
-.hero-grid,
-.panel-grid,
-.stat-grid,
-.card-grid,
-.metric-grid,
-.split {
-    /* These are from old design, hide if they appear */
+/* ========================================
+   STORY SECTIONS (Homepage flow)
+   ======================================== */
+.story-section {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    padding: 120px 40px;
+}
+
+/* ========================================
+   GLOW TEXT
+   ======================================== */
+.glow-text {
+    color: var(--accent);
+    text-shadow:
+        0 0 30px rgba(201, 169, 98, 0.2),
+        0 0 80px rgba(201, 169, 98, 0.05);
+}
+
+/* ========================================
+   COMPARISON CARDS
+   ======================================== */
+.comparison {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    margin-top: 48px;
+    flex-wrap: wrap;
+}
+
+.comparison-card {
+    background: var(--surface);
+    border: 1px solid var(--edge);
+    border-radius: 20px;
+    padding: 40px 48px;
+    text-align: center;
+    min-width: 200px;
+    transition: all 0.4s ease;
+}
+
+.comparison-card.highlight {
+    border-color: rgba(201, 169, 98, 0.3);
+    background: rgba(201, 169, 98, 0.03);
+}
+
+.comparison-card.highlight .comparison-value {
+    color: var(--accent);
+}
+
+.comparison-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-faint);
+    margin-bottom: 12px;
+}
+
+.comparison-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(40px, 6vw, 56px);
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.1;
+}
+
+.comparison-value.dim {
+    color: var(--text-dim);
+    opacity: 0.6;
+}
+
+.comparison-desc {
+    font-size: 13px;
+    color: var(--text-faint);
+    margin-top: 12px;
+    max-width: 200px;
+    line-height: 1.5;
+}
+
+.comparison-vs {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-faint);
+}
+
+/* ========================================
+   REVEAL UP ANIMATION
+   ======================================== */
+[data-reveal-up] {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.is-visible [data-reveal-up],
+[data-reveal-up].is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.is-visible [data-reveal-up]:nth-child(1) { transition-delay: 0.1s; }
+.is-visible [data-reveal-up]:nth-child(2) { transition-delay: 0.25s; }
+.is-visible [data-reveal-up]:nth-child(3) { transition-delay: 0.4s; }
+.is-visible [data-reveal-up]:nth-child(4) { transition-delay: 0.55s; }
+
+/* ========================================
+   BUTTON GLOW
+   ======================================== */
+.btn-primary {
+    position: relative;
+    overflow: visible;
+}
+
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    background: var(--accent);
+    opacity: 0;
+    filter: blur(16px);
+    z-index: -1;
+    animation: btn-glow 4s ease-in-out infinite;
+    pointer-events: none;
+    border-radius: 12px;
+}
+
+@keyframes btn-glow {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 0.15; }
+}
+
+/* ========================================
+   CARD TILT
+   ======================================== */
+.card {
+    transform-style: preserve-3d;
+    perspective: 800px;
+}
+
+/* ========================================
+   COUNTER
+   ======================================== */
+[data-count-to] {
+    transition: opacity 0.5s ease;
 }
 
 /* ========================================
@@ -929,10 +1087,11 @@ select {
 .list li {
     display: flex;
     gap: 16px;
-    padding: 12px 0;
-    font-size: 14px;
+    padding: 14px 0;
+    font-size: 15px;
     color: var(--text-dim);
     border-bottom: 1px solid var(--edge);
+    line-height: 1.6;
 }
 
 .list li:last-child {
@@ -941,21 +1100,22 @@ select {
 
 .list span {
     color: var(--accent);
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 500;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 18px;
     flex-shrink: 0;
     width: 24px;
 }
 
 /* Selection */
 ::selection {
-    background: rgba(201, 169, 98, 0.3);
+    background: rgba(201, 169, 98, 0.25);
     color: var(--text);
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-    width: 6px;
+    width: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -963,212 +1123,41 @@ select {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--edge);
+    background: rgba(255,255,255,0.1);
     border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--text-faint);
+    background: rgba(255,255,255,0.2);
 }
 
-/* ========================================
-   STORY SECTIONS (Homepage flow)
-   ======================================== */
-.story-section {
-    min-height: 80vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    z-index: 1;
-    padding: 120px 40px;
-}
-
-/* ========================================
-   GLOW TEXT (Cyan accent)
-   ======================================== */
-.glow-text {
-    color: var(--accent);
-    text-shadow:
-        0 0 20px rgba(201, 169, 98, 0.3),
-        0 0 60px rgba(201, 169, 98, 0.1);
-}
-
-/* ========================================
-   COMPARISON CARDS
-   ======================================== */
-.comparison {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 32px;
+/* Investor grid */
+.investor-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
     margin-top: 48px;
-    flex-wrap: wrap;
 }
 
-.comparison-card {
+.investor-card {
     background: var(--surface);
     border: 1px solid var(--edge);
-    border-radius: 20px;
-    padding: 40px 48px;
+    border-radius: 16px;
+    padding: 32px;
     text-align: center;
-    min-width: 200px;
-    transition: all 0.4s ease;
 }
 
-.comparison-card.highlight {
-    border-color: rgba(201, 169, 98, 0.4);
-    background: rgba(201, 169, 98, 0.04);
-    box-shadow: 0 0 40px rgba(201, 169, 98, 0.06);
-}
-
-.comparison-card.highlight .comparison-value {
-    color: var(--accent);
-    text-shadow: 0 0 30px rgba(201, 169, 98, 0.3);
-}
-
-.comparison-label {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 11px;
+.investor-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    color: var(--text-faint);
-    margin-bottom: 12px;
-}
-
-.comparison-value {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(40px, 6vw, 56px);
-    font-weight: 700;
-    color: var(--text);
-    line-height: 1.1;
-}
-
-.comparison-value.dim {
-    color: var(--text-dim);
-    opacity: 0.6;
-}
-
-.comparison-desc {
-    font-size: 13px;
-    color: var(--text-faint);
-    margin-top: 12px;
-    max-width: 200px;
-    line-height: 1.5;
-}
-
-.comparison-vs {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    color: var(--text-faint);
-}
-
-/* ========================================
-   REVEAL UP ANIMATION (staggered children)
-   ======================================== */
-[data-reveal-up] {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-}
-
-.is-visible [data-reveal-up],
-[data-reveal-up].is-revealed {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* Stagger delays for children */
-.is-visible [data-reveal-up]:nth-child(1) { transition-delay: 0.1s; }
-.is-visible [data-reveal-up]:nth-child(2) { transition-delay: 0.25s; }
-.is-visible [data-reveal-up]:nth-child(3) { transition-delay: 0.4s; }
-.is-visible [data-reveal-up]:nth-child(4) { transition-delay: 0.55s; }
-
-/* ========================================
-   BUTTON GLOW PULSE
-   ======================================== */
-.btn-primary {
-    position: relative;
-    overflow: visible;
-}
-
-.btn-primary::after {
-    content: '';
-    position: absolute;
-    inset: -6px;
-    background: var(--accent);
-    opacity: 0;
-    filter: blur(18px);
-    z-index: -1;
-    animation: btn-glow 3s ease-in-out infinite;
-    pointer-events: none;
-}
-
-@keyframes btn-glow {
-    0%, 100% { opacity: 0; }
-    50% { opacity: 0.2; }
-}
-
-/* ========================================
-   CARD 3D TILT
-   ======================================== */
-.card {
-    transform-style: preserve-3d;
-    perspective: 800px;
-}
-
-/* ========================================
-   COUNTER REVEAL
-   ======================================== */
-[data-count-to] {
-    transition: opacity 0.5s ease;
-}
-
-/* ========================================
-   TIMELINE (Cyan accent update)
-   ======================================== */
-.timeline-item::before {
-    background: var(--accent);
-    box-shadow: 0 0 8px rgba(201, 169, 98, 0.4);
-}
-
-.timeline-date {
     color: var(--accent);
 }
 
-/* ========================================
-   MOBILE OVERRIDES
-   ======================================== */
-@media (max-width: 768px) {
-
-    .story-section {
-        min-height: auto;
-        padding: 80px 24px;
-    }
-
-    .hero-section {
-        padding: 100px 24px 40px;
-    }
-
-    .comparison {
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    .comparison-card {
-        padding: 28px 36px;
-        width: 100%;
-    }
-
-    .comparison-vs {
-        display: none;
-    }
-
-    .hero-tagline {
-        font-size: 13px;
-    }
+.investor-label {
+    font-size: 12px;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 8px;
 }
