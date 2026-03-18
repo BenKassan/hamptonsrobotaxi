@@ -30,8 +30,8 @@
                 }
             });
         }, {
-            threshold: 0.15,
-            rootMargin: '0px 0px -50px 0px'
+            threshold: 0.1,
+            rootMargin: '0px 0px -40px 0px'
         });
 
         revealTargets.forEach((el) => observer.observe(el));
@@ -64,85 +64,14 @@
         });
     });
 
-    // ── Reveal-up for standalone elements (hero caption, etc.) ──
-    const revealUpStandalone = document.querySelectorAll('.hero-caption [data-reveal-up]');
-    if (revealUpStandalone.length) {
-        const upObserver = new IntersectionObserver((entries) => {
-            entries.forEach((entry, i) => {
-                if (entry.isIntersecting) {
-                    setTimeout(() => {
-                        entry.target.classList.add('is-revealed');
-                    }, i * 150);
-                }
-            });
-        }, { threshold: 0.1 });
-        revealUpStandalone.forEach(el => upObserver.observe(el));
-        // Trigger hero items after a short delay for smooth entrance
+    // Handle cross-page anchor links (e.g., about.html#how-it-works)
+    if (window.location.hash) {
         setTimeout(() => {
-            revealUpStandalone.forEach((el, i) => {
-                setTimeout(() => el.classList.add('is-revealed'), 800 + i * 200);
-            });
-        }, 0);
-    }
-
-    // ── Counter animation ────────────────────────────────────
-    const counters = document.querySelectorAll('[data-count-to]');
-    if (counters.length) {
-        const counterObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && !entry.target.dataset.counted) {
-                    entry.target.dataset.counted = 'true';
-                    const target = parseInt(entry.target.dataset.countTo);
-                    const prefix = entry.target.dataset.countPrefix || '';
-                    const suffix = entry.target.dataset.countSuffix || '';
-                    const duration = 2000;
-                    const start = performance.now();
-                    const startValue = target > 100 ? target - 60 : 0;
-
-                    function tick(now) {
-                        const progress = Math.min((now - start) / duration, 1);
-                        const eased = 1 - Math.pow(1 - progress, 3);
-                        const current = Math.floor(startValue + (target - startValue) * eased);
-                        entry.target.textContent = prefix + current + suffix;
-                        if (progress < 1) requestAnimationFrame(tick);
-                    }
-                    requestAnimationFrame(tick);
-                }
-            });
-        }, { threshold: 0.5 });
-
-        counters.forEach(el => counterObserver.observe(el));
-    }
-
-    // ── Card 3D tilt on hover ────────────────────────────────
-    document.querySelectorAll('.card').forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = (e.clientX - rect.left) / rect.width - 0.5;
-            const y = (e.clientY - rect.top) / rect.height - 0.5;
-            card.style.transform = `translateY(-4px) rotateY(${x * 10}deg) rotateX(${-y * 10}deg)`;
-        });
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = '';
-            card.style.transition = 'all 0.3s ease';
-        });
-        card.addEventListener('mouseenter', () => {
-            card.style.transition = 'none';
-        });
-    });
-
-    // ── Parallax on scroll ───────────────────────────────────
-    const parallaxEls = document.querySelectorAll('.big-stat');
-    if (parallaxEls.length) {
-        window.addEventListener('scroll', () => {
-            parallaxEls.forEach(el => {
-                const rect = el.getBoundingClientRect();
-                const centerY = rect.top + rect.height / 2;
-                const viewCenter = window.innerHeight / 2;
-                const offset = (centerY - viewCenter) * 0.03;
-                el.style.transform = `translateY(${offset}px)`;
-            });
-        }, { passive: true });
+            const target = document.querySelector(window.location.hash);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth' });
+            }
+        }, 300);
     }
 
 })();
